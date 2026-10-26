@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Business Fit by Busy Mamas | Find & Test Ideas Built for Your Life</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,wght@0,800;1,600&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css?v=20261026c" />
+</head>
+<body>
+  <!-- TOP NAVIGATION (BMN FLOATING PILL STYLE) -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#" class="brand-logo" id="brandResetLink">
+        <img
+          src="https://www.busymamasnetwork.com/logo_new.png"
+          alt="Busy Mamas Network"
+          class="brand-logo-img"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';"
+        />
+        <span class="brand-badge-icon" style="display: none; font-size: 0.85rem; font-weight: 900;">BF</span>
+        <span class="brand-logo-text" id="brandLogoText">Business Fit <em>by Busy Mamas</em></span>
+      </a>
+
+      <div class="topbar-actions">
+        <div class="top-mode-pills">
+          <button type="button" class="top-mode-btn active" data-switch-mode="fit">
+            Find an Idea
+          </button>
+          <button type="button" class="top-mode-btn" data-switch-mode="growth">
+            Grow Existing Business
+          </button>
+        </div>
+
+        <!-- Hidden from regular visitors; visible only when ?admin=true is in URL -->
+        <div class="vault-status-pill" id="adminVaultPill" style="display: none;" title="Connected Business Idea Vault">
+          <span class="status-dot"></span>
+          <span id="vaultStatusText">200+ Business Profiles Ready</span>
+        </div>
+        <button type="button" class="btn-ghost-sm" id="btnOpenAdmin" style="display: none;">
+          Settings & Data
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="main-container">
+    <section class="hero-header">
+      <div class="hero-ambient-orb orb-1"></div>
+      <div class="hero-ambient-orb orb-2"></div>
+      <div class="hero-inner">
+        <div class="hero-mode-switcher" role="tablist" aria-label="Choose Assessment Tool">
+          <button type="button" class="hero-mode-tab active" data-switch-mode="fit">
+            <span class="hero-mode-kicker">Starting or Pivoting</span>
+            <span class="hero-mode-name">Business Fit Assessment</span>
+          </button>
+          <button type="button" class="hero-mode-tab" data-switch-mode="growth">
+            <span class="hero-mode-kicker">Already Running a Business</span>
+            <span class="hero-mode-name">Business Growth Assessment</span>
+          </button>
+        </div>
+
+        <div class="hero-eyebrow-row">
+          <div class="eyebrow-pill" id="heroEyebrow">
+            Personalized Business Discovery & Action Plan
+          </div>
+        </div>
+        <h1 class="hero-title" id="heroTitle">
+          <span class="hero-line-1">Find the Right Business for Your</span>
+          <em>Skills, Time &amp; Income Goal</em>
+        </h1>
+        <p class="hero-subtitle" id="heroSubtitle">
+          Answer 6 practical questions to get 3 tailored business ideas, clear income math, and a step-by-step action plan.
+        </p>
+      </div>
+    </section>
+
+    <!-- DYNAMIC ASSESSMENT / EMAIL GATE / RESULTS ROOT -->
+    <div id="appRoot"></div>
+  </main>
+
+  <!-- REAL MOM SUCCESS STORY POP-UP MODAL (BETWEEN ASSESSMENT SECTIONS) -->
+  <div class="modal-backdrop" id="storyPopupModal">
+    <div class="modal-window story-modal-window" style="max-width: 600px;">
+      <div class="modal-header story-modal-header">
+        <span class="story-tag" id="storyModalTag">Real Mom Story</span>
+        <button type="button" class="btn-ghost-sm story-skip-btn" id="btnSkipStoryModal">Skip</button>
+      </div>
+      <div class="modal-body" style="padding: 22px 26px;">
+        <h3 id="storyModalHeadline" class="story-modal-headline"></h3>
+        <p id="storyModalBody" class="story-modal-body"></p>
+        <div class="story-takeaway-box">
+          <strong style="font-size: 0.8rem; color: var(--forest); display: block; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em;">Key Takeaway</strong>
+          <span id="storyModalTakeaway" style="font-size: 0.92rem; color: var(--dark); line-height: 1.55;"></span>
+        </div>
+        <div id="storyModalMetrics" class="story-metrics" style="margin-bottom: 18px;"></div>
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px;">
+          <span style="font-size: 0.78rem; color: var(--ink-muted); font-style: italic;">
+            Real-world inspiration. Does not influence your quiz results.
+          </span>
+          <button type="button" class="btn-pink" id="btnContinueFromStoryModal" style="padding: 12px 24px;">
+            Continue Assessment
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CALENDLY 1-ON-1 CONSULTATION WITH OYIN MODAL -->
+  <div class="modal-backdrop" id="calendlyModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 900;">Book a 1-on-1 Consultation with Oyin</h3>
+          <p style="font-size: 0.82rem; color: var(--ink-muted);">
+            Review your top matched ideas, reality-check the numbers, and map out your validation & launch plan with Oyin
+          </p>
+        </div>
+        <button type="button" class="btn-ghost-sm" data-close-modal="calendlyModal">Close</button>
+      </div>
+      <div class="modal-body">
+        <div id="calendlyEmbedContainer"></div>
+        <div style="margin-top: 14px; text-align: center;">
+          <a
+            id="calendlyDirectFallbackLink"
+            href="https://calendly.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style="font-size: 0.85rem; font-weight: 700; color: var(--coral-dark);"
+          >
+            Open Oyin's scheduling page in a new tab
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN / INTEGRATIONS & AUDIENCE DATA MODAL -->
+  <div class="modal-backdrop" id="adminModal">
+    <div class="modal-window">
+      <div class="modal-header">
+        <div>
+          <h3 style="font-size: 1.22rem; font-weight: 900;">Vault, Kit, Calendly & Audience Data Hub</h3>
+          <p style="font-size: 0.82rem; color: var(--ink-muted);">
+            Connect your 200+ Google Sheet Vault, Kit check-in emails, Oyin's Calendly link, and view audience insights
+          </p>
+        </div>
+        <button type="button" class="btn-ghost-sm" data-close-modal="adminModal">Close</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- AUDIENCE INSIGHTS SUMMARY -->
+        <div id="adminAudienceInsights" style="background: var(--bg-cream); border: 1.5px solid var(--border-strong); border-radius: var(--radius-md); padding: 16px 18px; margin-bottom: 20px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="font-size: 0.9rem;">Audience Assessment Insights</strong>
+            <span id="adminLeadsCount" style="font-size: 0.8rem; font-weight: 800; color: var(--coral-dark);">0 leads captured</span>
+          </div>
+          <div id="adminAudienceStatsBody" style="font-size: 0.83rem; color: var(--ink-muted);">
+            Complete a test assessment to see top income targets, timelines, hours/week, and most-matched ideas.
+          </div>
+        </div>
+
+        <form id="adminSettingsForm">
+          <!-- 1. GOOGLE SHEETS -->
+          <div class="admin-field-group">
+            <label class="admin-label">1. Google Sheets 200+ Business Profiles URL or ID</label>
+            <p class="admin-help">
+              Set your Google Sheet sharing to <strong>"Anyone with the link can view"</strong> and paste the URL below. All newly discussed Vault ideas (Financial Advisor, Grant Writer, Mortgage Loan Originator, Senior Care Placement, etc.) are automatically merged and can be synced directly into your Google Sheet.
+            </p>
+            <input
+              type="text"
+              id="cfgSheetUrl"
+              class="form-input"
+              placeholder="https://docs.google.com/spreadsheets/d/1abc123.../edit"
+              style="margin-bottom: 8px;"
+            />
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <input
+                type="text"
+                id="cfgSheetTab"
+                class="form-input"
+                placeholder="Tab Name (default: Sheet1)"
+              />
+              <input
+                type="url"
+                id="cfgSheetWriteWebhookUrl"
+                class="form-input"
+                placeholder="Optional Apps Script Webhook URL (for 2-way write)"
+              />
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <button type="button" class="btn-secondary" id="btnExportVaultIdeasCsv" style="padding: 8px 14px; font-size: 0.82rem;">
+                Download All New Ideas CSV (for Google Sheets)
+              </button>
+              <button type="button" class="btn-secondary" id="btnPushNewIdeasToSheet" style="padding: 8px 14px; font-size: 0.82rem;">
+                Sync New Ideas to Google Sheet
+              </button>
+            </div>
+          </div>
+
+          <!-- 2. KIT (CONVERTKIT) -->
+          <div class="admin-field-group">
+            <label class="admin-label">2. Kit (ConvertKit) Email Capture & Automated Check-In Sequence</label>
+            <p class="admin-help">
+              Sends each user's Name, Email, Currency, Income Target, Timeline, Weekly Hours, Check-In Preference, and Top 3 Recommendations as custom fields to Kit so your automated check-in sequence can trigger automatically.
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
+              <input
+                type="text"
+                id="cfgKitFormId"
+                class="form-input"
+                placeholder="Kit Form ID (e.g. 6849201)"
+              />
+              <input
+                type="text"
+                id="cfgKitTagId"
+                class="form-input"
+                placeholder="Optional Kit Check-In Tag ID"
+              />
+            </div>
+            <input
+              type="password"
+              id="cfgKitApiKey"
+              class="form-input"
+              placeholder="Kit Public API Key (from Kit Settings -> Developer)"
+            />
+          </div>
+
+          <!-- 3. CALENDLY 1-ON-1 CONSULTATION WITH OYIN -->
+          <div class="admin-field-group">
+            <label class="admin-label">3. Paid 1-on-1 Consultation with Oyin (Calendly Link)</label>
+            <p class="admin-help">
+              Pre-fills the user's name, email, currency, income target, timeline, and #1 matched idea into Oyin's Calendly booking page.
+            </p>
+            <input
+              type="url"
+              id="cfgCalendlyUrl"
+              class="form-input"
+              placeholder="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
+              style="margin-bottom: 8px;"
+            />
+            <input
+              type="text"
+              id="cfgConsultingTitle"
+              class="form-input"
+              placeholder="Consultation Section Headline"
+            />
+          </div>
+
+          <!-- 4. HYBRID AI STRATEGY PERSONALIZATION -->
+          <div class="admin-field-group">
+            <label class="admin-label">4. Optional AI Personalization Key (Google Gemini or OpenAI)</label>
+            <p class="admin-help">
+              Leave blank to use the built-in Smart Action Plan Generator, or add a Gemini Flash / OpenAI key for live AI-customized notes.
+            </p>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <input
+                type="password"
+                id="cfgGeminiKey"
+                class="form-input"
+                placeholder="Google Gemini API Key (Recommended)"
+              />
+              <input
+                type="password"
+                id="cfgOpenaiKey"
+                class="form-input"
+                placeholder="OpenAI API Key (Optional)"
+              />
+            </div>
+          </div>
+
+          <div id="adminSyncFeedback" style="font-size: 0.86rem; font-weight: 700; margin-bottom: 14px;"></div>
+
+          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; border-top: 1px solid var(--border); padding-top: 16px;">
+            <button type="button" class="btn-secondary" id="btnExportLeadsCsv" style="padding: 10px 16px; font-size: 0.85rem;">
+              Export Assessment & Leads CSV
+            </button>
+            <button type="submit" class="btn-primary" style="padding: 12px 24px;">
+              Save & Sync Vault
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="config.js?v=20261026c"></script>
+  <script src="vault-data.js?v=20261026c"></script>
+  <script src="engine.js?v=20261026c"></script>
+  <script src="growth-engine.js?v=20261026c"></script>
+  <script src="app.js?v=20261026c"></script>
+</body>
+</html>

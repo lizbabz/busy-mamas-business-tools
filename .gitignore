@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+.DS_Store
+data/leads.json
+data/leads.csv
+.vercel
