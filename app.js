@@ -94,7 +94,13 @@
     const isGrowth = state.mode === "growth";
     document.querySelectorAll("[data-switch-mode]").forEach((btn) => {
       const m = btn.getAttribute("data-switch-mode");
-      btn.classList.toggle("active", m === state.mode);
+      const isCurrent = m === state.mode;
+      btn.classList.toggle("active", isCurrent);
+      btn.setAttribute("aria-selected", isCurrent ? "true" : "false");
+      const badge = btn.querySelector(".hero-tab-badge");
+      if (badge) {
+        badge.textContent = isCurrent ? "✓ Active Tool" : "Click to Switch →";
+      }
     });
 
     const brandLogoText = document.getElementById("brandLogoText");

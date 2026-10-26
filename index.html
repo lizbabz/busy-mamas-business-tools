@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,wght@0,800;1,600&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=20261026c" />
+  <link rel="stylesheet" href="styles.css?v=20261026d" />
 </head>
 <body>
   <!-- TOP NAVIGATION (BMN FLOATING PILL STYLE) -->
@@ -55,15 +55,26 @@
       <div class="hero-ambient-orb orb-1"></div>
       <div class="hero-ambient-orb orb-2"></div>
       <div class="hero-inner">
-        <div class="hero-mode-switcher" role="tablist" aria-label="Choose Assessment Tool">
-          <button type="button" class="hero-mode-tab active" data-switch-mode="fit">
-            <span class="hero-mode-kicker">Starting or Pivoting</span>
-            <span class="hero-mode-name">Business Fit Assessment</span>
-          </button>
-          <button type="button" class="hero-mode-tab" data-switch-mode="growth">
-            <span class="hero-mode-kicker">Already Running a Business</span>
-            <span class="hero-mode-name">Business Growth Assessment</span>
-          </button>
+        <div class="hero-mode-container">
+          <div class="hero-mode-prompt">
+            <span class="hero-prompt-kicker">Choose Your Assessment (Click to Switch):</span>
+          </div>
+          <div class="hero-mode-switcher" role="tablist" aria-label="Choose Assessment Tool">
+            <button type="button" class="hero-mode-tab active" data-switch-mode="fit" aria-selected="true">
+              <div class="hero-tab-header">
+                <span class="hero-mode-kicker">Starting or Pivoting</span>
+                <span class="hero-tab-badge">✓ Active Tool</span>
+              </div>
+              <span class="hero-mode-name">Business Fit Assessment</span>
+            </button>
+            <button type="button" class="hero-mode-tab" data-switch-mode="growth" aria-selected="false">
+              <div class="hero-tab-header">
+                <span class="hero-mode-kicker">Already Running a Business</span>
+                <span class="hero-tab-badge">Click to Switch →</span>
+              </div>
+              <span class="hero-mode-name">Business Growth Assessment</span>
+            </button>
+          </div>
         </div>
 
         <div class="hero-eyebrow-row">
@@ -290,10 +301,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261026c"></script>
-  <script src="vault-data.js?v=20261026c"></script>
-  <script src="engine.js?v=20261026c"></script>
-  <script src="growth-engine.js?v=20261026c"></script>
-  <script src="app.js?v=20261026c"></script>
+  <script src="config.js?v=20261026d"></script>
+  <script src="vault-data.js?v=20261026d"></script>
+  <script src="engine.js?v=20261026d"></script>
+  <script src="growth-engine.js?v=20261026d"></script>
+  <script src="app.js?v=20261026d"></script>
 </body>
 </html>
