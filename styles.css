@@ -540,13 +540,6 @@ h1 em, h2 em, .step-title em {
   box-shadow: 0 4px 14px rgba(212, 69, 122, 0.25);
 }
 
-.hero-eyebrow-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin: 0 auto 18px auto;
-}
-
 .eyebrow-pill {
   display: inline-flex;
   align-items: center;

@@ -110,13 +110,6 @@
         : `Business Fit <em>by Busy Mamas</em>`;
     }
 
-    const eyebrow = document.getElementById("heroEyebrow");
-    if (eyebrow) {
-      eyebrow.textContent = isGrowth
-        ? "Business Growth & Profit Checkup"
-        : "Personalized Business Discovery & Action Plan";
-    }
-
     const title = document.getElementById("heroTitle");
     if (title) {
       title.innerHTML = isGrowth
