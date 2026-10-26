@@ -318,6 +318,15 @@ window.PROFESSIONAL_BACKGROUNDS = [
     keywords: ["grant writer", "college admissions", "essay", "kdp", "resume", "medical writer", "author", "nonprofit"]
   },
   {
+    id: "bg-research-academia",
+    label: "Research, Academia & Analysis",
+    title: "Research, Academia & Analysis",
+    sub: "Academic researcher, university faculty/adjunct, clinical data analyst, market researcher, policy analyst, or research coordinator",
+    desc: "Academic researcher, university faculty/adjunct, clinical data analyst, market researcher, policy analyst, or research coordinator",
+    mappedSkills: ["writing", "organization", "tech"],
+    keywords: ["research", "academic", "market research", "grant writer", "data analysis", "literature review", "medical writer", "scientific", "policy", "feasibility", "survey", "benchmarking"]
+  },
+  {
     id: "bg-sales-bizdev",
     label: "Sales, Retail & E-Commerce",
     title: "Sales, Retail & E-Commerce",
@@ -631,6 +640,16 @@ window.ENJOYED_ACTIVITIES = [
     mappedSkills: ["realestate_property"],
     models: ["service", "local-service", "licensed-advisory"],
     keywords: ["co-host", "airbnb", "transaction coordinator", "notary", "mortgage"]
+  },
+  {
+    id: "act-fashion-styling",
+    label: "Shopping, Styling Outfits & Dressing Up",
+    title: "Shopping, Styling Outfits & Dressing Up",
+    sub: "Curating looks, finding great deals, wardrobe styling, shopping for outfits, and helping friends look and feel confident",
+    desc: "Curating looks, finding great deals, wardrobe styling, shopping for outfits, and helping friends look and feel confident",
+    mappedSkills: ["beauty", "design_photo", "home_local"],
+    models: ["local-service", "service"],
+    keywords: ["personal stylist", "wardrobe consultant", "personal shopper", "fashion stylist", "capsule wardrobe", "closet edit", "shopping", "outfit styling"]
   },
   {
     id: "act-digital-design",
@@ -2378,6 +2397,60 @@ window.DEFAULT_VAULT_IDEAS = [
     ],
     quickTestStrategy: "Use the free Meta Ad Library or Google search to find 10 local med-spas, clinics, or e-commerce brands running unoptimized ads (for example, boosting posts with no landing page or missing retargeting). Send a 2-minute Loom audit offering a '$1,250 30-Day Paid Lead Generation Sprint'.",
     first30DaysFocus: "Launch profitable Meta or Google Ad campaigns for your first 2 to 3 clients and transition them onto $1,500 to $2,500/mo ongoing media buying retainers."
+  },
+  {
+    name: "Personal Wardrobe Stylist, Capsule Wardrobe Consultant & Virtual Shopper",
+    category: "Fashion, Styling & Personal Shopping",
+    skills: ["beauty", "design_photo", "home_local"],
+    minHoursWeek: 4,
+    easeOf5k: 4,
+    maxMonthlyIncomePotential: 15000,
+    workStyle: "both",
+    startupCost: 0,
+    incomeModel: "Seasonal Capsule Styling Packages ($350 to $750) or Monthly VIP Retainers ($400 to $900/mo)",
+    avgUnitRevenue: 450,
+    unitLabel: "wardrobe styling packages or shopping retainers",
+    hoursPerUnitPerWeek: 3,
+    description: "Help busy moms, working executives, postpartum women, and professionals refresh their style, edit their closets, and look incredible without the stress of shopping alone. Offer in-person closet audits and local shopping trips, or 100% remote virtual styling with personalized digital lookbooks and direct clickable shopping links.",
+    targetAudience: "Busy professional women, postpartum moms returning to work, wedding attendees, executives, and photo shoot clients",
+    requirements: [
+      "Natural eye for fashion, color palettes, body proportions, and putting together flattering outfits",
+      "Free Canva or Google Slides for creating visual digital lookbooks with clickable shopping links",
+      "4 to 10 flexible hours per week (works in-person on weekends or 100% remote during nap time)"
+    ],
+    tradeoffs: [
+      "Pros: $0 startup cost and zero inventory to buy. You get paid for your style eye and shopping expertise while saving clients hours of fitting-room frustration.",
+      "Tradeoff: In-person shopping requires local travel, but you can package virtual lookbooks and online shopping edits completely from home."
+    ],
+    quickTestStrategy: "Curate a 10-piece seasonal capsule wardrobe lookbook for a specific body type or occasion in Canva. Share it with 5 friends or in local mom groups and offer a '$250 Spring Wardrobe Edit & Clickable Shopping List' to your first 3 test clients.",
+    first30DaysFocus: "Complete 3 closet edits, gather before-and-after photo testimonials, and partner with local boutiques, photographers, and hair stylists for client referrals."
+  },
+  {
+    name: "Independent Market Research, Feasibility & Academic Grant Synthesis Consultant",
+    category: "Research, Academia & Analysis",
+    skills: ["writing", "organization", "tech"],
+    minHoursWeek: 5,
+    easeOf5k: 4,
+    maxMonthlyIncomePotential: 20000,
+    workStyle: "behind-the-scenes",
+    startupCost: 0,
+    incomeModel: "Research Reports & Literature Syntheses ($800 to $2,500) or Monthly B2B Retainers ($1,500 to $3,500/mo)",
+    avgUnitRevenue: 1500,
+    unitLabel: "comprehensive research projects or monthly analysis retainers",
+    hoursPerUnitPerWeek: 4,
+    description: "Turn your love for research, literature reviews, data analysis, and academic writing into high-value B2B projects. Help university professors, startups, non-profits, healthcare researchers, and consulting firms synthesize complex data, conduct competitive market analysis, prepare academic literature reviews, or draft evidence-based policy briefs entirely from home.",
+    targetAudience: "University researchers, private foundations, tech startups, healthcare practices, and management consulting firms",
+    requirements: [
+      "Strong background in academic literature search, qualitative/quantitative analysis, data synthesis, or grant proposal research",
+      "Reliable computer, internet access, and reference management tools (Zotero, Mendeley, Google Scholar)",
+      "5 to 15 quiet behind-the-scenes hours per week on your own schedule with zero live sales calls"
+    ],
+    tradeoffs: [
+      "Pros: 100% flexible, quiet computer work that pays premium professional rates ($800 to $2,500+ per project). Zero social media posting or video creation required.",
+      "Tradeoff: Deliverables require rigorous attention to detail, citation accuracy, and meeting agreed research deadlines."
+    ],
+    quickTestStrategy: "Identify 10 academic faculty, independent research labs, or non-profit directors in your field. Send a tailored introductory note offering a fast 1-week literature review or data synthesis package for an upcoming paper or grant submission.",
+    first30DaysFocus: "Secure 2 initial research or literature synthesis projects ($1,200 to $1,800 each) and establish relationships with 2 university departments or research firms for recurring contract work."
   }
 ];
 
