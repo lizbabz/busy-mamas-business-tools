@@ -779,18 +779,18 @@
     const goalUsd = (Number(goalInCur) || 0) / (cur.rate || 1);
     const fmt = fmtMoney(goalInCur);
     if (isFlashTimeline()) {
-      return `<strong>2-Week Flash Sprint (${fmt} in 14 Days):</strong> We will prioritize fast-turnaround ideas that can generate immediate presales, 50% booking deposits, or starter packages within your next 14 days.`;
+      return `<strong>2-Week Quick-Cash Sprint (${fmt} in 14 Days):</strong> Focuses on simple offers you can launch right away with upfront booking deposits or starter packages.`;
     }
     if (goalUsd <= 2000) {
-      return `<strong>Extra Income Stream (${fmt}/mo):</strong> Great for covering family expenses, savings, or travel. Reachable with weekend local bookings, presale drops, digital orders, or 2 to 3 recurring accounts.`;
+      return `<strong>Starter Extra Income (${fmt}/mo):</strong> Perfect for covering family expenses or savings. Reachable with weekend local bookings, digital products, or 2 to 3 regular clients.`;
     }
     if (goalUsd <= 5500) {
-      return `<strong>Core Vault Milestone (${fmt}/mo):</strong> We will prioritize ideas rated highest for ease of reaching this level through bundled products, local packages, or repeat customers.`;
+      return `<strong>Steady Part-Time Income (${fmt}/mo):</strong> An ideal milestone for moms. Easily reached through steady monthly clients, product bundles, or repeat customers.`;
     }
     if (goalUsd <= 12000) {
-      return `<strong>Full-Income Replacement (${fmt}/mo):</strong> To reach ${fmt}/mo within your weekly hours, we will look for higher-commission transactions, repeat B2B/bulk orders, and scalable packages.`;
+      return `<strong>Full-Time Income (${fmt}/mo):</strong> To hit this goal inside your weekly hours, we focus on higher-value packages, corporate clients, or recurring monthly retainers.`;
     }
-    return `<strong>High-Earning & Licensed Tier (${fmt}/mo):</strong> For targets above ${fmtMoney(12000 * cur.rate)}/mo, our algorithm prioritizes high-commission licensed professions (financial products, mortgage, senior placement, recruiting), government contracting, and scalable assets.`;
+    return `<strong>High-Earning Businesses (${fmt}/mo):</strong> Reaching this level inside a family schedule works best with higher-ticket services, corporate contracts, or specialized licenses (like financial services, grant writing, or recruitment).`;
   }
 
   function computeRecommendations() {
@@ -1141,14 +1141,11 @@
           />
 
           <div class="income-presets">
-            <button type="button" class="preset-btn ${isFlash && g === 1500 ? "active" : ""}" data-flash-preset="1500">
-              ${fmtMoney(1500)} in 14 Days (Flash)
-            </button>
             ${(cur.presets || [])
               .map(
                 (amt) => `
-              <button type="button" class="preset-btn ${!isFlash && g === amt ? "active" : ""}" data-preset="${amt}">
-                ${fmtMoney(amt)}/mo
+              <button type="button" class="preset-btn ${g === amt ? "active" : ""}" data-preset="${amt}">
+                ${fmtMoney(amt)}${isFlash ? " in 14d" : "/mo"}
               </button>
             `
               )
@@ -1156,7 +1153,7 @@
           </div>
 
           <div class="custom-dollar-input-wrap">
-            <span>Or type exact target: ${cur.symbol}</span>
+            <span>Or type exact amount: ${cur.symbol}</span>
             <input
               type="number"
               id="customIncomeInput"

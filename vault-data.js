@@ -5,9 +5,9 @@
  */
 
 window.SUPPORTED_CURRENCIES = [
-  { code: "USD", symbol: "$", label: "$", rate: 1, defaultGoal: 5000, min: 500, max: 50000, step: 250, presets: [1500, 3500, 5000, 10000, 25000] },
-  { code: "GBP", symbol: "£", label: "£", rate: 1, defaultGoal: 5000, min: 500, max: 50000, step: 250, presets: [1500, 3500, 5000, 10000, 25000] },
-  { code: "EUR", symbol: "€", label: "€", rate: 1, defaultGoal: 5000, min: 500, max: 50000, step: 250, presets: [1500, 3500, 5000, 10000, 25000] }
+  { code: "USD", symbol: "$", label: "$ USD", rate: 1, defaultGoal: 5000, min: 500, max: 50000, step: 250, presets: [1500, 3500, 5000, 10000, 25000, 50000] },
+  { code: "GBP", symbol: "£", label: "£ GBP", rate: 1, defaultGoal: 5000, min: 500, max: 50000, step: 250, presets: [1500, 3500, 5000, 10000, 25000, 50000] },
+  { code: "EUR", symbol: "€", label: "€ EUR", rate: 1, defaultGoal: 5000, min: 500, max: 50000, step: 250, presets: [1500, 3500, 5000, 10000, 25000, 50000] }
 ];
 
 /**

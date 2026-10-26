@@ -728,12 +728,12 @@ h1 em, h2 em, .step-title em {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .currency-label-text {
-  font-size: 0.82rem;
-  font-weight: 700;
+  font-size: 0.76rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--mint);
@@ -741,28 +741,28 @@ h1 em, h2 em, .step-title em {
 }
 
 .currency-pill {
-  background: rgba(255, 255, 255, 0.10);
+  background: rgba(255, 255, 255, 0.12);
   border: 1.5px solid rgba(184, 216, 176, 0.4);
   color: var(--white);
   font-weight: 800;
-  font-size: 0.98rem;
+  font-size: 0.86rem;
   font-family: inherit;
-  min-width: 48px;
-  padding: 7px 16px;
+  padding: 6px 14px;
   border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .currency-pill:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.24);
 }
 
 .currency-pill.active {
   background: var(--hot-pink);
   color: var(--white);
   border-color: var(--hot-pink);
-  box-shadow: 0 4px 16px rgba(212, 69, 122, 0.45);
+  box-shadow: 0 4px 14px rgba(212, 69, 122, 0.45);
 }
 
 .income-amount-row {
@@ -838,11 +838,12 @@ h1 em, h2 em, .step-title em {
 .income-presets {
   position: relative;
   z-index: 2;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 auto 18px auto;
+  max-width: 520px;
+  width: 100%;
 }
 
 .preset-btn {
@@ -850,24 +851,27 @@ h1 em, h2 em, .step-title em {
   border: 1.5px solid rgba(184, 216, 176, 0.38);
   color: var(--white);
   font-weight: 700;
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-family: inherit;
-  padding: 9px 18px;
+  padding: 8px 10px;
   border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .preset-btn:hover {
   background: rgba(255, 255, 255, 0.22);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .preset-btn.active {
   background: var(--blush);
   color: var(--forest-dark);
   border-color: var(--blush);
-  box-shadow: 0 6px 20px rgba(245, 198, 208, 0.35);
+  box-shadow: 0 4px 14px rgba(245, 198, 208, 0.35);
 }
 
 .custom-dollar-input-wrap {
@@ -875,43 +879,50 @@ h1 em, h2 em, .step-title em {
   z-index: 2;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   background: rgba(255, 255, 255, 0.12);
   border: 1.5px solid rgba(184, 216, 176, 0.45);
-  padding: 8px 18px;
+  padding: 7px 16px;
   border-radius: var(--radius-pill);
-  font-size: 0.88rem;
+  font-size: 0.84rem;
   font-weight: 600;
   color: var(--mint);
+  margin: 0 auto;
 }
 
 .custom-dollar-input {
-  width: 110px;
-  border: none;
-  background: transparent;
+  width: 90px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 3px 8px;
   outline: none;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 800;
   color: var(--white);
   font-family: inherit;
+  text-align: center;
 }
 
 .tier-insight-banner {
   position: relative;
   z-index: 2;
-  margin-top: 20px;
-  background: var(--white);
+  margin-top: 18px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(184, 216, 176, 0.35);
   border-radius: 16px;
-  padding: 15px 18px;
-  font-size: 0.92rem;
-  color: var(--dark);
-  border-left: 5px solid var(--hot-pink);
+  padding: 12px 16px;
+  font-size: 0.84rem;
+  color: rgba(255, 255, 255, 0.92);
   text-align: left;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  line-height: 1.45;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .tier-insight-banner strong {
-  color: var(--forest);
+  color: var(--blush);
+  font-weight: 800;
 }
 
 /* ============================================================================
@@ -2112,24 +2123,53 @@ h1 em, h2 em, .step-title em {
   }
 
   .income-showcase-box {
-    padding: 22px 16px;
+    padding: 20px 14px;
     border-radius: 20px;
   }
 
   .income-big-number {
-    font-size: 2.55rem;
+    font-size: 2.5rem;
+  }
+
+  .currency-selector-row {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .currency-pill {
+    padding: 5px 12px;
+    font-size: 0.8rem;
+  }
+
+  .income-presets {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin-bottom: 14px;
   }
 
   .preset-btn {
-    padding: 8px 13px;
-    font-size: 0.82rem;
+    padding: 7px 4px;
+    font-size: 0.76rem;
   }
 
   .custom-dollar-input-wrap {
     width: 100%;
+    max-width: 320px;
     justify-content: center;
-    padding: 8px 12px;
-    font-size: 0.82rem;
+    padding: 6px 12px;
+    font-size: 0.78rem;
+  }
+
+  .custom-dollar-input {
+    width: 78px;
+    font-size: 0.88rem;
+  }
+
+  .tier-insight-banner {
+    margin-top: 14px;
+    padding: 11px 13px;
+    font-size: 0.79rem;
+    line-height: 1.4;
   }
 
   .options-grid {
