@@ -256,6 +256,15 @@
       max-width: 940px;
       margin-left: auto;
       margin-right: auto;
+      text-wrap: balance;
+    }
+
+    .hero-hl-part1 {
+      display: inline;
+    }
+
+    .hero-hl-part2 {
+      display: inline;
     }
 
     .hero-sub {
@@ -264,6 +273,10 @@
       max-width: 760px;
       margin: 0 auto 36px;
       line-height: 1.6;
+    }
+
+    .hero-sub-block {
+      display: inline;
     }
 
     .hero-cta-box {
@@ -277,23 +290,25 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: center;
       gap: 20px;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 600;
-      color: var(--ink-muted);
+      color: var(--dark);
       margin-top: 10px;
     }
 
-    .hero-micro-trust span {
+    .hero-micro-trust .trust-item {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
     }
 
-    .hero-micro-trust span::before {
-      content: "✓";
-      color: var(--forest);
-      font-weight: 900;
+    .trust-check-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      display: inline-block;
     }
 
     /* REALITY CHECK SECTION */
@@ -723,9 +738,22 @@
         font-size: 1.85rem;
         line-height: 1.25;
       }
+      .hero-hl-part1 {
+        display: block;
+        margin-bottom: 4px;
+      }
+      .hero-hl-part2 {
+        display: block;
+      }
       .hero-sub {
         font-size: 1.05rem;
         margin-bottom: 26px;
+      }
+      .hero-sub-block {
+        display: block;
+      }
+      .hero-sub-block + .hero-sub-block {
+        margin-top: 10px;
       }
       .btn-pink {
         padding: 14px 22px;
@@ -735,10 +763,13 @@
         text-align: center;
       }
       .hero-micro-trust {
+        display: inline-flex;
         flex-direction: column;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.84rem;
+        align-items: flex-start;
+        text-align: left;
+        margin: 14px auto 0;
+        gap: 9px;
+        font-size: 0.88rem;
       }
       .section-reality {
         padding: 48px 0;
@@ -848,10 +879,12 @@
           Private 90-Minute Strategy Session with Oyin
         </div>
         <h1>
-          Your business is working. But it is asking for too much of your life for the profit you are seeing.
+          <span class="hero-hl-part1">Your business is working.</span>
+          <span class="hero-hl-part2">But it is asking for too much of your life for the profit you are seeing.</span>
         </h1>
         <p class="hero-sub">
-          You should not have to work nights and weekends for income that does not reflect your effort. In 90 minutes together, we restructure what you sell and put a simple plan in place to earn more in less time.
+          <span class="hero-sub-block">You should not have to work nights and weekends for income that does not reflect your effort.</span>
+          <span class="hero-sub-block">In 90 minutes together, we restructure what you sell and put a simple plan in place to earn more in less time.</span>
         </p>
 
         <div class="hero-cta-box">
@@ -859,9 +892,27 @@
             Reserve Your Strategy Session
           </a>
           <div class="hero-micro-trust">
-            <span>Private 1-on-1 on Zoom</span>
-            <span>Pre-Call Financial Audit</span>
-            <span>Written 90-Day Execution Roadmap</span>
+            <span class="trust-item">
+              <svg class="trust-check-icon" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="9" fill="#E9F4E7"/>
+                <path d="M5.5 9.2L7.8 11.5L12.5 6.8" stroke="#2D5A27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Private 1-on-1 on Zoom</span>
+            </span>
+            <span class="trust-item">
+              <svg class="trust-check-icon" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="9" fill="#E9F4E7"/>
+                <path d="M5.5 9.2L7.8 11.5L12.5 6.8" stroke="#2D5A27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Pre-Call Financial Audit</span>
+            </span>
+            <span class="trust-item">
+              <svg class="trust-check-icon" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+                <circle cx="9" cy="9" r="9" fill="#E9F4E7"/>
+                <path d="M5.5 9.2L7.8 11.5L12.5 6.8" stroke="#2D5A27" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <span>Written 90-Day Execution Roadmap</span>
+            </span>
           </div>
         </div>
       </div>
