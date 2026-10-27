@@ -926,44 +926,36 @@
             </li>
           </ul>
 
-          <!-- PRICING OPTIONS (PAY IN FULL VS PAY IN 2) -->
-          <div class="pricing-split-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 620px; margin: 0 auto 28px; text-align: center;">
-            <!-- OPTION 1: PAY IN FULL -->
-            <div style="background: rgba(255, 255, 255, 0.1); border: 2px solid var(--mint); border-radius: 20px; padding: 26px 20px; display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <span style="background: var(--mint); color: var(--forest-dark); font-size: 0.72rem; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; display: inline-block; margin-bottom: 12px; letter-spacing: 0.05em;">Best Value · Single Payment</span>
-                <div style="font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 4px;">CAD $950</div>
-                <div style="font-size: 0.85rem; color: var(--blush); font-weight: 600; margin-bottom: 18px;">One-time payment</div>
-              </div>
-              <a
-                href="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-pink"
-                style="padding: 13px 20px; font-size: 0.95rem; width: 100%; justify-content: center;"
-              >
-                Pay in Full · $950
-              </a>
-            </div>
-
-            <!-- OPTION 2: PAY IN 2 -->
-            <div style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.25); border-radius: 20px; padding: 26px 20px; display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <span style="background: rgba(255, 255, 255, 0.15); color: #fff; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; display: inline-block; margin-bottom: 12px; letter-spacing: 0.05em;">Flexible Split Payment</span>
-                <div style="font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 800; color: var(--mint); line-height: 1.1; margin-bottom: 4px;">2 x $495</div>
-                <div style="font-size: 0.85rem; color: var(--blush); font-weight: 600; margin-bottom: 18px;">$495 today, $495 in 30 days</div>
-              </div>
-              <a
-                href="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-secondary"
-                style="padding: 13px 20px; font-size: 0.95rem; width: 100%; justify-content: center; color: var(--forest-dark); background: #fff;"
-              >
-                Pay in 2 Payments
-              </a>
-            </div>
+          <div class="checkout-price" style="font-family: 'Fraunces', serif; font-size: clamp(2.4rem, 4.4vw, 3.4rem); font-weight: 800; color: var(--mint); margin-bottom: 4px;">
+            CAD $950
           </div>
+          <div class="checkout-price-sub" style="color: var(--blush); font-size: 0.92rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 28px;">
+            One-Time Investment · No Ongoing Contracts
+          </div>
+
+          <a
+            id="stripePayButton"
+            href="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-pink"
+            style="font-size: 1.15rem; padding: 18px 42px; display: inline-flex;"
+          >
+            Reserve Your Intensive Session · CAD $950
+          </a>
+
+          <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 18px; font-size: 0.88rem; color: rgba(255, 255, 255, 0.86); margin-top: 14px;">
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+              <span style="color: var(--mint); font-weight: 900;">✓</span> Secure Checkout via Stripe
+            </span>
+            <span style="display: inline-flex; align-items: center; gap: 6px;">
+              <span style="color: var(--mint); font-weight: 900;">✓</span> Flexible installments available with Klarna & Afterpay
+            </span>
+          </div>
+
+          <p class="checkout-notes" style="margin-top: 22px;">
+            Sessions are strictly limited each month to ensure dedicated preparation and delivery. Choose your date on our calendar immediately after payment.
+          </p>
 
           <p class="checkout-notes">
             Sessions are strictly limited each month to ensure dedicated preparation and delivery. Choose your date on our secure calendar.
