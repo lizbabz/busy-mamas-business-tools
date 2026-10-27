@@ -1601,7 +1601,7 @@
                   : ``
               }
               <button type="button" class="btn-ghost-sm" id="btnStartOverQuiz" style="font-size: 0.82rem; color: var(--ink-muted);">
-                Start Over / Clear All
+                Start Over
               </button>
             </div>
             <button type="button" class="btn-primary" id="btnNextStep">
@@ -2028,7 +2028,7 @@
             Edit My Assessment Answers
           </button>
           <button type="button" class="btn-ghost-sm" id="btnStartOverFromGate">
-            Start Over (Clear All)
+            Start Over
           </button>
         </div>
       </div>
@@ -2496,7 +2496,7 @@
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px;">
         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
           <button type="button" class="btn-secondary" id="btnStartFreshQuiz">
-            Start Over (Clear All Answers)
+            Start Over
           </button>
           <button type="button" class="btn-secondary" id="btnRetakeQuiz">
             Edit My Current Answers
@@ -2675,10 +2675,19 @@
 
           <div class="idea-meta-chips">
             <span class="meta-chip">${idea.category}</span>
-            <span class="meta-chip">${idea.incomeModel}</span>
             <span class="meta-chip">${idea.minHoursPerWeek} to ${idea.optimalHoursPerWeek} hrs/wk</span>
-            <span class="meta-chip">Ease Rating: ${idea.easeOf5k}/5</span>
-            <span class="meta-chip">Buyers: ${idea.targetAudience}</span>
+            <span class="meta-chip">Ease: ${idea.easeOf5k}/5</span>
+          </div>
+
+          <div class="idea-spec-box">
+            <div class="idea-spec-row">
+              <span class="idea-spec-label">Pricing Structure</span>
+              <span class="idea-spec-val">${idea.incomeModel}</span>
+            </div>
+            <div class="idea-spec-row">
+              <span class="idea-spec-label">Ideal Buyers</span>
+              <span class="idea-spec-val">${idea.targetAudience}</span>
+            </div>
           </div>
         </div>
 
@@ -3432,7 +3441,7 @@
                   : ``
               }
               <button type="button" class="btn-ghost-sm" id="btnResetGrowthInline" style="font-size: 0.82rem; color: var(--ink-muted);">
-                Start Over / Clear All
+                Start Over
               </button>
             </div>
             <button type="button" class="btn-primary" id="btnGrowthNext">
@@ -3814,7 +3823,7 @@
             Edit My Assessment Answers
           </button>
           <button type="button" class="btn-ghost-sm" id="btnStartOverGrowthGate">
-            Start Over (Clear All)
+            Start Over
           </button>
         </div>
       </div>
@@ -4327,7 +4336,7 @@
       <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px;">
         <div style="display: flex; flex-wrap: wrap; gap: 10px;">
           <button type="button" class="btn-secondary" id="btnStartFreshGrowthQuiz">
-            Start Over (Clear All Answers)
+            Start Over
           </button>
           <button type="button" class="btn-secondary" id="btnRetakeGrowthQuiz">
             Edit My Current Answers
