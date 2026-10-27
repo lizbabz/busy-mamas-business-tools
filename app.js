@@ -4319,19 +4319,19 @@
               <li>
                 <span style="color: var(--mint); font-weight: 900;">01</span>
                 <div>
-                  <strong>P31 Business Growth Intensive (CAD $950 · One-time):</strong> A focused 90-minute private diagnostic session with Oyin, financial snapshot review, and written 90-day priority execution roadmap.
+                  <strong>P31 Business Growth Intensive (Private Diagnostic):</strong> A focused 90-minute private diagnostic session with Oyin, financial snapshot review, and written 90-day priority execution roadmap.
                 </div>
               </li>
               <li>
                 <span style="color: var(--mint); font-weight: 900;">02</span>
                 <div>
-                  <strong>P31 Growth Circle (CAD $2,500 · 8-Week Cohort):</strong> Facilitated growth cohort for 8 to 10 established women founders with weekly sessions, business diagnostics, peer accountability, and guided implementation.
+                  <strong>P31 Growth Circle (8-Week Cohort):</strong> Facilitated growth cohort for 8 to 10 established women founders with weekly sessions, business diagnostics, peer accountability, and guided implementation.
                 </div>
               </li>
               <li>
                 <span style="color: var(--mint); font-weight: 900;">03</span>
                 <div>
-                  <strong>P31 Strategic Growth Partnership (CAD $3,500 / month):</strong> High-touch private advisory (3-month minimum) for founders navigating major growth decisions, with two monthly advisory sessions and KPI reviews.
+                  <strong>P31 Strategic Growth Partnership (Dedicated Advisory):</strong> High-touch private advisory for founders navigating major growth decisions, with two monthly advisory sessions and KPI reviews.
                 </div>
               </li>
             </ul>
@@ -4344,11 +4344,11 @@
             <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 6px;">
               P31 Growth Intensive
             </h3>
-            <div style="font-size: 1.18rem; font-weight: 800; color: var(--mint); margin-bottom: 12px;">
-              CAD $950 · One-time
+            <div style="font-size: 1.05rem; font-weight: 800; color: var(--mint); margin-bottom: 12px;">
+              Private Diagnostic & 90-Day Roadmap
             </div>
             <p style="font-size: 0.88rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
-              Ready for a focused strategic intervention on your pricing, capacity, and 90-day priorities? Full program requirements and intake details have been sent to your email.
+              Ready for a focused strategic intervention on your pricing, capacity, and 90-day priorities? Full program details and intake criteria have been sent to your email.
             </p>
 
             <a
