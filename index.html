@@ -10,7 +10,7 @@
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=DM+Sans:wght@400;500;600;700&family=Fraunces:ital,wght@0,800;1,600&display=swap"
     rel="stylesheet"
   />
-  <link rel="stylesheet" href="styles.css?v=20261027a" />
+  <link rel="stylesheet" href="styles.css?v=20261027b" />
 </head>
 <body>
   <!-- TOP NAVIGATION (BMN FLOATING PILL STYLE) -->
@@ -217,24 +217,37 @@
               Sends each user's Name, Email, Currency, Income Target, Timeline, Weekly Hours, Check-In Preference, and Top 3 Recommendations as custom fields to Kit so your automated check-in sequence can trigger automatically.
             </p>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 8px;">
-              <input
-                type="text"
-                id="cfgKitFormId"
-                class="form-input"
-                placeholder="Kit Form ID (e.g. 6849201)"
-              />
-              <input
-                type="text"
-                id="cfgKitTagId"
-                class="form-input"
-                placeholder="Optional Kit Check-In Tag ID"
-              />
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: var(--ink-muted); display: block; margin-bottom: 3px;">Business Fit Form ID</label>
+                <input
+                  type="text"
+                  id="cfgKitFitFormId"
+                  class="form-input"
+                  placeholder="10105556"
+                />
+              </div>
+              <div>
+                <label style="font-size: 0.78rem; font-weight: 700; color: var(--ink-muted); display: block; margin-bottom: 3px;">Business Growth Form ID</label>
+                <input
+                  type="text"
+                  id="cfgKitGrowthFormId"
+                  class="form-input"
+                  placeholder="10105554"
+                />
+              </div>
             </div>
             <input
               type="password"
               id="cfgKitApiKey"
               class="form-input"
-              placeholder="Kit Public API Key (from Kit Settings -> Developer)"
+              placeholder="Kit Public API Key"
+              style="margin-bottom: 8px;"
+            />
+            <input
+              type="text"
+              id="cfgKitTagId"
+              class="form-input"
+              placeholder="Optional Kit Check-In Tag ID"
             />
           </div>
 
@@ -296,10 +309,10 @@
     </div>
   </div>
 
-  <script src="config.js?v=20261027a"></script>
-  <script src="vault-data.js?v=20261027a"></script>
-  <script src="engine.js?v=20261027a"></script>
-  <script src="growth-engine.js?v=20261027a"></script>
-  <script src="app.js?v=20261027a"></script>
+  <script src="config.js?v=20261027b"></script>
+  <script src="vault-data.js?v=20261027b"></script>
+  <script src="engine.js?v=20261027b"></script>
+  <script src="growth-engine.js?v=20261027b"></script>
+  <script src="app.js?v=20261027b"></script>
 </body>
 </html>

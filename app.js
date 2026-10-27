@@ -2109,6 +2109,9 @@
         };
         saveLeadToBrowserStorage(leadRecord);
 
+        const fitFormId = state.config.kitFitFormId || state.config.kitFormId || "10105556";
+        const kitKey = state.config.kitApiKey || "KNfaWYKoCU8IZgyhEK_Lag";
+
         try {
           await fetch("/api/subscribe", {
             method: "POST",
@@ -2116,24 +2119,25 @@
             body: JSON.stringify({
               firstName: state.profile.firstName,
               email: state.profile.email,
+              assessmentType: "Business Fit",
               profile: state.profile,
               topIdeas: state.topMatches,
               completedTasks: state.completedTasks,
               config: {
-                kitApiKey: state.config.kitApiKey,
-                kitFormId: state.config.kitFormId,
+                kitApiKey: kitKey,
+                kitFormId: fitFormId,
                 kitTagId: state.config.kitTagId
               }
             })
           });
         } catch (_) {
-          if (state.config.kitApiKey && state.config.kitFormId) {
+          if (kitKey && fitFormId) {
             try {
-              await fetch(`https://api.convertkit.com/v3/forms/${state.config.kitFormId}/subscribe`, {
+              await fetch(`https://api.convertkit.com/v3/forms/${fitFormId}/subscribe`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                  api_key: state.config.kitApiKey,
+                  api_key: kitKey,
                   email: state.profile.email,
                   first_name: state.profile.firstName,
                   fields: {
@@ -3882,6 +3886,9 @@
         };
         saveLeadToBrowserStorage(leadRecord);
 
+        const growthFormId = state.config.kitGrowthFormId || state.config.kitFormId || "10105554";
+        const kitKey = state.config.kitApiKey || "KNfaWYKoCU8IZgyhEK_Lag";
+
         try {
           await fetch("/api/subscribe", {
             method: "POST",
@@ -3903,13 +3910,37 @@
               })),
               completedTasks: state.completedTasks,
               config: {
-                kitApiKey: state.config.kitApiKey,
-                kitFormId: state.config.kitFormId,
+                kitApiKey: kitKey,
+                kitFormId: growthFormId,
                 kitTagId: state.config.kitTagId
               }
             })
           });
-        } catch (_) {}
+        } catch (_) {
+          if (kitKey && growthFormId) {
+            try {
+              await fetch(`https://api.convertkit.com/v3/forms/${growthFormId}/subscribe`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  api_key: kitKey,
+                  email: gp.email,
+                  first_name: gp.firstName,
+                  fields: {
+                    currency: gp.currency,
+                    income_goal: `${gp.currency} ${gp.targetRevenue}/mo`,
+                    timeline: "30-Day Growth Plan",
+                    hours_per_week: String(gp.maxDesiredHours),
+                    check_in_emails: gp.checkInCadence,
+                    top_idea_1: leadRecord.topIdea1,
+                    top_idea_2: leadRecord.topIdea2,
+                    top_idea_3: leadRecord.topIdea3
+                  }
+                })
+              });
+            } catch (_) {}
+          }
+        }
 
         state.growthStep = 8;
         saveUserProgress();
@@ -4482,7 +4513,13 @@
     if (writeWebhookInput) {
       writeWebhookInput.value = state.config.googleSheetWriteWebhookUrl || "";
     }
-    document.getElementById("cfgKitFormId").value = state.config.kitFormId || "";
+    const fitInput = document.getElementById("cfgKitFitFormId");
+    if (fitInput) fitInput.value = state.config.kitFitFormId || state.config.kitFormId || "";
+    const growthInput = document.getElementById("cfgKitGrowthFormId");
+    if (growthInput) growthInput.value = state.config.kitGrowthFormId || "";
+    const oldFormInput = document.getElementById("cfgKitFormId");
+    if (oldFormInput) oldFormInput.value = state.config.kitFormId || "";
+
     document.getElementById("cfgKitApiKey").value = state.config.kitApiKey || "";
     document.getElementById("cfgKitTagId").value = state.config.kitTagId || "";
     document.getElementById("cfgCalendlyUrl").value = state.config.calendlyUrl || "";
@@ -4661,8 +4698,13 @@
         state.config.googleSheetTabName = document.getElementById("cfgSheetTab").value.trim() || "Sheet1";
         state.config.googleSheetWriteWebhookUrl =
           document.getElementById("cfgSheetWriteWebhookUrl")?.value.trim() || "";
-        state.config.kitFormId = document.getElementById("cfgKitFormId").value.trim();
-        state.config.kitApiKey = document.getElementById("cfgKitApiKey").value.trim();
+        const fitVal = document.getElementById("cfgKitFitFormId")?.value.trim();
+        const growthVal = document.getElementById("cfgKitGrowthFormId")?.value.trim();
+        const legacyVal = document.getElementById("cfgKitFormId")?.value.trim();
+        state.config.kitFitFormId = fitVal || legacyVal || "10105556";
+        state.config.kitGrowthFormId = growthVal || "10105554";
+        state.config.kitFormId = fitVal || legacyVal || "10105556";
+        state.config.kitApiKey = document.getElementById("cfgKitApiKey").value.trim() || "KNfaWYKoCU8IZgyhEK_Lag";
         state.config.kitTagId = document.getElementById("cfgKitTagId").value.trim();
         state.config.calendlyUrl = document.getElementById("cfgCalendlyUrl").value.trim();
         state.config.consulting = state.config.consulting || {};

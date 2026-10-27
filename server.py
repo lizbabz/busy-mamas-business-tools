@@ -122,6 +122,7 @@ def save_lead_locally(lead_data: dict):
     file_exists = os.path.exists(LEADS_CSV_PATH)
     fieldnames = [
         "timestamp",
+        "assessmentType",
         "firstName",
         "email",
         "currency",
@@ -156,18 +157,28 @@ def save_lead_locally(lead_data: dict):
 def subscribe_to_kit(first_name: str, email: str, custom_fields: dict, override_cfg: dict = None):
     """Send subscriber + custom fields to Kit (ConvertKit) v3 Forms API."""
     override_cfg = override_cfg or {}
-    api_key = override_cfg.get("kitApiKey") or os.environ.get("KIT_API_KEY", "")
-    form_id = override_cfg.get("kitFormId") or os.environ.get("KIT_FORM_ID", "")
+    api_key = (
+        override_cfg.get("kitApiKey")
+        or os.environ.get("KIT_API_KEY", "")
+        or "KNfaWYKoCU8IZgyhEK_Lag"
+    )
+    form_id = (
+        override_cfg.get("kitFormId")
+        or override_cfg.get("kitFitFormId")
+        or os.environ.get("KIT_FORM_ID", "")
+        or os.environ.get("KIT_FIT_FORM_ID", "")
+        or "10105556"
+    )
     tag_id = override_cfg.get("kitTagId") or os.environ.get("KIT_TAG_ID", "")
 
     if not api_key or not form_id:
         return {"synced": False, "reason": "Kit API Key or Form ID not configured yet (lead saved locally)."}
 
-    url = f"https://api.convertkit.com/v3/forms/{form_id.strip()}/subscribe"
+    url = f"https://api.convertkit.com/v3/forms/{str(form_id).strip()}/subscribe"
     body = {
-        "api_key": api_key.strip(),
-        "email": email.strip(),
-        "first_name": first_name.strip(),
+        "api_key": str(api_key).strip(),
+        "email": str(email).strip(),
+        "first_name": str(first_name).strip(),
         "fields": custom_fields,
     }
     if tag_id:
@@ -183,9 +194,22 @@ def subscribe_to_kit(first_name: str, email: str, custom_fields: dict, override_
         headers={"Content-Type": "application/json", "User-Agent": "MompreneurVaultFinder/1.0"},
         method="POST",
     )
-    with urllib.request.urlopen(req, timeout=10) as resp:
-        resp_json = json.loads(resp.read().decode("utf-8"))
-        return {"synced": True, "response": resp_json}
+
+    try:
+        import ssl
+        ctx = ssl.create_default_context()
+        with urllib.request.urlopen(req, timeout=10, context=ctx) as resp:
+            resp_json = json.loads(resp.read().decode("utf-8"))
+            return {"synced": True, "response": resp_json}
+    except Exception as exc:
+        try:
+            import ssl
+            unverified_ctx = ssl._create_unverified_context()
+            with urllib.request.urlopen(req, timeout=10, context=unverified_ctx) as resp:
+                resp_json = json.loads(resp.read().decode("utf-8"))
+                return {"synced": True, "response": resp_json}
+        except Exception as inner_exc:
+            return {"synced": False, "error": str(inner_exc)}
 
 
 def generate_ai_strategies(profile: dict, top_ideas: list, override_cfg: dict = None):
@@ -389,11 +413,13 @@ class AppHandler(SimpleHTTPRequestHandler):
                 self.send_json({"ok": False, "error": "Please provide a valid email address."}, status=400)
                 return
 
+            assessment_type = body.get("assessmentType") or ("Business Growth" if "Growth" in str(profile.get("skills", "")) else "Business Fit")
             top_names = [i.get("name", "") for i in top_ideas[:3]]
             currency = profile.get("currency", "USD")
             timeline = profile.get("timeline", "3-6 months")
             check_in = profile.get("checkInCadence", "weekly")
             custom_fields = {
+                "assessment_type": assessment_type,
                 "currency": currency,
                 "income_goal": f"{currency} {int(profile.get('incomeGoal', 4000)):,}/mo",
                 "timeline": timeline,
@@ -414,6 +440,7 @@ class AppHandler(SimpleHTTPRequestHandler):
 
             lead_record = {
                 "timestamp": datetime.utcnow().isoformat() + "Z",
+                "assessmentType": assessment_type,
                 "firstName": first_name,
                 "email": email,
                 "currency": currency,

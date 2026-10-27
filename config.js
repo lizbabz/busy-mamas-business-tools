@@ -17,8 +17,10 @@ window.APP_CONFIG = {
   googleSheetTabName: "Sheet1",
 
   // 2. KIT (CONVERTKIT) EMAIL CAPTURE & AUTOMATED CHECK-IN EMAILS
-  kitFormId: "",
-  kitApiKey: "",
+  kitApiKey: "KNfaWYKoCU8IZgyhEK_Lag",
+  kitFormId: "10105556",
+  kitFitFormId: "10105556",
+  kitGrowthFormId: "10105554",
   kitTagId: "",
 
   // 3. OPTIONAL PAID 1-ON-1 CONSULTATIONS WITH OYIN (CALENDLY)
