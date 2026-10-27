@@ -70,11 +70,12 @@
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
-      background: rgba(254, 249, 245, 0.94);
+      z-index: 100;
+      background: rgba(254, 249, 245, 0.96);
       backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
-      padding: 14px 24px;
+      padding: 12px 24px;
     }
 
     .topbar-inner {
@@ -87,18 +88,20 @@
     }
 
     .brand-logo {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       text-decoration: none;
       color: var(--forest-dark);
       font-weight: 700;
       font-size: 0.95rem;
+      flex-shrink: 0;
     }
 
     .brand-logo img {
-      height: 38px;
+      height: 34px;
       width: auto;
+      display: block;
     }
 
     .brand-tag {
@@ -110,6 +113,31 @@
       border-radius: 100px;
       letter-spacing: 0.05em;
       text-transform: uppercase;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .topbar-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--forest);
+      color: #fff;
+      padding: 10px 22px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      text-decoration: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(45, 90, 39, 0.22);
+      transition: all 0.2s ease;
+    }
+
+    .topbar-btn:hover {
+      background: var(--forest-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(45, 90, 39, 0.3);
     }
 
     /* BUTTONS */
@@ -180,6 +208,11 @@
       box-shadow: 0 12px 28px rgba(212, 69, 122, 0.42);
     }
 
+    .checkout-btn {
+      font-size: 1.12rem;
+      padding: 18px 38px;
+    }
+
     /* CONTAINER */
     .container {
       max-width: 1060px;
@@ -217,7 +250,7 @@
     }
 
     .hero h1 {
-      font-size: clamp(2.3rem, 4.6vw, 3.65rem);
+      font-size: clamp(1.85rem, 4.4vw, 3.65rem);
       font-weight: 900;
       margin-bottom: 24px;
       max-width: 940px;
@@ -651,6 +684,132 @@
       font-weight: 700;
       text-decoration: underline;
     }
+
+    /* COMPREHENSIVE MOBILE OPTIMIZATIONS */
+    @media (max-width: 640px) {
+      .topbar {
+        padding: 10px 16px;
+      }
+      .topbar-inner {
+        gap: 10px;
+      }
+      .brand-logo img {
+        height: 28px;
+      }
+      .brand-tag {
+        font-size: 0.72rem;
+        padding: 3px 8px;
+      }
+      .topbar-btn {
+        padding: 8px 14px;
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      .container, .container-narrow {
+        padding: 0 18px;
+      }
+      .hero {
+        padding: 42px 0 36px;
+      }
+      .hero h1 {
+        font-size: 1.85rem;
+        line-height: 1.25;
+      }
+      .hero-sub {
+        font-size: 1.05rem;
+        margin-bottom: 26px;
+      }
+      .btn-pink {
+        padding: 14px 22px;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 340px;
+        text-align: center;
+      }
+      .hero-micro-trust {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.84rem;
+      }
+      .section-reality {
+        padding: 48px 0;
+      }
+      .reality-card {
+        padding: 24px 20px;
+      }
+      .section-sequence {
+        padding: 50px 0;
+      }
+      .sequence-step {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 22px 18px;
+      }
+      .step-badge {
+        width: 46px;
+        height: 46px;
+        font-size: 1.15rem;
+      }
+      .section-criteria {
+        padding: 48px 0;
+      }
+      .criteria-card {
+        padding: 26px 18px;
+      }
+      .section-founder {
+        padding: 50px 0;
+      }
+      .founder-badge-box {
+        padding: 28px 18px;
+      }
+      .section-checkout {
+        padding: 50px 0;
+      }
+      .checkout-wrap {
+        padding: 32px 18px;
+        border-radius: 24px;
+      }
+      .checkout-price {
+        font-size: 2.5rem !important;
+      }
+      #stripePayButton {
+        width: 100% !important;
+        max-width: 340px !important;
+        padding: 16px 20px !important;
+        font-size: 1.02rem !important;
+        text-align: center;
+        box-sizing: border-box;
+      }
+      .section-faq {
+        padding: 50px 0;
+      }
+      .faq-card {
+        padding: 20px 18px;
+      }
+    }
+
+    @media (max-width: 380px) {
+      .topbar {
+        padding: 8px 12px;
+      }
+      .topbar-inner {
+        gap: 6px;
+      }
+      .brand-logo img {
+        height: 24px;
+      }
+      .brand-tag {
+        display: none;
+      }
+      .topbar-btn {
+        padding: 7px 11px;
+        font-size: 0.78rem;
+      }
+      .hero h1 {
+        font-size: 1.65rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -658,12 +817,11 @@
   <!-- TOP BAR -->
   <header class="topbar">
     <div class="topbar-inner">
-      <a href="https://tools.busymamasnetwork.com" class="brand-logo">
-        <img src="https://www.busymamasnetwork.com/logo_new.png" alt="Busy Mamas Network" onerror="this.style.display='none';" />
-        <span>Busy Mamas Network</span>
-        <span class="brand-tag">P31 Suite</span>
+      <a href="https://tools.busymamasnetwork.com" class="brand-logo" aria-label="Busy Mamas Network Home">
+        <img src="https://www.busymamasnetwork.com/logo_new.png" alt="Busy Mamas" onerror="this.style.display='none';" />
+        <span class="brand-tag">P31 Intensive</span>
       </a>
-      <a href="#booking" class="btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+      <a href="#booking" class="topbar-btn">
         Reserve Your Session
       </a>
     </div>
@@ -938,8 +1096,7 @@
             href="https://buy.stripe.com/3cIbJ183L3j7aQh4oq1ck04"
             target="_blank"
             rel="noopener noreferrer"
-            class="btn-pink"
-            style="font-size: 1.15rem; padding: 18px 42px; display: inline-flex;"
+            class="btn-pink checkout-btn"
           >
             Reserve Your Intensive Session
           </a>
