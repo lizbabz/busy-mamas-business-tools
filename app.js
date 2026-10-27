@@ -2112,49 +2112,52 @@
         const fitFormId = state.config.kitFitFormId || state.config.kitFormId || "10105556";
         const kitKey = state.config.kitApiKey || "KNfaWYKoCU8IZgyhEK_Lag";
 
-        try {
-          await fetch("/api/subscribe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              firstName: state.profile.firstName,
-              email: state.profile.email,
-              assessmentType: "Business Fit",
-              profile: state.profile,
-              topIdeas: state.topMatches,
-              completedTasks: state.completedTasks,
-              config: {
-                kitApiKey: kitKey,
-                kitFormId: fitFormId,
-                kitTagId: state.config.kitTagId
-              }
-            })
-          });
-        } catch (_) {
-          if (kitKey && fitFormId) {
-            try {
-              await fetch(`https://api.convertkit.com/v3/forms/${fitFormId}/subscribe`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  api_key: kitKey,
-                  email: state.profile.email,
-                  first_name: state.profile.firstName,
-                  fields: {
-                    currency: state.profile.currency,
-                    income_goal: `${state.profile.currency} ${state.profile.incomeGoal}/mo`,
-                    timeline: state.profile.timeline,
-                    hours_per_week: String(state.profile.hoursPerWeek),
-                    check_in_emails: state.profile.checkInCadence,
-                    top_idea_1: leadRecord.topIdea1,
-                    top_idea_2: leadRecord.topIdea2,
-                    top_idea_3: leadRecord.topIdea3
-                  }
-                })
-              });
-            } catch (_) {}
-          }
-        }
+        const customFields = {
+          assessment_type: "Business Fit",
+          currency: state.profile.currency || "USD",
+          income_goal: `${state.profile.currency || "USD"} ${state.profile.incomeGoal || 4000}/mo`,
+          timeline: state.profile.timeline || "3-6 months",
+          hours_per_week: String(state.profile.hoursPerWeek || ""),
+          startup_budget: String(state.profile.budget || 0),
+          skills: (state.profile.skills || []).join(", "),
+          check_in_emails: state.profile.checkInCadence || "weekly",
+          top_idea_1: leadRecord.topIdea1,
+          top_idea_2: leadRecord.topIdea2,
+          top_idea_3: leadRecord.topIdea3
+        };
+
+        // Guarantee #1: Direct client-side submission to Kit (ConvertKit) public form endpoint
+        const directKitPromise = fetch(`https://api.convertkit.com/v3/forms/${fitFormId}/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            api_key: kitKey,
+            email: state.profile.email,
+            first_name: state.profile.firstName,
+            fields: customFields
+          })
+        }).catch(() => null);
+
+        // Guarantee #2: Server-side API submission for backend persistence & secret authentication
+        const backendPromise = fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: state.profile.firstName,
+            email: state.profile.email,
+            assessmentType: "Business Fit",
+            profile: state.profile,
+            topIdeas: state.topMatches,
+            completedTasks: state.completedTasks,
+            config: {
+              kitApiKey: kitKey,
+              kitFormId: fitFormId,
+              kitTagId: state.config.kitTagId
+            }
+          })
+        }).catch(() => null);
+
+        await Promise.allSettled([directKitPromise, backendPromise]);
 
         state.step = 8;
         saveUserProgress();
@@ -3889,58 +3892,61 @@
         const growthFormId = state.config.kitGrowthFormId || state.config.kitFormId || "10105554";
         const kitKey = state.config.kitApiKey || "KNfaWYKoCU8IZgyhEK_Lag";
 
-        try {
-          await fetch("/api/subscribe", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              firstName: gp.firstName,
-              email: gp.email,
-              assessmentType: "Business Growth",
-              profile: {
-                ...gp,
-                incomeGoal: gp.targetRevenue,
-                timeline: "30-Day Growth Plan",
-                hoursPerWeek: gp.maxDesiredHours
-              },
-              topIdeas: (analysis.priorities || []).map((p) => ({
-                name: p.title,
-                category: p.category,
-                matchScore: 98
-              })),
-              completedTasks: state.completedTasks,
-              config: {
-                kitApiKey: kitKey,
-                kitFormId: growthFormId,
-                kitTagId: state.config.kitTagId
-              }
-            })
-          });
-        } catch (_) {
-          if (kitKey && growthFormId) {
-            try {
-              await fetch(`https://api.convertkit.com/v3/forms/${growthFormId}/subscribe`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  api_key: kitKey,
-                  email: gp.email,
-                  first_name: gp.firstName,
-                  fields: {
-                    currency: gp.currency,
-                    income_goal: `${gp.currency} ${gp.targetRevenue}/mo`,
-                    timeline: "30-Day Growth Plan",
-                    hours_per_week: String(gp.maxDesiredHours),
-                    check_in_emails: gp.checkInCadence,
-                    top_idea_1: leadRecord.topIdea1,
-                    top_idea_2: leadRecord.topIdea2,
-                    top_idea_3: leadRecord.topIdea3
-                  }
-                })
-              });
-            } catch (_) {}
-          }
-        }
+        const customFields = {
+          assessment_type: "Business Growth",
+          currency: gp.currency || "USD",
+          income_goal: `${gp.currency || "USD"} ${gp.targetRevenue || 10000}/mo`,
+          timeline: "30-Day Growth Plan",
+          hours_per_week: String(gp.maxDesiredHours || ""),
+          startup_budget: String(gp.growthBudget || 0),
+          skills: `Growth: ${gp.businessType || "Business"} (${gp.currentRevenue || 0}/mo)`,
+          check_in_emails: gp.checkInCadence || "weekly",
+          top_idea_1: leadRecord.topIdea1,
+          top_idea_2: leadRecord.topIdea2,
+          top_idea_3: leadRecord.topIdea3
+        };
+
+        // Guarantee #1: Direct client-side submission to Kit (ConvertKit) public form endpoint
+        const directKitPromise = fetch(`https://api.convertkit.com/v3/forms/${growthFormId}/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            api_key: kitKey,
+            email: gp.email,
+            first_name: gp.firstName,
+            fields: customFields
+          })
+        }).catch(() => null);
+
+        // Guarantee #2: Server-side API submission for backend persistence & secret authentication
+        const backendPromise = fetch("/api/subscribe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            firstName: gp.firstName,
+            email: gp.email,
+            assessmentType: "Business Growth",
+            profile: {
+              ...gp,
+              incomeGoal: gp.targetRevenue,
+              timeline: "30-Day Growth Plan",
+              hoursPerWeek: gp.maxDesiredHours
+            },
+            topIdeas: (analysis.priorities || []).map((p) => ({
+              name: p.title,
+              category: p.category,
+              matchScore: 98
+            })),
+            completedTasks: state.completedTasks,
+            config: {
+              kitApiKey: kitKey,
+              kitFormId: growthFormId,
+              kitTagId: state.config.kitTagId
+            }
+          })
+        }).catch(() => null);
+
+        await Promise.allSettled([directKitPromise, backendPromise]);
 
         state.growthStep = 8;
         saveUserProgress();
