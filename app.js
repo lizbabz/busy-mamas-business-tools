@@ -2438,56 +2438,53 @@
         </div>
       </div>
 
-      <!-- OPTIONAL PAID 1-ON-1 CONSULTATION WITH OYIN (CALENDLY) -->
-      <div class="consulting-showcase" id="consultingSection">
+      <!-- BLUEPRINT CONFIRMATION & ACTION STEPS -->
+      <div class="consulting-showcase" id="blueprintDeliverySection">
         <div class="consulting-grid">
           <div>
-            <div class="eyebrow-pill" style="background: var(--hot-pink); border-color: var(--hot-pink); color: #fff;">
-              ${consulting.badge || "OPTIONAL 1-ON-1 CONSULTATION WITH OYIN"}
+            <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--dark); font-weight: 800;">
+              YOUR ACTION BLUEPRINT IS IN YOUR INBOX
             </div>
             <h2 style="font-size: clamp(1.75rem, 3.4vw, 2.35rem); font-weight: 900; color: #fff; margin-bottom: 12px;">
-              ${consulting.title}
+              Take Your First Small Step This Week
             </h2>
-            <p style="color: rgba(255,255,255,0.88); font-size: 1rem;">
-              ${consulting.subtitle}
+            <p style="color: rgba(255,255,255,0.88); font-size: 1rem; line-height: 1.6;">
+              We have sent a copy of your top matches, income math, and validation steps directly to your email. You do not need thousands in startup capital or a complicated setup to start. Follow this simple sequence:
             </p>
 
             <ul class="consulting-benefits">
-              ${(consulting.benefits || [])
-                .map(
-                  (b) => `
-                <li>
-                  <span style="color: var(--mint); font-weight: 900;">✓</span>
-                  <span>${b}</span>
-                </li>
-              `
-                )
-                .join("")}
+              <li>
+                <span style="color: var(--mint); font-weight: 900;">1</span>
+                <span><strong>Test Before Spending:</strong> Run the 7-day validation test above to talk to 3 to 5 real potential buyers before spending money on branding or websites.</span>
+              </li>
+              <li>
+                <span style="color: var(--mint); font-weight: 900;">2</span>
+                <span><strong>Protect Your Family Hours:</strong> Cap your initial weekly build to your ~${state.profile.hoursPerWeek} hrs/week target so motherhood remains your top priority.</span>
+              </li>
+              <li>
+                <span style="color: var(--mint); font-weight: 900;">3</span>
+                <span><strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyin will share tactical guidance on pricing, packaging, and client acquisition.</span>
+              </li>
             </ul>
           </div>
 
           <div class="consulting-cta-box">
             <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blush); margin-bottom: 6px;">
-              1-on-1 Strategy with Oyin
+              Confirmation Sent
             </div>
             <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 10px;">
-              Validate & Launch "${state.topMatches[0]?.name || "Your Top Idea"}" With Oyin
+              Results Delivered
             </h3>
-            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.84); margin-bottom: 20px;">
-              Your assessment answers, ${goalFormatted}/mo target, and Top 3 matches are automatically attached to your booking so you and Oyin can dive straight into your action plan.
+            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
+              Check your inbox for your complete assessment report. If you have questions about your top matches, you can reply directly to that email.
             </p>
 
-            <button type="button" class="btn-pink open-calendly-btn" style="width: 100%; margin-bottom: 12px; justify-content: center;">
-              ${consulting.ctaText || "Book a 1-on-1 Consultation with Oyin"}
-            </button>
-
             <a
-              href="${calendlyHref}"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="display: inline-block; color: var(--blush); font-size: 0.86rem; font-weight: 700; text-decoration: underline;"
+              href="mailto:hello@busymamasnetwork.com?subject=Question%20about%20my%20Business%20Fit%20Assessment%20Results"
+              class="btn-pink"
+              style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px;"
             >
-              Or open Oyin's Calendly in a new tab
+              Have a Question? Email Oyin
             </a>
           </div>
         </div>
@@ -2709,18 +2706,15 @@
           ${
             idx === 0
               ? `
-            <div class="inline-upsell-banner">
+            <div class="inline-upsell-banner" style="background: rgba(45, 90, 39, 0.05); border: 1.5px solid var(--border);">
               <div style="flex: 1; min-width: 240px;">
                 <div style="font-weight: 900; font-size: 1.02rem; color: var(--ink);">
-                  Want 1-on-1 guidance from Oyin on "${idea.name}"?
+                  Recommended First Step for "${idea.name}"
                 </div>
                 <div style="font-size: 0.86rem; color: var(--ink-muted);">
-                  Book an optional paid 1-on-1 consultation with Oyin to reality-check your validation plan and map out your first 30 days.
+                  Open the 7-Day Validation Test tab above. Getting feedback from your first 3 prospective buyers gives you immediate clarity before you spend a single dollar.
                 </div>
               </div>
-              <button type="button" class="btn-primary open-calendly-btn" style="padding: 11px 20px; font-size: 0.9rem;">
-                Consult with Oyin
-              </button>
             </div>
           `
               : ""
@@ -4031,18 +4025,15 @@
           ${
             idx === 0
               ? `
-            <div class="inline-upsell-banner">
+            <div class="inline-upsell-banner" style="background: rgba(45, 90, 39, 0.05); border: 1.5px solid var(--border);">
               <div style="flex: 1; min-width: 240px;">
                 <div style="font-weight: 900; font-size: 1.02rem; color: var(--ink);">
-                  Want personal help setting up your packages and pricing with Oyin?
+                  Priority Focus for This Week
                 </div>
                 <div style="font-size: 0.86rem; color: var(--ink-muted);">
-                  Book an optional paid 1-on-1 session with Oyin to map out your packages, prices, and 30-day growth plan together.
+                  Start with the Week 1 Sprint checklist above to fix your primary capacity and pricing bottleneck before taking on more clients.
                 </div>
               </div>
-              <button type="button" class="btn-primary open-calendly-btn" style="padding: 11px 20px; font-size: 0.9rem;">
-                Consult with Oyin
-              </button>
             </div>
           `
               : ""
@@ -4279,56 +4270,66 @@
         </div>
       </div>
 
-      <!-- 6. PAID 1-ON-1 GROWTH CONSULTATION WITH OYIN SHOWCASE -->
-      <div class="consulting-showcase">
+      <!-- 6. P31 BUSINESS GROWTH SUITE (DIAGNOSTIC, COHORT & ADVISORY) -->
+      <div class="consulting-showcase" id="p31SuiteSection">
         <div class="consulting-grid">
           <div>
-            <div class="eyebrow-pill" style="background: var(--hot-pink); border-color: var(--hot-pink); color: #fff;">
-              1-ON-1 BUSINESS GROWTH SESSION · OPTIONAL PAID SUPPORT
+            <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--dark); font-weight: 800;">
+              THE P31 BUSINESS GROWTH SUITE · FOR ESTABLISHED FOUNDERS
             </div>
             <h2 style="font-size: clamp(1.75rem, 3.4vw, 2.35rem); font-weight: 900; color: #fff; margin-bottom: 12px;">
-              Map Out Your Packages, Pricing & Next 30 Days With Oyin
+              Three Pathways With Clear Boundaries & Natural Progression
             </h2>
-            <p style="color: rgba(255,255,255,0.88); font-size: 1rem;">
-              You do not have to figure out your next stage of growth by yourself. In a focused 1-on-1 strategy session, Oyin will look at what you currently sell, help you price your packages for real profit, and walk you through your 30-day plan step by step.
+            <p style="color: rgba(255,255,255,0.88); font-size: 1rem; line-height: 1.6;">
+              When your business is generating revenue but hitting capacity, pricing, or operational ceilings, random hustle advice does not work. The P31 suite provides focused strategic interventions designed for established women business owners:
             </p>
+
             <ul class="consulting-benefits">
               <li>
-                <span style="color: var(--mint); font-weight: 900;">✓</span>
-                <span><strong>Better Packages & Pricing:</strong> Turn low-profit custom orders into simple 3-option packages, bundles, or monthly plans.</span>
+                <span style="color: var(--mint); font-weight: 900;">01</span>
+                <div>
+                  <strong>P31 Business Growth Intensive (CAD $950 · One-time):</strong> A focused 90-minute private diagnostic session with Oyin, financial snapshot review, and written 90-day priority roadmap. No implementation included.
+                </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">✓</span>
-                <span><strong>Steady Customers & Repeat Sales:</strong> Set up your past-customer check-in, local partner referrals, or paid ads plan.</span>
+                <span style="color: var(--mint); font-weight: 900;">02</span>
+                <div>
+                  <strong>P31 Growth Circle (CAD $2,500 · 8-Week Cohort):</strong> Facilitated growth cohort for 8 to 10 established women founders with weekly sessions, business diagnostics, peer accountability, and guided implementation.
+                </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">✓</span>
-                <span><strong>Time-Saving Routine:</strong> Simplify your booking link, boundaries, and weekly work blocks to stay under ${m.maxDesiredHours} hrs/week.</span>
+                <span style="color: var(--mint); font-weight: 900;">03</span>
+                <div>
+                  <strong>P31 Strategic Growth Partnership (CAD $3,500 / month):</strong> High-touch private advisory (3-month minimum) for founders navigating major growth decisions, with two monthly advisory sessions and KPI reviews.
+                </div>
               </li>
             </ul>
           </div>
 
           <div class="consulting-cta-box">
             <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blush); margin-bottom: 6px;">
-              1-on-1 Strategy Session with Oyin
+              Diagnostic Entry Point
             </div>
-            <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 10px;">
-              Ready to Add +${fmtMoney(m.revenueGap)}/Mo?
+            <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 6px;">
+              P31 Growth Intensive
             </h3>
-            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.84); margin-bottom: 20px;">
-              Your growth report, current sales (${fmtMoney(m.currentRev)}/mo), and 30-day plan are automatically shared with Oyin when you book.
+            <div style="font-size: 1.18rem; font-weight: 800; color: var(--mint); margin-bottom: 12px;">
+              CAD $950 · One-time
+            </div>
+            <p style="font-size: 0.88rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
+              Ready for a focused strategic intervention on your pricing, capacity, and 90-day priorities? Full program requirements and intake details have been sent to your email.
             </p>
-            <button type="button" class="btn-pink open-calendly-btn" style="width: 100%; margin-bottom: 12px; justify-content: center;">
-              Book a 1-on-1 Consultation with Oyin
-            </button>
+
             <a
-              href="${calendlyHref}"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="display: inline-block; color: var(--blush); font-size: 0.86rem; font-weight: 700; text-decoration: underline;"
+              href="mailto:hello@busymamasnetwork.com?subject=P31%20Business%20Growth%20Intensive%20Inquiry"
+              class="btn-pink"
+              style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px;"
             >
-              Or open Oyin's Calendly in a new tab
+              Inquire About the P31 Intensive
             </a>
+            <p style="font-size: 0.8rem; color: rgba(255,255,255,0.72); margin: 0;">
+              Inquiries reviewed within 1 business day.
+            </p>
           </div>
         </div>
       </div>
