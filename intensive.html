@@ -543,6 +543,10 @@
       .checkout-wrap {
         padding: 36px 22px;
       }
+      .pricing-split-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
     }
 
     .checkout-wrap h2 {
@@ -660,7 +664,7 @@
         <span class="brand-tag">P31 Suite</span>
       </a>
       <a href="#booking" class="btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
-        Reserve Session
+        Reserve Your Session
       </a>
     </div>
   </header>
@@ -681,7 +685,7 @@
 
         <div class="hero-cta-box">
           <a href="#booking" class="btn-pink">
-            Reserve Your 90-Minute Intensive · CAD $950
+            Reserve Your Strategy Session
           </a>
           <div class="hero-micro-trust">
             <span>Private 1-on-1 on Zoom</span>
@@ -773,9 +777,9 @@
           <div class="sequence-step">
             <div class="step-badge">4</div>
             <div class="step-content">
-              <h3>Direct Post-Session Clarification Window</h3>
+              <h3>7-Day Implementation Q&A Support</h3>
               <p>
-                You have a direct messaging window with me after receiving your roadmap. You can ask follow-up questions and get quick feedback as you begin putting your new pricing and schedule into practice.
+                You receive 7 days of direct email follow-up access with me after your roadmap is delivered. You can ask questions, get feedback on your new packages, and ensure you feel 100% confident executing your plan.
               </p>
             </div>
           </div>
@@ -844,14 +848,30 @@
       <div class="container">
         <div class="founder-grid">
           <div class="founder-badge-box">
-            <div class="founder-avatar-icon">O</div>
-            <h3 style="font-size: 1.5rem; margin-bottom: 6px;">Oyin Babatunde</h3>
-            <p style="font-size: 0.92rem; font-weight: 700; color: var(--hot-pink); margin-bottom: 14px;">
+            <img
+              src="oyin.jpg"
+              alt="Oyindamola Babatunde"
+              style="width: 140px; height: 140px; border-radius: 50%; object-fit: cover; object-position: center 15%; border: 3px solid var(--forest); box-shadow: 0 8px 24px rgba(45,90,39,0.22); margin: 0 auto 16px; display: block;"
+            />
+            <h3 style="font-size: 1.5rem; margin-bottom: 4px;">Oyindamola Babatunde</h3>
+            <p style="font-size: 0.9rem; font-weight: 700; color: var(--hot-pink); margin-bottom: 16px;">
               Founder, Busy Mamas Network & Strategic Advisor
             </p>
-            <p style="font-size: 0.88rem; line-height: 1.5; color: var(--ink-muted);">
-              Helping women founders build high-margin businesses designed around family boundaries.
-            </p>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; text-align: left; font-size: 0.88rem; color: var(--dark); border-top: 1px solid var(--border); padding-top: 16px;">
+              <div style="display: flex; align-items: flex-start; gap: 8px;">
+                <span style="color: var(--forest); font-weight: 900; line-height: 1.3;">✓</span>
+                <span><strong>9+ Years</strong> in digital marketing, SaaS growth & entrepreneurship</span>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 8px;">
+                <span style="color: var(--forest); font-weight: 900; line-height: 1.3;">✓</span>
+                <span><strong>Multi-Six-Figure</strong> revenue and customer acquisition campaigns</span>
+              </div>
+              <div style="display: flex; align-items: flex-start; gap: 8px;">
+                <span style="color: var(--forest); font-weight: 900; line-height: 1.3;">✓</span>
+                <span><strong>Founder & CEO</strong> of Busy Mamas Network, an active sisterhood supporting hundreds of ambitious mothers</span>
+              </div>
+            </div>
           </div>
 
           <div class="founder-text">
@@ -879,8 +899,9 @@
             Private 1-on-1 Strategic Intervention
           </div>
           <h2>P31 Business Growth Intensive</h2>
-          <div class="checkout-price">CAD $950</div>
-          <div class="checkout-price-sub">One-Time Investment · No Ongoing Contracts</div>
+          <p style="color: rgba(255, 255, 255, 0.88); max-width: 580px; margin: 0 auto 28px; font-size: 1.05rem;">
+            A focused strategic intervention to fix your pricing, protect your family time, and hand you a written 90-day execution plan.
+          </p>
 
           <ul class="checkout-deliverables">
             <li>
@@ -897,7 +918,7 @@
             </li>
             <li>
               <span class="chk">✓</span>
-              <span><strong>Direct Clarification Follow-Up:</strong> A private follow-up window with Oyin to answer questions as you implement.</span>
+              <span><strong>7-Day Implementation Q&A Support:</strong> Direct email access with Oyin for 7 days after roadmap delivery to ask questions as you execute.</span>
             </li>
             <li>
               <span class="chk">✓</span>
@@ -905,15 +926,44 @@
             </li>
           </ul>
 
-          <a
-            href="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="btn-pink"
-            style="font-size: 1.15rem; padding: 18px 40px; display: inline-flex;"
-          >
-            Book Your Intensive Session · CAD $950
-          </a>
+          <!-- PRICING OPTIONS (PAY IN FULL VS PAY IN 2) -->
+          <div class="pricing-split-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 620px; margin: 0 auto 28px; text-align: center;">
+            <!-- OPTION 1: PAY IN FULL -->
+            <div style="background: rgba(255, 255, 255, 0.1); border: 2px solid var(--mint); border-radius: 20px; padding: 26px 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <span style="background: var(--mint); color: var(--forest-dark); font-size: 0.72rem; font-weight: 900; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; display: inline-block; margin-bottom: 12px; letter-spacing: 0.05em;">Best Value · Single Payment</span>
+                <div style="font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 800; color: #fff; line-height: 1.1; margin-bottom: 4px;">CAD $950</div>
+                <div style="font-size: 0.85rem; color: var(--blush); font-weight: 600; margin-bottom: 18px;">One-time payment</div>
+              </div>
+              <a
+                href="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-pink"
+                style="padding: 13px 20px; font-size: 0.95rem; width: 100%; justify-content: center;"
+              >
+                Pay in Full · $950
+              </a>
+            </div>
+
+            <!-- OPTION 2: PAY IN 2 -->
+            <div style="background: rgba(255, 255, 255, 0.05); border: 1.5px solid rgba(255, 255, 255, 0.25); border-radius: 20px; padding: 26px 20px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <span style="background: rgba(255, 255, 255, 0.15); color: #fff; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 100px; display: inline-block; margin-bottom: 12px; letter-spacing: 0.05em;">Flexible Split Payment</span>
+                <div style="font-family: 'Fraunces', serif; font-size: 2.3rem; font-weight: 800; color: var(--mint); line-height: 1.1; margin-bottom: 4px;">2 x $495</div>
+                <div style="font-size: 0.85rem; color: var(--blush); font-weight: 600; margin-bottom: 18px;">$495 today, $495 in 30 days</div>
+              </div>
+              <a
+                href="https://calendly.com/nvmbrmedia/strategy-session-with-oyin"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-secondary"
+                style="padding: 13px 20px; font-size: 0.95rem; width: 100%; justify-content: center; color: var(--forest-dark); background: #fff;"
+              >
+                Pay in 2 Payments
+              </a>
+            </div>
+          </div>
 
           <p class="checkout-notes">
             Sessions are strictly limited each month to ensure dedicated preparation and delivery. Choose your date on our secure calendar.
@@ -955,7 +1005,7 @@
           <div class="faq-card">
             <h3>What happens if I have questions while implementing my roadmap?</h3>
             <p>
-              You receive a direct clarification follow-up window after your written roadmap is delivered so you can ask questions, get feedback on your new pricing, and execute with complete confidence.
+              You receive 7 days of direct email follow-up access with Oyin after your written roadmap is delivered so you can ask questions, get feedback on your new pricing, and execute with complete confidence.
             </p>
           </div>
         </div>
