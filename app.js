@@ -4319,7 +4319,7 @@
               <li>
                 <span style="color: var(--mint); font-weight: 900;">01</span>
                 <div>
-                  <strong>P31 Business Growth Intensive (CAD $950 · One-time):</strong> A focused 90-minute private diagnostic session with Oyin, financial snapshot review, and written 90-day priority roadmap. No implementation included.
+                  <strong>P31 Business Growth Intensive (CAD $950 · One-time):</strong> A focused 90-minute private diagnostic session with Oyin, financial snapshot review, and written 90-day priority execution roadmap.
                 </div>
               </li>
               <li>
