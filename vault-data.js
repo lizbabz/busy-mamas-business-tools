@@ -1484,7 +1484,7 @@ window.DEFAULT_VAULT_IDEAS = [
     avgUnitRevenue: 1200,
     unitLabel: "coaching clients or strategy packages",
     hoursPerUnitPerWeek: 1.2,
-    description: "Help aspiring founders, side-hustlers, and local small business owners validate their offers, price profitably, set up simple marketing systems, and hit their revenue milestones through structured 1-on-1 sessions or small-group cohorts.",
+    description: "Help aspiring founders, ambitious mothers, and local small business owners validate their offers, price profitably, set up simple marketing systems, and hit their revenue milestones through structured 1-on-1 sessions or small-group cohorts.",
     targetAudience: "New business owners, women launching second income streams, and brick-and-mortar or service founders",
     requirements: [
       "Real-world experience building a business, managing P&L/operations, or leading growth projects",

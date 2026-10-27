@@ -4312,7 +4312,7 @@
               Three Pathways With Clear Boundaries & Natural Progression
             </h2>
             <p style="color: rgba(255,255,255,0.88); font-size: 1rem; line-height: 1.6;">
-              When your business is generating revenue but hitting capacity, pricing, or operational ceilings, random hustle advice does not work. The P31 suite provides focused strategic interventions designed for established women business owners:
+              When your business is generating revenue but hitting capacity, pricing, or operational ceilings, generic business advice does not work. The P31 suite provides focused strategic interventions designed for established women business owners:
             </p>
 
             <ul class="consulting-benefits">
