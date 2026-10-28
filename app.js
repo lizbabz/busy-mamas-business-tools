@@ -76,6 +76,7 @@
   }
 
   const state = {
+    view: "home", // "home" (Portal Landing / Home Screen) or "assessment" (Active Assessment)
     mode: "fit", // "fit" (Business Fit) or "growth" (Business Growth Assessment)
     step: 1, // 1..6: 6-Step Deep-Fit Assessment, 7: Name & Email Gate, 8: Recommendations & Action Plan
     growthStep: 1, // 1..6: 6-Step Growth Diagnostic, 7: Name & Email Gate, 8: Growth Findings & 30-Day Plan
@@ -107,23 +108,42 @@
   };
 
   function updateModeHeroAndNav() {
+    const isHome = state.view === "home";
     const isGrowth = state.mode === "growth";
-    document.querySelectorAll("[data-switch-mode]").forEach((btn) => {
-      const m = btn.getAttribute("data-switch-mode");
-      const isCurrent = m === state.mode;
-      btn.classList.toggle("active", isCurrent);
-      btn.setAttribute("aria-selected", isCurrent ? "true" : "false");
-      const badge = btn.querySelector(".hero-tab-badge");
-      if (badge) {
-        badge.textContent = isCurrent ? "✓ Active Tool" : "Click to Switch →";
-      }
-    });
+
+    const topNavHomeBtn = document.getElementById("topNavHomeBtn");
+    if (topNavHomeBtn) {
+      topNavHomeBtn.style.display = isHome ? "none" : "inline-flex";
+    }
+
+    const topModePills = document.getElementById("topModePills");
+    if (topModePills) {
+      topModePills.style.display = isHome ? "none" : "inline-flex";
+      topModePills.querySelectorAll("[data-switch-mode]").forEach((btn) => {
+        const m = btn.getAttribute("data-switch-mode");
+        const isCurrent = m === state.mode;
+        btn.classList.toggle("active", isCurrent);
+        btn.setAttribute("aria-selected", isCurrent ? "true" : "false");
+      });
+    }
 
     const brandLogoText = document.getElementById("brandLogoText");
     if (brandLogoText) {
-      brandLogoText.innerHTML = isGrowth
-        ? `Business Growth <em>by Busy Mamas</em>`
-        : `Business Fit <em>by Busy Mamas</em>`;
+      if (isHome) {
+        brandLogoText.innerHTML = `Business Tools <em>by Busy Mamas</em>`;
+      } else {
+        brandLogoText.innerHTML = isGrowth
+          ? `Business Growth <em>by Busy Mamas</em>`
+          : `Business Fit <em>by Busy Mamas</em>`;
+      }
+    }
+
+    const btnHeroSwitch = document.getElementById("btnHeroSwitchTool");
+    if (btnHeroSwitch) {
+      btnHeroSwitch.textContent = isGrowth
+        ? "Switch to Business Fit Assessment →"
+        : "Switch to Business Growth Assessment →";
+      btnHeroSwitch.setAttribute("data-switch-to", isGrowth ? "fit" : "growth");
     }
 
     const title = document.getElementById("heroTitle");
@@ -141,9 +161,27 @@
     }
   }
 
+  function navigateToHome() {
+    state.view = "home";
+    const url = new URL(window.location.href);
+    url.searchParams.delete("mode");
+    url.searchParams.delete("view");
+    try {
+      history.pushState({ view: "home" }, "", url.pathname + (url.search ? url.search : ""));
+    } catch (_) {}
+    updateModeHeroAndNav();
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function navigateToAssessment(newMode) {
+    switchToolMode(newMode);
+  }
+
   function switchToolMode(newMode) {
     const target = newMode === "growth" ? "growth" : "fit";
     state.mode = target;
+    state.view = "assessment";
     state.validationError = "";
     state.limitNotice = "";
     if (target === "growth") {
@@ -157,10 +195,214 @@
     } else {
       state.profile.currency = state.growthProfile.currency || state.profile.currency || "USD";
     }
+    const url = new URL(window.location.href);
+    url.searchParams.set("mode", target);
+    try {
+      history.pushState({ view: "assessment", mode: target }, "", url.toString());
+    } catch (_) {}
     updateModeHeroAndNav();
     saveUserProgress();
     render();
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function renderHomeScreen() {
+    const hasFitProgress =
+      (state.step > 1 && state.step <= 6) ||
+      (state.profile.skills && state.profile.skills.length > 0) ||
+      (state.profile.backgrounds && state.profile.backgrounds.length > 0) ||
+      Boolean(state.profile.timeline);
+    const isFitComplete = state.step >= 8 && state.topMatches && state.topMatches.length > 0;
+
+    const hasGrowthProgress =
+      (state.growthStep > 1 && state.growthStep <= 6) ||
+      Boolean(state.growthProfile.businessType) ||
+      Boolean(state.growthProfile.revenueStageId);
+    const isGrowthComplete = state.growthStep >= 8 && Boolean(state.growthAnalysis);
+
+    return `
+      <div class="home-screen-shell">
+        <section class="home-hero">
+          <div class="hero-ambient-orb orb-1"></div>
+          <div class="hero-ambient-orb orb-2"></div>
+          <div class="home-hero-inner">
+            <div class="home-badge-kicker">
+              <span>Busy Mamas Network · Free Business Tools</span>
+            </div>
+            <h1 class="home-hero-title">
+              Business Clarity Built for the
+              <em>Realities of Motherhood</em>
+            </h1>
+            <p class="home-hero-subtitle">
+              Building a business as a mother requires a different playbook. You need real income without sacrificing nap times, family dinners, or your peace of mind. Choose the assessment that matches your season right now:
+            </p>
+          </div>
+        </section>
+
+        <div class="home-tools-grid">
+          <!-- TOOL 1: BUSINESS FIT -->
+          <div class="home-tool-card fit-card" id="homeCardFit">
+            <div class="home-tool-top">
+              <div class="home-tool-badges">
+                <span class="home-tag-pill tag-pink">Starting or Pivoting</span>
+                <span class="home-time-pill">~4 min assessment</span>
+              </div>
+              <h2 class="home-tool-title">Business Fit Assessment</h2>
+              <p class="home-tool-hook">
+                Find the right business model for your exact professional background, schedule rhythm, and monthly income target.
+              </p>
+            </div>
+
+            <div class="home-tool-features">
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>3 Curated Business Matches:</strong> Filtered from 200+ mom-tested business models to match your available weekly hours.</span>
+              </div>
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>Clear Revenue Math:</strong> Exact pricing tiers, client capacity, and realistic timelines to hit your income goal.</span>
+              </div>
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>7-Day Validation Sprint:</strong> A step-by-step test you can run from your phone without spending money on websites or ads.</span>
+              </div>
+            </div>
+
+            <div class="home-tool-action">
+              ${
+                isFitComplete
+                  ? `<button type="button" class="btn-pink home-cta-btn" data-action="resume-fit">
+                      View Your Top 3 Matches &amp; Plan →
+                    </button>
+                    <button type="button" class="home-restart-link" data-action="start-fresh-fit">
+                      or retake assessment from scratch
+                    </button>`
+                  : hasFitProgress
+                  ? `<button type="button" class="btn-pink home-cta-btn" data-action="resume-fit">
+                      Resume Assessment (Section ${state.step} of 6) →
+                    </button>
+                    <button type="button" class="home-restart-link" data-action="start-fresh-fit">
+                      or start over fresh
+                    </button>`
+                  : `<button type="button" class="btn-pink home-cta-btn" data-action="start-fit">
+                      Start Business Fit Assessment →
+                    </button>`
+              }
+            </div>
+          </div>
+
+          <!-- TOOL 2: BUSINESS GROWTH -->
+          <div class="home-tool-card growth-card" id="homeCardGrowth">
+            <div class="home-tool-top">
+              <div class="home-tool-badges">
+                <span class="home-tag-pill tag-forest">Already in Business</span>
+                <span class="home-time-pill">~3 min diagnostic</span>
+              </div>
+              <h2 class="home-tool-title">Business Growth Assessment</h2>
+              <p class="home-tool-hook">
+                Diagnose what is capping your sales, unlock your revenue bottleneck, and earn more without working more hours.
+              </p>
+            </div>
+
+            <div class="home-tool-features">
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>Primary Bottleneck Diagnosis:</strong> Pinpoints whether your offer, lead generation, sales conversion, or delivery is holding you back.</span>
+              </div>
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>Profit &amp; Capacity Check:</strong> Pricing reality check and fulfillment protection tailored specifically to your business type.</span>
+              </div>
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>Prioritized 30-Day Plan:</strong> 3 high-leverage action items to unlock higher revenue inside your current weekly hours.</span>
+              </div>
+            </div>
+
+            <div class="home-tool-action">
+              ${
+                isGrowthComplete
+                  ? `<button type="button" class="btn-primary home-cta-btn" data-action="resume-growth">
+                      View Your Growth Diagnosis &amp; 30-Day Plan →
+                    </button>
+                    <button type="button" class="home-restart-link" data-action="start-fresh-growth">
+                      or retake diagnostic from scratch
+                    </button>`
+                  : hasGrowthProgress
+                  ? `<button type="button" class="btn-primary home-cta-btn" data-action="resume-growth">
+                      Resume Assessment (Section ${state.growthStep} of 6) →
+                    </button>
+                    <button type="button" class="home-restart-link" data-action="start-fresh-growth">
+                      or start over fresh
+                    </button>`
+                  : `<button type="button" class="btn-primary home-cta-btn" data-action="start-growth">
+                      Start Business Growth Assessment →
+                    </button>`
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- TRUST & REASSURANCE BANNER -->
+        <div class="home-trust-banner">
+          <div class="home-trust-pill">
+            <strong>100% Free &amp; Private</strong>
+            <span>No credit card required. Your diagnostic answers remain confidential.</span>
+          </div>
+          <div class="home-trust-divider"></div>
+          <div class="home-trust-pill">
+            <strong>Built for Mom Hours</strong>
+            <span>Every calculation is built around nap times, school runs, and real family rhythms.</span>
+          </div>
+          <div class="home-trust-divider"></div>
+          <div class="home-trust-pill">
+            <strong>Zero Guesswork</strong>
+            <span>Get clear numbers, realistic requirements, and honest step-by-step guidance.</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function bindHomeScreenEvents() {
+    document.querySelectorAll("[data-action='start-fit'], [data-action='resume-fit']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navigateToAssessment("fit");
+      });
+    });
+
+    document.querySelectorAll("[data-action='start-fresh-fit']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const keepCurrency = state.profile.currency || "USD";
+        state.step = 1;
+        state.shownStories = {};
+        state.profile = getFreshProfile(keepCurrency);
+        state.topMatches = [];
+        state.playbooks = [];
+        state.runnerUpMatches = [];
+        state.runnerUpPlaybooks = [];
+        saveUserProgress();
+        navigateToAssessment("fit");
+      });
+    });
+
+    document.querySelectorAll("[data-action='start-growth'], [data-action='resume-growth']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        navigateToAssessment("growth");
+      });
+    });
+
+    document.querySelectorAll("[data-action='start-fresh-growth']").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const keepCurrency = state.growthProfile.currency || "USD";
+        state.growthStep = 1;
+        state.growthShownStories = {};
+        state.growthProfile = getFreshGrowthProfile(keepCurrency);
+        state.growthAnalysis = null;
+        saveUserProgress();
+        navigateToAssessment("growth");
+      });
+    });
   }
 
   function resetAssessmentAndStartOver() {
@@ -862,8 +1104,16 @@
 
     updateModeHeroAndNav();
 
-    const activeStep = state.mode === "growth" ? state.growthStep : state.step;
     const heroHeader = document.getElementById("heroHeader") || document.querySelector(".hero-header");
+
+    if (state.view === "home") {
+      if (heroHeader) heroHeader.style.display = "none";
+      root.innerHTML = renderHomeScreen();
+      bindHomeScreenEvents();
+      return;
+    }
+
+    const activeStep = state.mode === "growth" ? state.growthStep : state.step;
     if (heroHeader) {
       heroHeader.style.display = activeStep === 1 ? "block" : "none";
     }
@@ -4961,12 +5211,51 @@
     const modeParam = urlParams.get("mode");
     if (modeParam === "growth" || modeParam === "fit") {
       state.mode = modeParam;
+      state.view = "assessment";
+    } else if (urlParams.get("view") === "assessment") {
+      state.view = "assessment";
+    } else {
+      state.view = "home";
     }
 
     document.querySelectorAll("[data-switch-mode]").forEach((btn) => {
       btn.addEventListener("click", () => {
         switchToolMode(btn.getAttribute("data-switch-mode"));
       });
+    });
+
+    const topNavHomeBtn = document.getElementById("topNavHomeBtn");
+    if (topNavHomeBtn) {
+      topNavHomeBtn.addEventListener("click", () => {
+        navigateToHome();
+      });
+    }
+
+    const btnHeroBackHome = document.getElementById("btnHeroBackHome");
+    if (btnHeroBackHome) {
+      btnHeroBackHome.addEventListener("click", () => {
+        navigateToHome();
+      });
+    }
+
+    const btnHeroSwitch = document.getElementById("btnHeroSwitchTool");
+    if (btnHeroSwitch) {
+      btnHeroSwitch.addEventListener("click", () => {
+        const nextMode = btnHeroSwitch.getAttribute("data-switch-to") || (state.mode === "fit" ? "growth" : "fit");
+        navigateToAssessment(nextMode);
+      });
+    }
+
+    window.addEventListener("popstate", () => {
+      const p = new URLSearchParams(window.location.search);
+      const m = p.get("mode");
+      if (m === "growth" || m === "fit") {
+        state.mode = m;
+        state.view = "assessment";
+      } else {
+        state.view = "home";
+      }
+      render();
     });
 
     render();
@@ -4998,7 +5287,7 @@
     if (brandResetLink) {
       brandResetLink.addEventListener("click", (e) => {
         e.preventDefault();
-        resetAssessmentAndStartOver();
+        navigateToHome();
       });
     }
 
