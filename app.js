@@ -229,7 +229,7 @@
           <div class="hero-ambient-orb orb-2"></div>
           <div class="home-hero-inner">
             <div class="home-badge-kicker">
-              <span>2 Free Assessment Tools for Mamas</span>
+              <span>Personalized Business Diagnostics for Mamas</span>
             </div>
             <h1 class="home-hero-title">
               Business Clarity Built for the
@@ -270,7 +270,7 @@
             <div class="home-tool-features">
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>3 Curated Matches:</strong> Filtered from 200+ mom-tested models for your hours</span>
+                <span><strong>3 Curated Matches:</strong> Filtered from over 200 validated mom-friendly business models</span>
               </div>
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
@@ -366,8 +366,8 @@
         <!-- TRUST & REASSURANCE BANNER -->
         <div class="home-trust-banner">
           <div class="home-trust-pill">
-            <strong>100% Free &amp; Private</strong>
-            <span>No credit card required. Your diagnostic answers remain confidential.</span>
+            <strong>100% Confidential &amp; Private</strong>
+            <span>Your answers, income targets, and business diagnostic remain strictly private.</span>
           </div>
           <div class="home-trust-divider"></div>
           <div class="home-trust-pill">
