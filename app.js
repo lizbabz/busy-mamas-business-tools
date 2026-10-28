@@ -1472,13 +1472,16 @@
 
           <div class="income-presets">
             ${(cur.presets || [])
-              .map(
-                (amt) => `
-              <button type="button" class="preset-btn ${g === amt ? "active" : ""}" data-preset="${amt}">
-                ${fmtMoney(amt)}${isFlash ? " in 14d" : "/mo"}
+              .map((amt) => {
+                const isFlashPreset = amt === cur.presets[0];
+                const labelSuffix = isFlashPreset ? " in 14d" : "/mo";
+                const isActive = isFlashPreset ? (isFlash && g === amt) : (!isFlash && g === amt);
+                return `
+              <button type="button" class="preset-btn ${isActive ? "active" : ""}" data-preset="${amt}">
+                ${fmtMoney(amt)}${labelSuffix}
               </button>
-            `
-              )
+            `;
+              })
               .join("")}
           </div>
 
@@ -2149,35 +2152,54 @@
       const annualSub = document.getElementById("incomeAnnualSub");
       const insightBanner = document.getElementById("tierInsightBanner");
 
-      function updateIncomeGoal(val, switchToMonthlyIfFlash = false) {
+      function updateIncomeGoal(val, isPresetClick = false) {
         const cur = getCur();
         const clean = Math.max(100, Number(val) || cur.defaultGoal);
         state.profile.incomeGoal = clean;
-        if (switchToMonthlyIfFlash && state.profile.timeline === "2-week flash") {
-          state.profile.timeline = "1 to 3 months";
-          state.validationError = "";
+        const flashPresetAmt = (cur.presets && cur.presets[0]) || 1500;
+        const flashLimit = window.VaultEngine.scaleUsdToCurrency(2500, cur.code);
+
+        if (isPresetClick) {
+          if (clean === flashPresetAmt) {
+            state.profile.timeline = "2-week flash";
+          } else if (state.profile.timeline === "2-week flash") {
+            state.profile.timeline = "1 to 3 months";
+          }
           saveUserProgress();
           render();
           return;
         }
-        if (state.profile.timeline === "2-week flash" && clean > 2500) {
+
+        if (state.profile.timeline === "2-week flash" && clean > flashLimit) {
           state.profile.timeline = "1 to 3 months";
-          state.validationError = "";
           saveUserProgress();
           render();
           return;
         }
+
+        const isFlash = isFlashTimeline();
+        const unitLabel = document.getElementById("incomeUnitLabel");
+        const suffixLabel = document.getElementById("customIncomeUnitSuffix");
+
         if (displayNum) displayNum.textContent = fmtMoney(clean);
+        if (unitLabel) unitLabel.textContent = isFlash ? "in 14 days" : "/ month";
+        if (suffixLabel) suffixLabel.textContent = isFlash ? "in 14 days" : "/mo";
         if (annualSub) {
-          annualSub.innerHTML = isFlashTimeline()
+          annualSub.innerHTML = isFlash
             ? `2-Week Flash Sprint (<strong>${fmtMoney(clean * 2)}/month</strong> pace)`
             : `That is <strong>${fmtMoney(clean * 12)}/year</strong> in additional income`;
         }
         if (insightBanner) insightBanner.innerHTML = getIncomeTierInsight(clean);
         if (slider && clean <= cur.max) slider.value = clean;
         if (customInput && Number(customInput.value) !== clean) customInput.value = clean;
+
         document.querySelectorAll("[data-preset]").forEach((btn) => {
-          btn.classList.toggle("active", !isFlashTimeline() && Number(btn.getAttribute("data-preset")) === clean);
+          const btnAmt = Number(btn.getAttribute("data-preset"));
+          if (btnAmt === flashPresetAmt) {
+            btn.classList.toggle("active", isFlash && clean === btnAmt);
+          } else {
+            btn.classList.toggle("active", !isFlash && clean === btnAmt);
+          }
         });
         saveUserProgress();
       }
@@ -2197,8 +2219,11 @@
           const cur = getCur();
           const currentGoal = Number(state.profile.incomeGoal) || cur.defaultGoal;
           const flashLimit = window.VaultEngine.scaleUsdToCurrency(2500, cur.code);
-          if (val === "2-week flash" && currentGoal > flashLimit) {
-            state.profile.incomeGoal = window.VaultEngine.scaleUsdToCurrency(1500, cur.code);
+          const flashAmt = (cur.presets && cur.presets[0]) || window.VaultEngine.scaleUsdToCurrency(1500, cur.code);
+          if (val === "2-week flash") {
+            if (currentGoal > flashLimit || currentGoal !== flashAmt) {
+              state.profile.incomeGoal = flashAmt;
+            }
           }
           state.profile.timeline = val;
           state.validationError = "";
