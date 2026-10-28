@@ -4135,7 +4135,7 @@
           <div>
             <h2 class="step-title">What Part of Running Your Business <em>Drains the Most Energy</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Identifying this unlocks immediate delegation, templates, or automation wins.
+              If you could instantly take ONE of these off your plate this week, which would give you the greatest relief?
             </p>
           </div>
         </div>
