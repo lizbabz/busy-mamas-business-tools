@@ -4964,8 +4964,8 @@
     const priorities = analysis.priorities || [];
     const plan = analysis.thirtyDayPlan;
     const calendlyHref = getPrefilledCalendlyUrl();
-    const intensiveMailtoSubject = `P31 Business Growth Intensive 1-on-1 Inquiry - ${gp.firstName || "Founder"}`;
-    const intensiveMailtoBody = `Hi Oyin,\n\nI just completed the Business Growth Assessment for my business (${gp.specificNiche || "my business"}).\n\nI would like to inquire about booking a private 1-on-1 P31 Business Growth Intensive with you to review my numbers, pricing, and 90-day roadmap.\n\nLooking forward to hearing from you!\n\nBest,\n${gp.firstName || ""}`;
+    const intensiveMailtoSubject = `Private Business Growth Intensive 1-on-1 Inquiry - ${gp.firstName || "Founder"}`;
+    const intensiveMailtoBody = `Hi Oyin,\n\nI just completed the Business Growth Assessment for my business (${gp.specificNiche || "my business"}).\n\nI would like to inquire about booking a private 1-on-1 Business Growth Intensive with you to review my numbers, pricing, and 90-day roadmap.\n\nLooking forward to hearing from you!\n\nBest,\n${gp.firstName || ""}`;
     const intensiveMailtoHref = `mailto:hello@busymamasnetwork.com?subject=${encodeURIComponent(intensiveMailtoSubject)}&body=${encodeURIComponent(intensiveMailtoBody)}`;
 
     const bTypeObj =
@@ -5311,7 +5311,7 @@
       `
       }
 
-      <!-- 6. P31 GROWTH INTENSIVE 1-ON-1 INQUIRY CTA -->
+      <!-- 6. PRIVATE GROWTH INTENSIVE 1-ON-1 INQUIRY CTA -->
       <div class="consulting-showcase" id="growthIntensiveSection">
         <div class="consulting-grid">
           <div>
@@ -5322,7 +5322,7 @@
               Would You Like 1-on-1 Strategic Guidance With Oyin to Map Out Your Next 90 Days?
             </h2>
             <p style="color: rgba(255,255,255,0.88); font-size: 1rem; line-height: 1.6;">
-              Your 30-day action plan has been sent to your email, giving you a clear roadmap. But if you want a second pair of experienced eyes on your pricing, capacity limits, and bottlenecks, you do not have to tackle execution alone. In a private P31 Growth Intensive, Oyin will personally review your numbers, profit leaks, and weekly schedule to build a focused execution plan that protects your family hours.
+              Your 30-day action plan has been sent to your email, giving you a clear roadmap. But if you want a second pair of experienced eyes on your pricing, capacity limits, and bottlenecks, you do not have to tackle execution alone. In a private Business Growth Intensive, Oyin will personally review your numbers, profit leaks, and weekly schedule to build a focused execution plan that protects your family hours.
             </p>
 
             <ul class="consulting-benefits">
@@ -5352,7 +5352,7 @@
               Private Diagnostic
             </div>
             <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 6px;">
-              P31 Growth Intensive
+              Private Growth Intensive
             </h3>
             <div style="font-size: 1.05rem; font-weight: 800; color: var(--mint); margin-bottom: 12px;">
               Private 1-on-1 With Oyin
