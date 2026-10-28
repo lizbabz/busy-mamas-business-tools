@@ -101,6 +101,7 @@
     expandedRunnerUps: {},
     selectedIdeaIdx: null,
     allRankedMatches: [],
+    dismissedIdeaIds: new Set(),
     activeTabs: { 0: "overview", 1: "overview", 2: "overview", 3: "overview", 4: "overview" },
     validationError: "",
     limitNotice: "",
@@ -376,6 +377,7 @@
         state.playbooks = [];
         state.runnerUpMatches = [];
         state.runnerUpPlaybooks = [];
+        state.dismissedIdeaIds = new Set();
         saveUserProgress();
         navigateToAssessment("fit");
       });
@@ -430,6 +432,7 @@
     state.runnerUpMatches = [];
     state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
+    state.dismissedIdeaIds = new Set();
     try {
       localStorage.removeItem(STORAGE_PROGRESS_KEY);
     } catch (_) {}
@@ -1130,13 +1133,9 @@
     state.playbooks = state.topMatches.map((idea, idx) =>
       window.VaultEngine.buildPlaybook(idea, state.profile, idx)
     );
-    state.runnerUpMatches = ranked
-      .slice(3)
-      .filter((idea) => (idea.rawScore || 0) >= 30)
-      .slice(0, 2);
-    state.runnerUpPlaybooks = state.runnerUpMatches.map((idea, rIdx) =>
-      window.VaultEngine.buildPlaybook(idea, state.profile, 3 + rIdx)
-    );
+    state.dismissedIdeaIds = new Set();
+    state.runnerUpMatches = [];
+    state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
     state.selectedIdeaIdx = null;
   }
@@ -2936,7 +2935,7 @@
                   </div>
 
                   <button type="button" class="btn-primary comparison-jump-btn" data-focus-idea="${idx}" style="width: 100%; margin-bottom: 8px; font-weight: 800; font-size: 0.92rem; padding: 11px;">
-                    View Full Plan & Math →
+                    View Full Plan & Math &rarr;
                   </button>
                   <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="width: 100%; font-size: 0.8rem; color: var(--ink-muted); text-align: center;">
                     Not for me? Swap this idea
@@ -2951,102 +2950,8 @@
     `;
   }
 
-  function renderRunnerUpSection(calendlyHref) {
-    if (!state.runnerUpMatches || state.runnerUpMatches.length === 0) return "";
-    const cur = getCur();
-
-    return `
-      <div class="runner-up-section-card" id="runnerUpSection">
-        <div class="comparison-header-row">
-          <div>
-            <div class="comparison-eyebrow">Honorable Mentions (#4 & #5)</div>
-            <h3 class="comparison-title">2 Additional Ideas That Matched Your Profile</h3>
-            <p class="runner-up-sub">
-              We kept these outside your Top 3 so you can stay focused, but both matched your skills and interests. You can open either full action plan below or swap it into your Top 3.
-            </p>
-          </div>
-        </div>
-
-        <div class="runner-up-grid">
-          ${state.runnerUpMatches
-            .map((idea, rIdx) => {
-              const rankNum = 4 + rIdx;
-              const isExpanded = Boolean(state.expandedRunnerUps && state.expandedRunnerUps[rIdx]);
-              const rawCost = Number(idea.startupCost) || 0;
-              const scaledCost = window.VaultEngine.scaleUsdToCurrency(rawCost, cur.code);
-              const costLabel =
-                rawCost === 0 ? `${cur.symbol}0 Bootstrapped` : `~${fmtMoney(scaledCost)}`;
-              const avgRev = fmtMoney(
-                window.VaultEngine.scaleUsdToCurrency(Number(idea.avgUnitRevenue) || 250, cur.code)
-              );
-              const primaryReason =
-                (idea.matchReasons && idea.matchReasons[0]) ||
-                "Aligns with your selected skills, interests, and weekly schedule";
-
-              return `
-              <div class="comparison-col runner-up-col">
-                <div class="comparison-col-header">
-                  <div class="comparison-col-top">
-                    <span class="comparison-rank-tag">#${rankNum} Honorable Mention</span>
-                    <span class="comparison-score-tag runner-up-score-tag">${idea.matchScore || 78}% Fit</span>
-                  </div>
-                  <div class="comparison-idea-name">${idea.name}</div>
-                  <div class="comparison-category">${idea.category}</div>
-                  <div class="runner-up-why-box">
-                    <strong>Why it matched:</strong> ${primaryReason}.
-                  </div>
-                </div>
-
-                <div class="comparison-col-footer">
-                  <div class="comparison-metrics-list">
-                    <div class="comparison-metric-row">
-                      <span>Startup Capital</span>
-                      <strong>${costLabel}</strong>
-                    </div>
-                    <div class="comparison-metric-row">
-                      <span>Weekly Hours</span>
-                      <strong>${idea.minHoursPerWeek} to ${idea.optimalHoursPerWeek} hrs/wk</strong>
-                    </div>
-                    <div class="comparison-metric-row">
-                      <span>Avg Revenue / Unit</span>
-                      <strong>${avgRev}</strong>
-                    </div>
-                    <div class="comparison-metric-row">
-                      <span>Speed to Goal</span>
-                      <strong>${idea.easeOf5k || 5} / 5</strong>
-                    </div>
-                  </div>
-
-                  <div class="runner-up-actions">
-                    <button type="button" class="comparison-jump-btn" data-toggle-runnerup="${rIdx}">
-                      ${isExpanded ? "Hide Full Action Plan" : "View Full Plan & Math"}
-                    </button>
-                    <button type="button" class="runner-up-swap-btn" data-swap-runnerup="${rIdx}">
-                      Swap Into My Top 3
-                    </button>
-                  </div>
-                </div>
-              </div>
-            `;
-            })
-            .join("")}
-        </div>
-
-        ${state.runnerUpMatches
-          .map((idea, rIdx) => {
-            if (!state.expandedRunnerUps || !state.expandedRunnerUps[rIdx]) return "";
-            const pb =
-              (state.runnerUpPlaybooks && state.runnerUpPlaybooks[rIdx]) ||
-              window.VaultEngine.buildPlaybook(idea, state.profile, 3 + rIdx);
-            return `
-              <div class="runner-up-expanded-wrap" id="runner-up-playbook-${rIdx}">
-                ${renderSingleIdeaCard(idea, pb, 3 + rIdx, calendlyHref)}
-              </div>
-            `;
-          })
-          .join("")}
-      </div>
-    `;
+  function renderRunnerUpSection() {
+    return "";
   }
 
   function renderResultsDashboard() {
@@ -3123,7 +3028,6 @@
     } else {
       matchSectionHtml = `
         ${renderTop3ComparisonBar()}
-        ${renderRunnerUpSection(calendlyHref)}
       `;
     }
 
@@ -3499,25 +3403,27 @@
         const slotIdx = Number(btn.getAttribute("data-swap-idea"));
         if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
 
-        const activeIds = new Set([
-          ...state.topMatches.map((m) => m.id),
-          ...state.runnerUpMatches.map((m) => m.id)
-        ]);
-        const candidate = (state.allRankedMatches || []).find((idea) => !activeIds.has(idea.id));
+        state.dismissedIdeaIds = state.dismissedIdeaIds || new Set();
+        const currentIdea = state.topMatches[slotIdx];
+        if (currentIdea && currentIdea.id) {
+          state.dismissedIdeaIds.add(currentIdea.id);
+        }
+
+        const activeIds = new Set(state.topMatches.map((m) => m.id));
+
+        // 1. Next best ranked match that is not currently visible and has not been dismissed
+        let candidate = (state.allRankedMatches || []).find(
+          (idea) => !activeIds.has(idea.id) && !state.dismissedIdeaIds.has(idea.id)
+        );
+
+        // 2. If the user cycled through all ranked matches, fallback to any match not currently visible
+        if (!candidate) {
+          candidate = (state.allRankedMatches || []).find((idea) => !activeIds.has(idea.id));
+        }
 
         if (candidate) {
           state.topMatches[slotIdx] = candidate;
           state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(candidate, state.profile, slotIdx);
-          render();
-        } else if (state.runnerUpMatches.length > 0) {
-          const promoted = state.runnerUpMatches.shift();
-          const demoted = state.topMatches[slotIdx];
-          state.topMatches[slotIdx] = promoted;
-          state.runnerUpMatches.push(demoted);
-          state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(promoted, state.profile, slotIdx);
-          state.runnerUpPlaybooks = state.runnerUpMatches.map((idea, idx) =>
-            window.VaultEngine.buildPlaybook(idea, state.profile, 3 + idx)
-          );
           render();
         }
       });
@@ -3550,57 +3456,6 @@
         const el = targetId ? document.getElementById(targetId) : null;
         if (el) {
           el.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
-      });
-    });
-
-    document.querySelectorAll("[data-toggle-runnerup]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const rIdx = Number(btn.getAttribute("data-toggle-runnerup"));
-        state.expandedRunnerUps = state.expandedRunnerUps || {};
-        const nextVal = !state.expandedRunnerUps[rIdx];
-        state.expandedRunnerUps[rIdx] = nextVal;
-        render();
-        if (nextVal) {
-          const el = document.getElementById(`runner-up-playbook-${rIdx}`);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }
-      });
-    });
-
-    document.querySelectorAll("[data-swap-runnerup]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const rIdx = Number(btn.getAttribute("data-swap-runnerup"));
-        if (!state.runnerUpMatches || !state.runnerUpMatches[rIdx] || state.topMatches.length < 3) return;
-
-        const promoted = state.runnerUpMatches[rIdx];
-        const demoted = state.topMatches[2];
-
-        // Swap matchScore between #3 and the promoted runner-up if needed so Top 3 stays strictly descending
-        const score3 = demoted.matchScore;
-        const scoreRunner = promoted.matchScore;
-        if (scoreRunner < score3) {
-          promoted.matchScore = score3;
-          demoted.matchScore = scoreRunner;
-        }
-
-        state.topMatches[2] = promoted;
-        state.runnerUpMatches[rIdx] = demoted;
-
-        state.playbooks = state.topMatches.map((idea, idx) =>
-          window.VaultEngine.buildPlaybook(idea, state.profile, idx)
-        );
-        state.runnerUpPlaybooks = state.runnerUpMatches.map((idea, idx) =>
-          window.VaultEngine.buildPlaybook(idea, state.profile, 3 + idx)
-        );
-        state.expandedRunnerUps = {};
-        render();
-
-        const compCard = document.querySelector(".comparison-summary-card");
-        if (compCard) {
-          compCard.scrollIntoView({ behavior: "smooth", block: "start" });
         }
       });
     });
