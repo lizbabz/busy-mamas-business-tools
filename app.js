@@ -94,6 +94,7 @@
     growthAnalysis: null,
     growthActiveTabs: { 0: "math", 1: "math", 2: "math" },
     selectedGrowthPriorityIdx: null,
+    showGrowthPlanView: false,
     completedTasks: [],
     topMatches: [],
     playbooks: [],
@@ -400,6 +401,7 @@
         state.growthProfile = getFreshGrowthProfile(keepCurrency);
         state.growthAnalysis = null;
         state.selectedGrowthPriorityIdx = null;
+        state.showGrowthPlanView = false;
         saveUserProgress();
         navigateToAssessment("growth");
       });
@@ -418,6 +420,7 @@
       state.growthProfile = getFreshGrowthProfile(keepCurrency);
       state.growthAnalysis = null;
       state.selectedGrowthPriorityIdx = null;
+      state.showGrowthPlanView = false;
       saveUserProgress();
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -4942,7 +4945,9 @@
       ? Math.round((completedGrowthCount / allGrowthTaskIds.length) * 100)
       : 0;
 
+    const isPlanFocused = Boolean(state.showGrowthPlanView);
     const isPriorityFocused =
+      !isPlanFocused &&
       state.selectedGrowthPriorityIdx !== null &&
       state.selectedGrowthPriorityIdx >= 0 &&
       state.selectedGrowthPriorityIdx < priorities.length;
@@ -5044,7 +5049,94 @@
       }
 
       ${
-        isPriorityFocused
+        isPlanFocused
+          ? `
+      <!-- 3. DEDICATED 30-DAY STEP-BY-STEP ACTION PLAN VIEW -->
+      <div class="growth-plan-page-view" style="margin-bottom: 28px;">
+        <!-- Top Navigation Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1.5px solid var(--border);">
+          <button type="button" class="btn-secondary" id="btnBackToGrowthOverviewFromPlan" style="font-size: 0.88rem; padding: 9px 15px; font-weight: 700;">
+            &larr; Back to All 3 Priorities
+          </button>
+          <div style="font-size: 0.88rem; font-weight: 800; color: var(--forest);">
+            30-Day Step-by-Step Action Plan
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <span style="font-size: 0.78rem; color: var(--ink-muted); font-weight: 700;">Priorities:</span>
+            ${priorities
+              .map(
+                (p, pIdx) => `
+              <button type="button" data-focus-growth-priority="${pIdx}" style="border: 1.5px solid var(--border); background: #fff; color: var(--ink); border-radius: 6px; padding: 5px 11px; font-size: 0.82rem; font-weight: 800; cursor: pointer;">
+                #${pIdx + 1}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+
+        <!-- Full 30-Day Action Plan Card -->
+        <div class="idea-result-card" style="border: 2.5px solid var(--forest);">
+          <div class="idea-card-top" style="background: linear-gradient(135deg, #E9F5E6 0%, #FEF9F5 100%);">
+            <div class="idea-rank-row">
+              <span class="rank-pill" style="background: var(--forest); color: #fff;">30-Day Step-by-Step Plan</span>
+              <span class="match-score-pill">${completedGrowthCount} of ${allGrowthTaskIds.length} Steps Done (${progressPct}%)</span>
+            </div>
+            <h3 class="idea-title">${plan.headline}</h3>
+            <p class="idea-desc">
+              Check off each step as you finish it this month. Your progress is automatically saved in this browser${gp.email ? ` and linked to <strong>${gp.email}</strong>` : ""}.
+            </p>
+            <div class="progress-track" style="margin-top: 12px; background: rgba(45, 90, 39, 0.14);">
+              <div class="progress-fill" style="width: ${progressPct}%; background: var(--forest);"></div>
+            </div>
+          </div>
+          <div class="idea-card-body">
+            <div style="display: grid; gap: 14px;">
+              ${(plan.weeks || [])
+                .map(
+                  (w) => `
+                <div style="padding: 16px; border-radius: var(--radius-sm); background: var(--bg-cream); border: 1px solid var(--border);">
+                  <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+                    <span style="font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark);">
+                      ${w.week} · ${w.title}
+                    </span>
+                  </div>
+                  <div style="font-size: 0.88rem; font-weight: 700; color: var(--ink); margin-bottom: 10px;">
+                    Goal: ${w.focus}
+                  </div>
+                  <div>
+                    ${w.tasks
+                      .map((t) => {
+                        const isDone = state.completedTasks.includes(t.id);
+                        return `
+                          <label class="checkable-task-row ${isDone ? "completed" : ""}">
+                            <input type="checkbox" class="action-task-checkbox" data-task-id="${t.id}" ${isDone ? "checked" : ""} />
+                            <span>${t.text}</span>
+                          </label>
+                        `;
+                      })
+                      .join("")}
+                  </div>
+                </div>
+              `
+                )
+                .join("")}
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Return / Navigation Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 24px; padding: 18px 20px; background: #fff; border-radius: 16px; border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);">
+          <button type="button" class="btn-secondary" id="btnBackToGrowthOverviewFromPlanBottom" style="font-weight: 700;">
+            &larr; Back to All 3 Priorities
+          </button>
+          <button type="button" class="btn-primary" data-focus-growth-priority="0" style="background: var(--forest); color: #fff; font-size: 0.86rem; padding: 8px 16px; font-weight: 800;">
+            View Priority #1 Plan & Script &rarr;
+          </button>
+        </div>
+      </div>
+      `
+          : isPriorityFocused
           ? `
       <!-- 3. FOCUSED GROWTH PRIORITY VIEW -->
       <div class="focused-priority-view" style="margin-bottom: 28px;">
@@ -5080,7 +5172,7 @@
           </button>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
             <button type="button" id="btnGrowthJumpToPlan" style="font-size: 0.84rem; font-weight: 700; color: var(--forest); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 6px 10px;">
-              View 30-Day Action Plan &darr;
+              Open 30-Day Action Plan &rarr;
             </button>
             ${
               state.selectedGrowthPriorityIdx > 0
@@ -5156,52 +5248,27 @@
         </div>
       </div>
 
-      <!-- 4. FOCUSED 30-DAY ACTION PLAN (WEEKS 1 TO 4) -->
-      <div class="idea-result-card" id="growth30DayPlanCard" style="border: 2.5px solid var(--forest); margin-top: 28px;">
-        <div class="idea-card-top" style="background: linear-gradient(135deg, #E9F5E6 0%, #FEF9F5 100%);">
-          <div class="idea-rank-row">
+      <!-- 4. 30-DAY ACTION PLAN PREVIEW CARD -->
+      <div class="idea-result-card" style="border: 2px solid var(--forest); margin-top: 24px; background: #fff;">
+        <div class="idea-card-top" style="background: linear-gradient(135deg, #E9F5E6 0%, #FEF9F5 100%); padding: 22px 24px;">
+          <div class="idea-rank-row" style="margin-bottom: 10px;">
             <span class="rank-pill" style="background: var(--forest); color: #fff;">30-Day Step-by-Step Plan</span>
             <span class="match-score-pill">${completedGrowthCount} of ${allGrowthTaskIds.length} Steps Done (${progressPct}%)</span>
           </div>
-          <h3 class="idea-title">${plan.headline}</h3>
-          <p class="idea-desc">
-            Check off each step as you finish it this month. Your progress is automatically saved in this browser${gp.email ? ` and linked to <strong>${gp.email}</strong>` : ""}.
+          <h3 class="idea-title" style="font-size: 1.35rem; margin-bottom: 8px;">${plan.headline}</h3>
+          <p class="idea-desc" style="margin-bottom: 12px;">
+            A week-by-week sprint checklist designed to fix your primary pricing and capacity bottleneck over the next 4 weeks.
           </p>
-          <div class="progress-track" style="margin-top: 12px; background: rgba(45, 90, 39, 0.14);">
+          <div class="progress-track" style="background: rgba(45, 90, 39, 0.14); margin-bottom: 16px;">
             <div class="progress-fill" style="width: ${progressPct}%; background: var(--forest);"></div>
           </div>
-        </div>
-        <div class="idea-card-body">
-          <div style="display: grid; gap: 14px;">
-            ${(plan.weeks || [])
-              .map(
-                (w) => `
-              <div style="padding: 16px; border-radius: var(--radius-sm); background: var(--bg-cream); border: 1px solid var(--border);">
-                <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
-                  <span style="font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark);">
-                    ${w.week} · ${w.title}
-                  </span>
-                </div>
-                <div style="font-size: 0.88rem; font-weight: 700; color: var(--ink); margin-bottom: 10px;">
-                  Goal: ${w.focus}
-                </div>
-                <div>
-                  ${w.tasks
-                    .map((t) => {
-                      const isDone = state.completedTasks.includes(t.id);
-                      return `
-                        <label class="checkable-task-row ${isDone ? "completed" : ""}">
-                          <input type="checkbox" class="action-task-checkbox" data-task-id="${t.id}" ${isDone ? "checked" : ""} />
-                          <span>${t.text}</span>
-                        </label>
-                      `;
-                    })
-                    .join("")}
-                </div>
-              </div>
-            `
-              )
-              .join("")}
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="font-size: 0.84rem; color: var(--ink-muted);">
+              4 Weekly Milestones: Weeks 1 to 4 with interactive task tracking
+            </div>
+            <button type="button" class="btn-primary" id="btnOpenGrowth30DayPlan" style="background: var(--forest); color: #fff; font-weight: 800; font-size: 0.92rem; padding: 11px 20px; border-radius: 10px; cursor: pointer;">
+              Open 30-Day Action Plan & Checklist &rarr;
+            </button>
           </div>
         </div>
       </div>
@@ -5297,6 +5364,7 @@
       btn.addEventListener("click", () => {
         const idx = Number(btn.getAttribute("data-focus-growth-priority"));
         if (!isNaN(idx)) {
+          state.showGrowthPlanView = false;
           state.selectedGrowthPriorityIdx = idx;
           render();
           const target = document.querySelector(".focused-priority-view") || document.querySelector(".results-header-card");
@@ -5309,49 +5377,47 @@
       });
     });
 
-    const backOverviewBtn = document.getElementById("btnBackToGrowthOverview");
-    if (backOverviewBtn) {
-      backOverviewBtn.addEventListener("click", () => {
-        state.selectedGrowthPriorityIdx = null;
-        render();
-        const overviewEl = document.querySelector(".comparison-summary-card") || document.querySelector(".results-header-card");
-        if (overviewEl) {
-          overviewEl.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      });
-    }
+    const openPlanHandler = () => {
+      state.selectedGrowthPriorityIdx = null;
+      state.showGrowthPlanView = true;
+      render();
+      const target = document.querySelector(".growth-plan-page-view") || document.querySelector(".results-header-card");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
 
-    const backOverviewBottomBtn = document.getElementById("btnBackToGrowthOverviewBottom");
-    if (backOverviewBottomBtn) {
-      backOverviewBottomBtn.addEventListener("click", () => {
-        state.selectedGrowthPriorityIdx = null;
-        render();
-        const overviewEl = document.querySelector(".comparison-summary-card") || document.querySelector(".results-header-card");
-        if (overviewEl) {
-          overviewEl.scrollIntoView({ behavior: "smooth", block: "start" });
-        } else {
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      });
-    }
+    const openPlanBtn = document.getElementById("btnOpenGrowth30DayPlan");
+    if (openPlanBtn) openPlanBtn.addEventListener("click", openPlanHandler);
 
     const jumpToPlanBtn = document.getElementById("btnGrowthJumpToPlan");
-    if (jumpToPlanBtn) {
-      jumpToPlanBtn.addEventListener("click", () => {
-        state.selectedGrowthPriorityIdx = null;
-        render();
-        setTimeout(() => {
-          const planEl = document.getElementById("growth30DayPlanCard");
-          if (planEl) {
-            planEl.scrollIntoView({ behavior: "smooth", block: "start" });
-          } else {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          }
-        }, 50);
-      });
-    }
+    if (jumpToPlanBtn) jumpToPlanBtn.addEventListener("click", openPlanHandler);
+
+    const backOverviewHandler = () => {
+      state.selectedGrowthPriorityIdx = null;
+      state.showGrowthPlanView = false;
+      render();
+      const overviewEl = document.querySelector(".comparison-summary-card") || document.querySelector(".results-header-card");
+      if (overviewEl) {
+        overviewEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    };
+
+    const backOverviewBtn = document.getElementById("btnBackToGrowthOverview");
+    if (backOverviewBtn) backOverviewBtn.addEventListener("click", backOverviewHandler);
+
+    const backOverviewBottomBtn = document.getElementById("btnBackToGrowthOverviewBottom");
+    if (backOverviewBottomBtn) backOverviewBottomBtn.addEventListener("click", backOverviewHandler);
+
+    const backOverviewFromPlanBtn = document.getElementById("btnBackToGrowthOverviewFromPlan");
+    if (backOverviewFromPlanBtn) backOverviewFromPlanBtn.addEventListener("click", backOverviewHandler);
+
+    const backOverviewFromPlanBottomBtn = document.getElementById("btnBackToGrowthOverviewFromPlanBottom");
+    if (backOverviewFromPlanBottomBtn) backOverviewFromPlanBottomBtn.addEventListener("click", backOverviewHandler);
 
     document.querySelectorAll("[data-jump-card]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -5408,6 +5474,7 @@
         state.growthStep = 1;
         state.growthShownStories = {};
         state.selectedGrowthPriorityIdx = null;
+        state.showGrowthPlanView = false;
         saveUserProgress();
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
