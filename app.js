@@ -837,6 +837,8 @@
         if (saved.growthStep && saved.growthStep >= 1 && saved.growthStep <= 8) {
           state.growthStep = saved.growthStep;
           state.growthSubStep = saved.growthSubStep && saved.growthSubStep >= 1 ? saved.growthSubStep : 1;
+          const maxGSub = getMaxSubSteps(state.growthStep, "growth");
+          if (state.growthSubStep > maxGSub) state.growthSubStep = 1;
           if (state.growthStep >= 7 && window.GrowthEngine) {
             state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
           }
@@ -847,6 +849,8 @@
         if (saved.step && saved.step >= 1 && saved.step <= 8) {
           state.step = saved.step;
           state.subStep = saved.subStep && saved.subStep >= 1 ? saved.subStep : 1;
+          const maxFSub = getMaxSubSteps(state.step, "fit");
+          if (state.subStep > maxFSub) state.subStep = 1;
         }
         const supportedCodes = (window.SUPPORTED_CURRENCIES || []).map((c) => c.code);
         if (!supportedCodes.includes(state.profile.currency)) {
@@ -1271,6 +1275,7 @@
     const allowedPopupSteps = [2, 5];
     if (!allowedPopupSteps.includes(completedStep) || state.shownStories[completedStep]) {
       state.step = nextStep;
+      state.subStep = 1;
       saveUserProgress();
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1280,6 +1285,7 @@
     const story = selectTailoredStoryForStep(completedStep);
     if (!story) {
       state.step = nextStep;
+      state.subStep = 1;
       saveUserProgress();
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1292,6 +1298,7 @@
     const modal = document.getElementById("storyPopupModal");
     if (!modal) {
       state.step = nextStep;
+      state.subStep = 1;
       saveUserProgress();
       render();
       return;
@@ -1317,6 +1324,7 @@
     const allowedPopupSteps = [2, 5];
     if (!allowedPopupSteps.includes(completedStep) || state.growthShownStories[completedStep]) {
       state.growthStep = nextStep;
+      state.growthSubStep = 1;
       saveUserProgress();
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1327,6 +1335,7 @@
     const story = stories.find((s) => (s.preferredSteps || []).includes(completedStep)) || stories[0];
     if (!story) {
       state.growthStep = nextStep;
+      state.growthSubStep = 1;
       saveUserProgress();
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -1339,6 +1348,7 @@
     const modal = document.getElementById("storyPopupModal");
     if (!modal) {
       state.growthStep = nextStep;
+      state.growthSubStep = 1;
       saveUserProgress();
       render();
       return;
@@ -1384,8 +1394,11 @@
   // ============================================================================
   function renderQuizStep() {
     const s = state.step;
-    const sub = state.subStep || 1;
     const maxSub = getMaxSubSteps(s, "fit");
+    if (!state.subStep || state.subStep < 1 || state.subStep > maxSub) {
+      state.subStep = 1;
+    }
+    const sub = state.subStep;
     const stepOffsets = { 1: 0, 2: 2, 3: 4, 4: 6, 5: 8, 6: 10 };
     const completed = (stepOffsets[s] || 0) + (sub - 1);
     const totalQuestions = 13;
@@ -3698,8 +3711,11 @@
   // ============================================================================
   function renderGrowthQuizStep() {
     const s = state.growthStep;
-    const sub = state.growthSubStep || 1;
     const maxSub = getMaxSubSteps(s, "growth");
+    if (!state.growthSubStep || state.growthSubStep < 1 || state.growthSubStep > maxSub) {
+      state.growthSubStep = 1;
+    }
+    const sub = state.growthSubStep;
     const stepOffsets = { 1: 0, 2: 5, 3: 8, 4: 10, 5: 12, 6: 14 };
     const completed = (stepOffsets[s] || 0) + (sub - 1);
     const totalQuestions = 15;
