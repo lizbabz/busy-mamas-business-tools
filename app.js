@@ -826,6 +826,13 @@
               ? [state.growthProfile.leadSource]
               : [];
           }
+          if (state.growthProfile.subNicheId && state.growthProfile.specificNiche && window.GROWTH_SUB_NICHES) {
+            const list = window.GROWTH_SUB_NICHES[state.growthProfile.businessType] || [];
+            const snObj = list.find((s) => s.id === state.growthProfile.subNicheId);
+            if (snObj && snObj.label === state.growthProfile.specificNiche) {
+              state.growthProfile.specificNiche = "";
+            }
+          }
         }
         if (saved.growthStep && saved.growthStep >= 1 && saved.growthStep <= 8) {
           state.growthStep = saved.growthStep;
@@ -3704,41 +3711,28 @@
           <div>
             <h2 class="step-title">What Category Best Describes <em>Your Business</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Select your main business model from the dropdown or cards below.
+              Select your main business model from the dropdown below.
             </p>
           </div>
         </div>
 
         <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
-          <label for="growthBTypeSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-            Choose Business Category (Dropdown):
+          <label for="growthBTypeSelect" style="display: block; font-size: 0.95rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 10px;">
+            Choose Business Category:
           </label>
-          <select id="growthBTypeSelect" class="form-input" style="cursor: pointer;">
+          <select id="growthBTypeSelect" class="form-input" style="cursor: pointer; font-size: 1rem; padding: 12px 14px;">
             <option value="">Select your business category...</option>
             ${(window.GROWTH_BUSINESS_TYPES || [])
               .map((item) => `<option value="${item.id}" ${gp.businessType === item.id ? "selected" : ""}>${item.label}</option>`)
               .join("")}
           </select>
         </div>
-
-        <div class="options-grid">
-          ${(window.GROWTH_BUSINESS_TYPES || [])
-            .map(
-              (item) => `
-            <div class="option-card ${gp.businessType === item.id ? "selected" : ""}" data-growth-btype="${item.id}">
-              <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
-              </div>
-              <div class="option-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
       `;
     } else if (s === 1 && sub === 2) {
       const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
+      const subNicheMatch = subNiches.find((sn) => sn.id === gp.subNicheId);
+      const isAutoDuplicated = subNicheMatch && gp.specificNiche === subNicheMatch.label;
+      const customNicheVal = isAutoDuplicated ? "" : (gp.specificNiche || "");
 
       stepContent = `
         <div class="step-header-row">
@@ -3746,7 +3740,7 @@
           <div>
             <h2 class="step-title">Your Specific Specialty & <em>Ideal Client</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Select your closest specialty below or describe your niche so your 30-day priorities and outreach messages are 100% custom.
+              Select your closest specialty below, or describe what you do in your own words so your assessment is tailored to your business.
             </p>
           </div>
         </div>
@@ -3755,11 +3749,11 @@
           ${
             subNiches.length > 0
               ? `
-              <div style="margin-bottom: 18px;">
-                <label for="growthSubNicheSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-                  Select Your Closest Specialty (Dropdown):
+              <div style="margin-bottom: 20px;">
+                <label for="growthSubNicheSelect" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+                  Choose specialty or main service:
                 </label>
-                <select id="growthSubNicheSelect" class="form-input" style="cursor: pointer;">
+                <select id="growthSubNicheSelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 12px 14px;">
                   <option value="">Choose your specialty...</option>
                   ${subNiches
                     .map((sn) => `<option value="${sn.id}" ${gp.subNicheId === sn.id ? "selected" : ""}>${sn.label}</option>`)
@@ -3770,28 +3764,28 @@
               : ""
           }
 
-          <div style="margin-bottom: 18px;">
-            <label for="growthSpecificNicheInput" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
-              Or describe your exact service / niche in your own words:
+          <div style="margin-bottom: 20px;">
+            <label for="growthSpecificNicheInput" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+              What specifically do you sell or offer? (Optional):
             </label>
             <input
               type="text"
               id="growthSpecificNicheInput"
               class="form-input"
-              placeholder="e.g., Postpartum doula, custom balloon garlands, Shopify web design, Pinterest ads..."
-              value="${(gp.specificNiche || "").replace(/"/g, "&quot;")}"
+              placeholder="e.g., Communication and intimacy coaching for married couples"
+              value="${customNicheVal.replace(/"/g, "&quot;")}"
             />
           </div>
 
           <div>
-            <label for="growthTargetAudienceInput" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
-              Who is your ideal client or audience? (Optional):
+            <label for="growthTargetAudienceInput" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+              Who is your primary ideal customer or client? (Optional):
             </label>
             <input
               type="text"
               id="growthTargetAudienceInput"
               class="form-input"
-              placeholder="e.g., First-time moms, local wedding planners, female real estate agents, high-earning corporate parents..."
+              placeholder="e.g., Exhausted working moms of babies 0-2, wedding couples, corporate HR leaders"
               value="${(gp.targetAudience || "").replace(/"/g, "&quot;")}"
             />
           </div>
@@ -4087,37 +4081,21 @@
           <div>
             <h2 class="step-title">Where Do Potential Clients <em>Drop Off Most Often</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Select your biggest sales or conversion hurdle from the dropdown or cards below.
+              Select your biggest sales or conversion hurdle from the dropdown below.
             </p>
           </div>
         </div>
 
         <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
-          <label for="growthConversionSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-            Select Bottleneck (Dropdown):
+          <label for="growthConversionSelect" style="display: block; font-size: 0.95rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 10px;">
+            Choose Primary Sales Bottleneck:
           </label>
-          <select id="growthConversionSelect" class="form-input" style="cursor: pointer;">
-            <option value="">Choose your primary sales bottleneck...</option>
+          <select id="growthConversionSelect" class="form-input" style="cursor: pointer; font-size: 1rem; padding: 12px 14px;">
+            <option value="">Select your primary sales bottleneck...</option>
             ${(window.GROWTH_CONVERSION_ISSUES || [])
               .map((iss) => `<option value="${iss.id}" ${gp.conversionIssue === iss.id ? "selected" : ""}>${iss.label}</option>`)
               .join("")}
           </select>
-        </div>
-
-        <div class="options-grid">
-          ${(window.GROWTH_CONVERSION_ISSUES || [])
-            .map(
-              (iss) => `
-            <div class="option-card ${gp.conversionIssue === iss.id ? "selected" : ""}" data-growth-conversion="${iss.id}">
-              <div class="option-content">
-                <div class="option-title">${iss.label}</div>
-                <div class="option-sub">${iss.sub}</div>
-              </div>
-              <div class="option-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
         </div>
       `;
     } else if (s === 4 && sub === 1) {
@@ -4386,6 +4364,7 @@
     });
 
     // Step 1 Sub 1: Business Category (Dropdown & Cards)
+    // Step 1 Sub 1: Business Category (Dropdown Only)
     if (s === 1 && sub === 1) {
       const bTypeSelect = document.getElementById("growthBTypeSelect");
       if (bTypeSelect) {
@@ -4398,15 +4377,6 @@
           triggerAutoAdvance();
         });
       }
-
-      document.querySelectorAll("[data-growth-btype]").forEach((el) => {
-        el.addEventListener("click", () => {
-          gp.businessType = el.getAttribute("data-growth-btype");
-          gp.subNicheId = "";
-          state.validationError = "";
-          triggerAutoAdvance();
-        });
-      });
     }
 
     // Step 1 Sub 2: Specialty & Ideal Client
@@ -4416,13 +4386,6 @@
         subNicheSelect.addEventListener("change", (e) => {
           const val = e.target.value;
           gp.subNicheId = val;
-          const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
-          const match = subNiches.find((sn) => sn.id === val);
-          if (match) {
-            gp.specificNiche = match.label;
-            const input = document.getElementById("growthSpecificNicheInput");
-            if (input) input.value = match.label;
-          }
           state.validationError = "";
           saveUserProgress();
         });
@@ -4619,7 +4582,7 @@
       });
     }
 
-    // Step 3 Sub 2: Conversion Bottleneck (Dropdown & Cards)
+    // Step 3 Sub 2: Conversion Bottleneck (Dropdown Only)
     if (s === 3 && sub === 2) {
       const convSelect = document.getElementById("growthConversionSelect");
       if (convSelect) {
@@ -4631,14 +4594,6 @@
           triggerAutoAdvance();
         });
       }
-
-      document.querySelectorAll("[data-growth-conversion]").forEach((el) => {
-        el.addEventListener("click", () => {
-          gp.conversionIssue = el.getAttribute("data-growth-conversion");
-          state.validationError = "";
-          triggerAutoAdvance();
-        });
-      });
     }
 
     // Step 4 Sub 1: Repeat Rate
@@ -4880,7 +4835,8 @@
         }
 
         const analysis = state.growthAnalysis;
-        const nicheDesc = gp.specificNiche || gp.businessType || "Business";
+        const subNicheFound = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType] || []).find((sn) => sn.id === gp.subNicheId);
+        const nicheDesc = gp.specificNiche || (subNicheFound ? subNicheFound.label : gp.businessType) || "Business";
         const audienceDesc = gp.targetAudience ? ` | Client: ${gp.targetAudience}` : "";
         const growthSkillsSummary = `Growth: ${nicheDesc} (${gp.currentRevenue || 0}/mo)${audienceDesc}`;
 
@@ -5133,7 +5089,11 @@
         </p>
 
         <div class="results-summary-badges">
-          <span class="summary-badge">${escapeHtml(gp.specificNiche || bTypeObj.label)}</span>
+          <span class="summary-badge">${escapeHtml(
+            gp.specificNiche ||
+            ((window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType] || []).find((sn) => sn.id === gp.subNicheId)?.label) ||
+            bTypeObj.label
+          )}</span>
           ${gp.targetAudience ? `<span class="summary-badge">Audience: ${escapeHtml(gp.targetAudience)}</span>` : ""}
           <span class="summary-badge">Now: ${fmtMoney(m.currentRev)}/mo (~${m.marginPct}% Kept)</span>
           <span class="summary-badge">Goal: +${fmtMoney(m.revenueGap)}/mo More</span>

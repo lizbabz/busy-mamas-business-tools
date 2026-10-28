@@ -710,7 +710,9 @@ window.GrowthEngine = {
       bType === "home-family-local";
     const isDigital = bType === "digital-products-downloads" || bType === "digital-ecommerce";
 
-    const customNicheTitle = gp.specificNiche ? gp.specificNiche.trim() : "";
+    const subNicheList = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
+    const subNicheMatch = subNicheList.find((sn) => sn.id === gp.subNicheId);
+    const customNicheTitle = (gp.specificNiche && gp.specificNiche.trim()) || (subNicheMatch ? subNicheMatch.label : "");
 
     // Calculate realistic target package prices based on business type
     const upgradedPackagePrice = isMaternalHealth
