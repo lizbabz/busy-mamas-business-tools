@@ -118,7 +118,7 @@
 
     const topModePills = document.getElementById("topModePills");
     if (topModePills) {
-      topModePills.style.display = isHome ? "none" : "inline-flex";
+      topModePills.style.display = isHome ? "none" : "";
       topModePills.querySelectorAll("[data-switch-mode]").forEach((btn) => {
         const m = btn.getAttribute("data-switch-mode");
         const isCurrent = m === state.mode;
@@ -3329,6 +3329,12 @@
       const annualTarget = targetRev * 12;
       const showEarlyBridge = gp.businessType === "unsure-model" || gp.revenueStageId === "pre-revenue";
 
+      const hasBusinessType = Boolean(gp.businessType);
+      const hasRevenueStage = Boolean(gp.revenueStageId);
+      const hasMargin = Boolean(gp.profitMarginId);
+
+      const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
+
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">01</span>
@@ -3343,7 +3349,7 @@
         <h3 class="sub-section-heading" id="growthPart1A">
           Part A: What type of business do you currently run?
         </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
+        <div class="options-grid" style="margin-bottom: 20px;">
           ${(window.GROWTH_BUSINESS_TYPES || [])
             .map(
               (item) => `
@@ -3359,207 +3365,245 @@
             .join("")}
         </div>
 
-        ${gp.businessType && window.GROWTH_SUB_NICHES && window.GROWTH_SUB_NICHES[gp.businessType] ? `
-          <div class="growth-niche-customizer" id="growthPart1A2" style="background: #fff; border: 2px solid var(--forest); border-radius: 20px; padding: 24px 22px; margin-bottom: 28px; box-shadow: var(--shadow-sm);">
-            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
-              <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--hot-pink);">
-                Part A-2 • Your Specific Niche & Ideal Customer
-              </span>
-              <span style="font-size: 0.78rem; font-weight: 700; color: var(--forest); background: var(--mint-soft); padding: 3px 10px; border-radius: 100px;">
-                Personalized 30-Day Plan
-              </span>
-            </div>
-            <h4 style="font-size: 1.15rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
-              What is your specific specialty, niche, or main service?
-            </h4>
-            <p style="font-size: 0.92rem; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
-              Click your closest specialty below, or type your niche in your own words so your 30-day priorities and outreach messages are 100% custom to what you do.
-            </p>
-
-            <!-- Specialty Chips -->
-            <div class="subniche-chip-grid" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;">
-              ${(window.GROWTH_SUB_NICHES[gp.businessType] || []).map(sn => {
-                const isSelected = gp.subNicheId === sn.id;
-                return `
-                  <button
-                    type="button"
-                    class="subniche-chip-btn ${isSelected ? 'active' : ''}"
-                    data-growth-subniche="${sn.id}"
-                    data-growth-subniche-label="${escapeHtml(sn.label)}"
-                    data-growth-subniche-placeholder="${escapeHtml(sn.placeholder || '')}"
-                    style="display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid ${isSelected ? 'var(--forest)' : 'var(--border)'}; background: ${isSelected ? 'var(--forest)' : '#fff'}; color: ${isSelected ? '#fff' : 'var(--dark)'}; padding: 7px 14px; border-radius: 100px; font-size: 0.84rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease;"
-                  >
-                    <span>${sn.label}</span>
-                    ${isSelected ? '<span style="font-size: 0.75rem;">✓</span>' : ''}
-                  </button>
-                `;
-              }).join('')}
-            </div>
-
-            <!-- Custom Niche & Audience Inputs -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" class="growth-niche-inputs-grid">
-              <div>
-                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
-                  What specifically do you sell or offer?
-                </label>
-                <input
-                  type="text"
-                  id="growthSpecificNicheInput"
-                  class="form-input"
-                  style="width: 100%; font-size: 0.9rem; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border); box-sizing: border-box;"
-                  placeholder="${escapeHtml((window.GROWTH_SUB_NICHES[gp.businessType]?.[0]?.placeholder) || 'e.g., Pediatric sleep consulting for babies 0 to 24 months')}"
-                  value="${escapeHtml(gp.specificNiche || '')}"
-                />
-              </div>
-              <div>
-                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
-                  Who is your primary ideal customer / client?
-                </label>
-                <input
-                  type="text"
-                  id="growthTargetAudienceInput"
-                  class="form-input"
-                  style="width: 100%; font-size: 0.9rem; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border); box-sizing: border-box;"
-                  placeholder="e.g., Exhausted working moms of babies 0-2, wedding couples, small businesses"
-                  value="${escapeHtml(gp.targetAudience || '')}"
-                />
-              </div>
-            </div>
+        ${!hasBusinessType ? `
+          <div class="progressive-hint-box" style="margin-bottom: 24px;">
+            Tap your business type above to unlock your tailored niche questions and sales goal.
           </div>
-        ` : ''}
-
-        ${
-          showEarlyBridge
-            ? `
-          <div class="growth-bridge-nudge-card">
-            <div style="flex: 1; min-width: 240px;">
-              <div style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 4px;">
-                Helpful Note · Still Figuring Out Your Business?
+        ` : `
+          ${subNiches.length > 0 ? `
+            <div class="growth-niche-customizer growth-progressive-section" id="growthPart1A2">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--hot-pink);">
+                  Part A-2 • Your Specific Specialty & Ideal Client
+                </span>
+                <span style="font-size: 0.78rem; font-weight: 700; color: var(--forest); background: var(--mint-soft); padding: 3px 10px; border-radius: 100px;">
+                  Personalized 30-Day Plan
+                </span>
               </div>
-              <h4 style="margin-bottom: 4px;">Want to compare your current business against 200+ flexible ideas first?</h4>
-              <p style="margin-bottom: 0;">
-                You can finish this Growth Checkup to get a 30-day starter plan for your current business, OR switch to our <strong>Business Fit Assessment</strong> anytime to see which business ideas best match your skills, hours, and income goal.
+              <h4 style="font-size: 1.15rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+                What is your specific specialty, niche, or main service?
+              </h4>
+              <p style="font-size: 0.92rem; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
+                Select your closest specialty below, or describe your niche in your own words so your 30-day priorities and outreach messages are 100% custom to what you do.
               </p>
-            </div>
-            <button type="button" class="btn-secondary" data-switch-mode="fit" style="padding: 10px 18px; font-size: 0.85rem; white-space: nowrap;">
-              Switch to Business Fit Assessment
-            </button>
-          </div>
-        `
-            : ""
-        }
 
-        <h3 class="sub-section-heading" id="growthPart1B">
-          Part B: Roughly how much does your business bring in each month right now?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${(window.GROWTH_REVENUE_STAGES || [])
-            .map((st) => {
-              const localVal = scaleAmt(st.valUsd);
-              const labelAdapted = st.label.replace(/\$([0-9,]+)/g, (_, numStr) => {
-                const rawNum = Number(numStr.replace(/,/g, ""));
-                return fmtMoney(scaleAmt(rawNum));
-              });
-              const subAdapted = st.sub.replace(/\$([0-9,]+)/g, (_, numStr) => {
-                const rawNum = Number(numStr.replace(/,/g, ""));
-                return fmtMoney(scaleAmt(rawNum));
-              });
-              return `
-                <div class="option-card ${gp.revenueStageId === st.id ? "selected" : ""}" data-growth-revstage="${st.id}" data-growth-revval="${localVal}">
-                  <div class="option-content">
-                    <div class="option-title">${labelAdapted}</div>
-                    <div class="option-sub">${subAdapted}</div>
-                  </div>
-                  <div class="option-check">✓</div>
-                </div>
-              `;
-            })
-            .join("")}
-        </div>
+              <!-- Specialty Dropdown -->
+              <label for="growthSubNicheSelect" style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+                Choose specialty or main service:
+              </label>
+              <select id="growthSubNicheSelect" class="growth-subniche-select">
+                <option value="">-- Choose your closest specialty --</option>
+                ${subNiches.map(sn => `
+                  <option value="${sn.id}" ${gp.subNicheId === sn.id ? 'selected' : ''}>
+                    ${sn.label}
+                  </option>
+                `).join('')}
+                <option value="other" ${gp.subNicheId === 'other' ? 'selected' : ''}>
+                  Other / Custom Specialty (type below)
+                </option>
+              </select>
 
-        <h3 class="sub-section-heading" id="growthPart1C">
-          Part C: After paying for supplies and expenses, how much do you keep as take-home profit?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 26px;">
-          ${(window.GROWTH_PROFIT_MARGINS || [])
-            .map(
-              (m) => `
-            <div class="option-card ${gp.profitMarginId === m.id ? "selected" : ""}" data-growth-margin="${m.id}">
-              <div class="option-content">
-                <div class="option-title">${m.label}</div>
-                <div class="option-sub">${m.sub}</div>
+              <!-- Quick-Tap Specialty Chips (Top 5) -->
+              <div style="font-size: 0.78rem; font-weight: 700; color: var(--ink-light); margin-bottom: 6px;">
+                Or quick-select popular specialties:
               </div>
-              <div class="option-check">✓</div>
+              <div class="subniche-chip-grid">
+                ${subNiches.slice(0, 5).map(sn => {
+                  const isSelected = gp.subNicheId === sn.id;
+                  return `
+                    <button
+                      type="button"
+                      class="subniche-chip-btn ${isSelected ? 'active' : ''}"
+                      data-growth-subniche="${sn.id}"
+                      data-growth-subniche-label="${escapeHtml(sn.label)}"
+                      data-growth-subniche-placeholder="${escapeHtml(sn.placeholder || '')}"
+                    >
+                      <span>${sn.label}</span>
+                      ${isSelected ? '<span style="font-size: 0.72rem;">✓</span>' : ''}
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+
+              <!-- Full-Width Stacked Custom Prompts -->
+              <div class="growth-niche-inputs-grid">
+                <div>
+                  <label for="growthSpecificNicheInput" style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
+                    What specifically do you sell or offer?
+                  </label>
+                  <input
+                    type="text"
+                    id="growthSpecificNicheInput"
+                    class="form-input"
+                    style="width: 100%; font-size: 0.92rem; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border); box-sizing: border-box;"
+                    placeholder="${escapeHtml((subNiches.find(s => s.id === gp.subNicheId)?.placeholder) || subNiches[0]?.placeholder || 'e.g., Virtual assistance packages, sleep consulting, custom knitwear')}"
+                    value="${escapeHtml(gp.specificNiche || '')}"
+                  />
+                </div>
+                <div>
+                  <label for="growthTargetAudienceInput" style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
+                    Who is your primary ideal customer / client?
+                  </label>
+                  <input
+                    type="text"
+                    id="growthTargetAudienceInput"
+                    class="form-input"
+                    style="width: 100%; font-size: 0.92rem; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border); box-sizing: border-box;"
+                    placeholder="e.g., Exhausted working moms of babies 0-2, wedding couples, corporate HR leaders"
+                    value="${escapeHtml(gp.targetAudience || '')}"
+                  />
+                </div>
+              </div>
             </div>
-          `
-            )
-            .join("")}
-        </div>
+          ` : ''}
 
-        <h3 class="sub-section-heading" id="growthPart1D">
-          Part D: Choose your currency & 90-day monthly sales goal:
-        </h3>
-        <div class="income-showcase-box">
-          <div class="currency-selector-row">
-            <span class="currency-label-text">Currency:</span>
-            ${(window.SUPPORTED_CURRENCIES || [])
-              .map(
-                (c) => `
-              <button type="button" class="currency-pill ${gp.currency === c.code ? "active" : ""}" data-growth-currency="${c.code}">
-                ${c.label}
+          ${showEarlyBridge ? `
+            <div class="growth-bridge-nudge-card growth-progressive-section">
+              <div style="flex: 1; min-width: 240px;">
+                <div style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 4px;">
+                  Helpful Note · Still Figuring Out Your Business?
+                </div>
+                <h4 style="margin-bottom: 4px;">Want to compare your current business against 200+ flexible ideas first?</h4>
+                <p style="margin-bottom: 0;">
+                  You can finish this Growth Checkup to get a 30-day starter plan for your current business, OR switch to our <strong>Business Fit Assessment</strong> anytime to see which business ideas best match your skills, hours, and income goal.
+                </p>
+              </div>
+              <button type="button" class="btn-secondary" data-switch-mode="fit" style="padding: 10px 18px; font-size: 0.85rem; white-space: nowrap;">
+                Switch to Business Fit Assessment
               </button>
-            `
-              )
-              .join("")}
-          </div>
+            </div>
+          ` : ''}
 
-          <div class="income-amount-row">
-            <span class="income-big-number" id="growthTargetDisplay">${fmtMoney(targetRev)}</span>
-            <span class="income-per-mo">/ month goal</span>
-          </div>
-          <div class="income-annual-sub" id="growthGapDisplay">
-            +${fmtMoney(gap)}/mo more than your current monthly sales (<strong>${fmtMoney(annualTarget)}/year</strong> pace)
-          </div>
-
-          <input
-            type="range"
-            id="growthTargetSlider"
-            class="income-slider"
-            min="${cur.min}"
-            max="${cur.max}"
-            step="${cur.step}"
-            value="${Math.min(cur.max, Math.max(cur.min, targetRev))}"
-          />
-
-          <div class="income-presets">
-            ${(cur.presets || [])
-              .map(
-                (val) => `
-              <button type="button" class="preset-btn ${Number(targetRev) === val ? "active" : ""}" data-growth-preset="${val}">
-                ${fmtMoney(val)}/mo
-              </button>
-            `
-              )
-              .join("")}
-          </div>
-
-          <div class="custom-dollar-input-wrap">
-            <span class="custom-dollar-label">Or type exact monthly goal:</span>
-            <div class="custom-dollar-input-group">
-              <span class="custom-dollar-currency">${cur.symbol}</span>
-              <input
-                type="number"
-                id="growthCustomTargetInput"
-                class="custom-dollar-input"
-                min="100"
-                max="100000000"
-                step="${cur.step}"
-                value="${targetRev}"
-              />
-              <span class="custom-dollar-suffix">/mo</span>
+          <div class="growth-progressive-section" id="growthPart1B">
+            <h3 class="sub-section-heading">
+              Part B: Roughly how much does your business bring in each month right now?
+            </h3>
+            <div class="options-grid" style="margin-bottom: 20px;">
+              ${(window.GROWTH_REVENUE_STAGES || [])
+                .map((st) => {
+                  const localVal = scaleAmt(st.valUsd);
+                  const labelAdapted = st.label.replace(/\$([0-9,]+)/g, (_, numStr) => {
+                    const rawNum = Number(numStr.replace(/,/g, ""));
+                    return fmtMoney(scaleAmt(rawNum));
+                  });
+                  const subAdapted = st.sub.replace(/\$([0-9,]+)/g, (_, numStr) => {
+                    const rawNum = Number(numStr.replace(/,/g, ""));
+                    return fmtMoney(scaleAmt(rawNum));
+                  });
+                  return `
+                    <div class="option-card ${gp.revenueStageId === st.id ? "selected" : ""}" data-growth-revstage="${st.id}" data-growth-revval="${localVal}">
+                      <div class="option-content">
+                        <div class="option-title">${labelAdapted}</div>
+                        <div class="option-sub">${subAdapted}</div>
+                      </div>
+                      <div class="option-check">✓</div>
+                    </div>
+                  `;
+                })
+                .join("")}
             </div>
           </div>
-        </div>
+
+          ${!hasRevenueStage ? `
+            <div class="progressive-hint-box" style="margin-bottom: 24px;">
+              Select your current monthly revenue range above to unlock profit margin and 90-day goal.
+            </div>
+          ` : `
+            <div class="growth-progressive-section" id="growthPart1C">
+              <h3 class="sub-section-heading">
+                Part C: After paying for supplies and expenses, how much do you keep as take-home profit?
+              </h3>
+              <div class="options-grid" style="margin-bottom: 20px;">
+                ${(window.GROWTH_PROFIT_MARGINS || [])
+                  .map(
+                    (m) => `
+                  <div class="option-card ${gp.profitMarginId === m.id ? "selected" : ""}" data-growth-margin="${m.id}">
+                    <div class="option-content">
+                      <div class="option-title">${m.label}</div>
+                      <div class="option-sub">${m.sub}</div>
+                    </div>
+                    <div class="option-check">✓</div>
+                  </div>
+                `
+                  )
+                  .join("")}
+              </div>
+            </div>
+
+            ${!hasMargin ? `
+              <div class="progressive-hint-box" style="margin-bottom: 24px;">
+                Select your profit margin above to unlock your 90-day goal calculator.
+              </div>
+            ` : `
+              <div class="growth-progressive-section" id="growthPart1D">
+                <h3 class="sub-section-heading">
+                  Part D: Choose your currency & 90-day monthly sales goal:
+                </h3>
+                <div class="income-showcase-box">
+                  <div class="currency-selector-row">
+                    <span class="currency-label-text">Currency:</span>
+                    ${(window.SUPPORTED_CURRENCIES || [])
+                      .map(
+                        (c) => `
+                      <button type="button" class="currency-pill ${gp.currency === c.code ? "active" : ""}" data-growth-currency="${c.code}">
+                        ${c.label}
+                      </button>
+                    `
+                      )
+                      .join("")}
+                  </div>
+
+                  <div class="income-amount-row">
+                    <span class="income-big-number" id="growthTargetDisplay">${fmtMoney(targetRev)}</span>
+                    <span class="income-per-mo">/ month goal</span>
+                  </div>
+                  <div class="income-annual-sub" id="growthGapDisplay">
+                    +${fmtMoney(gap)}/mo more than your current monthly sales (<strong>${fmtMoney(annualTarget)}/year</strong> pace)
+                  </div>
+
+                  <input
+                    type="range"
+                    id="growthTargetSlider"
+                    class="income-slider"
+                    min="${cur.min}"
+                    max="${cur.max}"
+                    step="${cur.step}"
+                    value="${Math.min(cur.max, Math.max(cur.min, targetRev))}"
+                  />
+
+                  <div class="income-presets">
+                    ${(cur.presets || [])
+                      .map(
+                        (val) => `
+                      <button type="button" class="preset-btn ${Number(targetRev) === val ? "active" : ""}" data-growth-preset="${val}">
+                        ${fmtMoney(val)}/mo
+                      </button>
+                    `
+                      )
+                      .join("")}
+                  </div>
+
+                  <div class="custom-dollar-input-wrap">
+                    <span class="custom-dollar-label">Or type exact monthly goal:</span>
+                    <div class="custom-dollar-input-group">
+                      <span class="custom-dollar-currency">${cur.symbol}</span>
+                      <input
+                        type="number"
+                        id="growthCustomTargetInput"
+                        class="custom-dollar-input"
+                        min="100"
+                        max="100000000"
+                        step="${cur.step}"
+                        value="${targetRev}"
+                      />
+                      <span class="custom-dollar-suffix">/mo</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `}
+          `}
+        `}
       `;
     } else if (state.growthStep === 2) {
       const showOfferBridge = gp.offerStructure === "unsure-offer";
@@ -4009,6 +4053,17 @@
       });
     });
 
+    function smoothScrollToGrowthElement(id) {
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) {
+          const yOffset = -90;
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+        }
+      }, 70);
+    }
+
     document.querySelectorAll("[data-growth-btype]").forEach((el) => {
       el.addEventListener("click", () => {
         const newBType = el.getAttribute("data-growth-btype");
@@ -4019,23 +4074,52 @@
         state.validationError = "";
         saveUserProgress();
         render();
+        smoothScrollToGrowthElement(document.getElementById("growthPart1A2") ? "growthPart1A2" : "growthPart1B");
       });
     });
 
-    document.querySelectorAll("[data-growth-subniche]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        gp.subNicheId = btn.getAttribute("data-growth-subniche");
-        const label = btn.getAttribute("data-growth-subniche-label") || "";
-        const nicheInp = document.getElementById("growthSpecificNicheInput");
-        if (nicheInp && (!gp.specificNiche || gp.specificNiche.trim().length === 0)) {
-          nicheInp.value = label;
-          gp.specificNiche = label;
-        } else if (!gp.specificNiche) {
-          gp.specificNiche = label;
+    const subNicheSelect = document.getElementById("growthSubNicheSelect");
+    if (subNicheSelect) {
+      subNicheSelect.addEventListener("change", (e) => {
+        const selId = e.target.value;
+        gp.subNicheId = selId;
+        const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
+        const match = subNiches.find((sn) => sn.id === selId);
+        if (match) {
+          gp.specificNiche = match.label;
+          const nicheInp = document.getElementById("growthSpecificNicheInput");
+          if (nicheInp) {
+            nicheInp.value = match.label;
+            if (match.placeholder) nicheInp.placeholder = match.placeholder;
+          }
         }
         state.validationError = "";
         saveUserProgress();
         render();
+        if (!gp.revenueStageId) {
+          smoothScrollToGrowthElement("growthPart1B");
+        }
+      });
+    }
+
+    document.querySelectorAll("[data-growth-subniche]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const selId = btn.getAttribute("data-growth-subniche");
+        gp.subNicheId = selId;
+        const label = btn.getAttribute("data-growth-subniche-label") || "";
+        const placeholder = btn.getAttribute("data-growth-subniche-placeholder") || "";
+        gp.specificNiche = label;
+        const nicheInp = document.getElementById("growthSpecificNicheInput");
+        if (nicheInp) {
+          nicheInp.value = label;
+          if (placeholder) nicheInp.placeholder = placeholder;
+        }
+        state.validationError = "";
+        saveUserProgress();
+        render();
+        if (!gp.revenueStageId) {
+          smoothScrollToGrowthElement("growthPart1B");
+        }
       });
     });
 
@@ -4066,6 +4150,9 @@
         state.validationError = "";
         saveUserProgress();
         render();
+        if (!gp.profitMarginId) {
+          smoothScrollToGrowthElement("growthPart1C");
+        }
       });
     });
 
@@ -4075,6 +4162,7 @@
         state.validationError = "";
         saveUserProgress();
         render();
+        smoothScrollToGrowthElement("growthPart1D");
       });
     });
 
