@@ -207,17 +207,10 @@
   }
 
   function renderHomeScreen() {
-    const hasFitProgress =
-      (state.step > 1 && state.step <= 6) ||
-      (state.profile.skills && state.profile.skills.length > 0) ||
-      (state.profile.backgrounds && state.profile.backgrounds.length > 0) ||
-      Boolean(state.profile.timeline);
+    const hasFitProgress = state.step > 1 && state.step <= 6;
     const isFitComplete = state.step >= 8 && state.topMatches && state.topMatches.length > 0;
 
-    const hasGrowthProgress =
-      (state.growthStep > 1 && state.growthStep <= 6) ||
-      Boolean(state.growthProfile.businessType) ||
-      Boolean(state.growthProfile.revenueStageId);
+    const hasGrowthProgress = state.growthStep > 1 && state.growthStep <= 6;
     const isGrowthComplete = state.growthStep >= 8 && Boolean(state.growthAnalysis);
 
     return `
