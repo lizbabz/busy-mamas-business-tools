@@ -2349,6 +2349,51 @@ h1 em, h2 em, .step-title em {
 }
 
 /* ============================================================================
+   MOBILE-FIRST FOCUSED RESULTS & CURATION STYLES
+   ============================================================================ */
+.focused-ideas-tabs {
+  scrollbar-width: thin;
+  scrollbar-color: var(--mint) transparent;
+}
+.focused-ideas-tabs::-webkit-scrollbar {
+  height: 4px;
+}
+.focused-ideas-tabs::-webkit-scrollbar-thumb {
+  background: var(--mint);
+  border-radius: 4px;
+}
+.focused-tab-pill {
+  transition: all 0.15s ease;
+}
+.focused-tab-pill:hover {
+  border-color: var(--forest) !important;
+}
+.focused-tab-pill.active {
+  box-shadow: 0 4px 12px rgba(45, 90, 39, 0.18);
+}
+.swap-idea-btn {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 6px 12px;
+  border: 1px dashed var(--border);
+  background: transparent;
+  transition: all 0.15s ease;
+}
+.swap-idea-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--dark) !important;
+  border-color: var(--forest);
+}
+.share-mom-btn {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.share-mom-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================================
    PRINT STYLESHEET (CLEAN PDF / PAPER PRINTOUT)
    ============================================================================ */
 @media print {

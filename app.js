@@ -86,6 +86,8 @@
     runnerUpMatches: [],
     runnerUpPlaybooks: [],
     expandedRunnerUps: {},
+    selectedIdeaIdx: null,
+    allRankedMatches: [],
     activeTabs: { 0: "overview", 1: "overview", 2: "overview", 3: "overview", 4: "overview" },
     validationError: "",
     limitNotice: "",
@@ -803,6 +805,7 @@
 
   function computeRecommendations() {
     const ranked = window.VaultEngine.rankIdeas(state.vaultIdeas, state.profile);
+    state.allRankedMatches = ranked;
     state.topMatches = ranked.slice(0, 3);
     state.playbooks = state.topMatches.map((idea, idx) =>
       window.VaultEngine.buildPlaybook(idea, state.profile, idx)
@@ -815,6 +818,7 @@
       window.VaultEngine.buildPlaybook(idea, state.profile, 3 + rIdx)
     );
     state.expandedRunnerUps = {};
+    state.selectedIdeaIdx = null;
   }
 
   function getPrefilledCalendlyUrl() {
@@ -1565,13 +1569,16 @@
             .join("")}
         </div>
 
-        <h3 class="sub-section-heading">Part D: Optional Personal Note (Any specific degree, certification, niche, or life context we should know?):</h3>
+        <h3 class="sub-section-heading">Part D: Your Specific Industry, Background or Passion (Optional):</h3>
+        <p style="font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 8px;">
+          Have a unique career, degree, or specialty you love? Type it here (e.g., ex-Bain / management consulting, STEM curriculum & scientific research, admissions consulting, creative writing, knitting) so your matches are tailored to your exact world.
+        </p>
         <div style="margin-bottom: 8px;">
           <input
             type="text"
             id="customNoteInput"
             class="form-input"
-            placeholder="e.g., Former RN, CPA, bilingual in Spanish, love organizing, or have a toddler at home..."
+            placeholder="e.g., Management consulting, scientific research & STEM programs, admissions, novel writing..."
             value="${(state.profile.customNote || "").replace(/"/g, "&quot;")}"
           />
         </div>
@@ -2257,6 +2264,11 @@
                 .replace(/\s+/g, " ")
                 .trim();
 
+              const matchWhy =
+                idea.aiWhyFits ||
+                (idea.matchReasons && idea.matchReasons[0]) ||
+                idea.description.slice(0, 110) + "...";
+
               return `
               <div class="comparison-col ${idx === 0 ? "rank-1" : ""}">
                 <div class="comparison-col-header">
@@ -2266,6 +2278,9 @@
                   </div>
                   <div class="comparison-idea-name" title="${(idea.name || "").replace(/"/g, "&quot;")}">${cleanShortName || idea.name}</div>
                   <div class="comparison-category">${idea.category}</div>
+                  <div class="comparison-why-preview" style="font-size: 0.82rem; color: var(--ink-muted); margin: 8px 0 10px; line-height: 1.45; background: rgba(0,0,0,0.025); padding: 8px 10px; border-radius: 8px;">
+                    <strong>Why it fits:</strong> ${escapeHtml(matchWhy)}
+                  </div>
                 </div>
 
                 <div class="comparison-col-footer">
@@ -2288,8 +2303,11 @@
                     </div>
                   </div>
 
-                  <button type="button" class="comparison-jump-btn" data-jump-card="idea-card-${idx}">
-                    View Full Plan & Math
+                  <button type="button" class="btn-primary comparison-jump-btn" data-focus-idea="${idx}" style="width: 100%; margin-bottom: 8px; font-weight: 800; font-size: 0.92rem; padding: 11px;">
+                    View Full Plan & Math →
+                  </button>
+                  <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="width: 100%; font-size: 0.8rem; color: var(--ink-muted); text-align: center;">
+                    Not for me? Swap this idea
                   </button>
                 </div>
               </div>
@@ -2408,6 +2426,91 @@
     const consulting = state.config.consulting || window.APP_CONFIG.consulting;
     const calendlyHref = getPrefilledCalendlyUrl();
 
+    const isFocused =
+      state.selectedIdeaIdx !== null &&
+      state.selectedIdeaIdx >= 0 &&
+      state.selectedIdeaIdx < state.topMatches.length;
+
+    let matchSectionHtml = "";
+
+    if (isFocused) {
+      const idx = state.selectedIdeaIdx;
+      const focusedIdea = state.topMatches[idx];
+      const focusedPlaybook = state.playbooks[idx];
+
+      matchSectionHtml = `
+        <!-- FOCUSED IDEA VIEW (MOBILE-FIRST) -->
+        <div class="focused-idea-view" style="margin-bottom: 28px;">
+          <!-- Top Navigation Header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1.5px solid var(--border);">
+            <button type="button" class="btn-secondary" id="btnBackToMatchesOverview" style="font-size: 0.88rem; padding: 9px 15px; font-weight: 700;">
+              ← Back to All 3 Matches
+            </button>
+            <div style="font-size: 0.86rem; font-weight: 800; color: var(--forest);">
+              Viewing Match #${idx + 1} of 3
+            </div>
+            <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="font-size: 0.84rem;">
+              Not for me? Swap this idea
+            </button>
+          </div>
+
+          <!-- Switcher pills between the 3 top ideas -->
+          <div class="focused-ideas-tabs" style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 6px;">
+            ${state.topMatches
+              .map((item, i) => {
+                const active = i === idx;
+                const shortName = String(item.name || "").split("/")[0].split("(")[0].trim();
+                return `
+                <button
+                  type="button"
+                  class="focused-tab-pill ${active ? "active" : ""}"
+                  data-switch-focused-idea="${i}"
+                  style="white-space: nowrap; font-size: 0.84rem; font-weight: 800; padding: 8px 16px; border-radius: 100px; border: 1.5px solid ${active ? "var(--forest)" : "var(--border)"}; background: ${active ? "var(--forest)" : "#fff"}; color: ${active ? "#fff" : "var(--dark)"}; cursor: pointer;"
+                >
+                  Match #${i + 1}: ${escapeHtml(shortName)}
+                </button>
+              `;
+              })
+              .join("")}
+          </div>
+
+          <!-- Focused Single Idea Card -->
+          ${renderSingleIdeaCard(focusedIdea, focusedPlaybook, idx)}
+
+          <!-- Bottom Return / Share Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 24px; padding: 18px 20px; background: #fff; border-radius: 16px; border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);">
+            <button type="button" class="btn-secondary" id="btnBackToMatchesOverviewBottom" style="font-weight: 700;">
+              ← Back to All 3 Matches
+            </button>
+            <button type="button" class="btn-primary share-mom-btn" id="btnShareMomFocused" style="background: var(--forest); color: #fff; font-size: 0.92rem; font-weight: 800;">
+              Share With a Fellow Mom
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      matchSectionHtml = `
+        ${renderTop3ComparisonBar()}
+
+        <!-- Interactive Explorer Guidance Strip -->
+        <div style="background: rgba(45, 90, 39, 0.06); border: 1.5px solid var(--mint); border-radius: 16px; padding: 18px 22px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 260px;">
+            <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--forest); margin-bottom: 3px;">
+              Interactive Blueprint Explorer
+            </div>
+            <p style="font-size: 0.92rem; color: var(--ink); margin-bottom: 0; line-height: 1.5;">
+              Click <strong>"View Full Plan & Math →"</strong> on any idea above to open its deep-dive action blueprint without scrolling fatigue. If an idea does not fit you, click <strong>"Not for me? Swap this idea"</strong> to see an instant alternative.
+            </p>
+          </div>
+          <button type="button" class="btn-secondary share-mom-btn" id="btnShareMomOverview" style="white-space: nowrap; font-size: 0.9rem; font-weight: 800; padding: 10px 18px;">
+            Share With a Fellow Mom
+          </button>
+        </div>
+
+        ${renderRunnerUpSection(calendlyHref)}
+      `;
+    }
+
     return `
       <div class="results-header-card">
         <div class="eyebrow-pill" style="background: rgba(255,255,255,0.14); border-color: var(--mint); color: var(--blush);">
@@ -2427,11 +2530,7 @@
         </div>
       </div>
 
-      ${renderTop3ComparisonBar()}
-
-      ${state.topMatches.map((idea, idx) => renderSingleIdeaCard(idea, state.playbooks[idx], idx, calendlyHref)).join("")}
-
-      ${renderRunnerUpSection(calendlyHref)}
+      ${matchSectionHtml}
 
       <!-- BRIDGE TO BUSINESS GROWTH ASSESSMENT -->
       <div class="growth-bridge-nudge-card" style="margin: 28px 0;">
@@ -2497,10 +2596,17 @@
             <a
               href="mailto:hello@busymamasnetwork.com?subject=Question%20about%20my%20Business%20Fit%20Assessment%20Results"
               class="btn-pink"
-              style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px;"
+              style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px; font-weight: 800;"
             >
               Have a Question? Email Oyin
             </a>
+            <button
+              type="button"
+              class="btn-secondary share-mom-btn"
+              style="display: flex; justify-content: center; width: 100%; font-size: 0.92rem; font-weight: 800;"
+            >
+              Share With a Fellow Mom
+            </button>
           </div>
         </div>
       </div>
@@ -2742,6 +2848,84 @@
   function bindResultsEvents() {
     document.querySelectorAll("[data-switch-mode]").forEach((btn) => {
       btn.onclick = () => switchToolMode(btn.getAttribute("data-switch-mode"));
+    });
+
+    document.querySelectorAll("[data-focus-idea]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-focus-idea"));
+        state.selectedIdeaIdx = idx;
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    });
+
+    document.querySelectorAll("[data-switch-focused-idea]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-switch-focused-idea"));
+        state.selectedIdeaIdx = idx;
+        render();
+      });
+    });
+
+    ["btnBackToMatchesOverview", "btnBackToMatchesOverviewBottom"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener("click", () => {
+          state.selectedIdeaIdx = null;
+          render();
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+      }
+    });
+
+    document.querySelectorAll("[data-swap-idea]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const slotIdx = Number(btn.getAttribute("data-swap-idea"));
+        if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
+
+        const activeIds = new Set([
+          ...state.topMatches.map((m) => m.id),
+          ...state.runnerUpMatches.map((m) => m.id)
+        ]);
+        const candidate = (state.allRankedMatches || []).find((idea) => !activeIds.has(idea.id));
+
+        if (candidate) {
+          state.topMatches[slotIdx] = candidate;
+          state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(candidate, state.profile, slotIdx);
+          render();
+        } else if (state.runnerUpMatches.length > 0) {
+          const promoted = state.runnerUpMatches.shift();
+          const demoted = state.topMatches[slotIdx];
+          state.topMatches[slotIdx] = promoted;
+          state.runnerUpMatches.push(demoted);
+          state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(promoted, state.profile, slotIdx);
+          state.runnerUpPlaybooks = state.runnerUpMatches.map((idea, idx) =>
+            window.VaultEngine.buildPlaybook(idea, state.profile, 3 + idx)
+          );
+          render();
+        }
+      });
+    });
+
+    const shareHandler = () => {
+      const shareData = {
+        title: "Business Fit by Busy Mamas",
+        text: "Hey mama! I just used this free assessment to find flexible business ideas that fit nap times and family schedules. You should try it:",
+        url: window.location.origin || "https://tools.busymamasnetwork.com"
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData).catch(() => null);
+      } else {
+        const shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+          `${shareData.text} ${shareData.url}`
+        )}`;
+        window.open(shareUrl, "_blank");
+      }
+    };
+
+    document.querySelectorAll(".share-mom-btn").forEach((btn) => {
+      btn.addEventListener("click", shareHandler);
     });
 
     document.querySelectorAll("[data-jump-card]").forEach((btn) => {

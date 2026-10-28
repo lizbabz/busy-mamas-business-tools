@@ -282,6 +282,15 @@ window.PROFESSIONAL_BACKGROUNDS = [
     keywords: ["financial advisor", "insurance", "wealth", "mortgage", "bookkeeping", "property tax"]
   },
   {
+    id: "bg-strategy-consulting",
+    label: "Management Consulting & Corporate Strategy",
+    title: "Management Consulting & Corporate Strategy",
+    sub: "Strategy consultant (Bain, McKinsey, BCG, Big 4), corporate development, strategic planning, or operational scale",
+    desc: "Strategy consultant (Bain, McKinsey, BCG, Big 4), corporate development, strategic planning, or operational scale",
+    mappedSkills: ["coaching_consulting", "organization"],
+    keywords: ["business consulting", "management consulting", "strategy consultant", "fractional strategy", "growth advisor", "market entry", "bain", "mckinsey", "corporate strategy", "advisory", "strategic planning", "pmo", "operations"]
+  },
+  {
     id: "bg-project-management",
     label: "Project Management & Operations",
     title: "Project Management & Operations",
@@ -325,6 +334,15 @@ window.PROFESSIONAL_BACKGROUNDS = [
     desc: "Academic researcher, university faculty/adjunct, clinical data analyst, market researcher, policy analyst, or research coordinator",
     mappedSkills: ["writing", "organization", "tech"],
     keywords: ["research", "academic", "market research", "grant writer", "data analysis", "literature review", "medical writer", "scientific", "policy", "feasibility", "survey", "benchmarking"]
+  },
+  {
+    id: "bg-scientific-stem",
+    label: "Science, STEM & Biotech Innovation",
+    title: "Science, STEM & Biotech Innovation",
+    sub: "Scientist (PhD/MS), STEM researcher, biotech program manager, research strategist, or laboratory specialist",
+    desc: "Scientist (PhD/MS), STEM researcher, biotech program manager, research strategist, or laboratory specialist",
+    mappedSkills: ["writing", "organization", "teaching"],
+    keywords: ["scientific program", "stem curriculum", "research strategy", "scientific innovation", "grant writer", "lab consulting", "biotech", "fellowship", "stem education", "scientist"]
   },
   {
     id: "bg-sales-bizdev",
@@ -481,6 +499,22 @@ window.SKILL_CATEGORIES = [
     keywords: ["coach", "coaching", "consultant", "consulting", "advisor", "recruiting", "placement", "career", "business", "mindset"]
   },
   {
+    id: "strategy_consulting",
+    label: "Management & Business Strategy",
+    title: "Management & Business Strategy",
+    desc: "Strategic planning, growth roadmaps, pricing models, market entry, operations scale, or business audits",
+    sub: "Strategic planning, growth roadmaps, pricing models, market entry, operations scale, or business audits",
+    keywords: ["business consulting", "management consulting", "strategy consultant", "fractional strategy", "growth advisor", "pmo", "advisory", "strategic planning", "bain", "corporate strategy"]
+  },
+  {
+    id: "scientific_stem",
+    label: "Scientific Research & STEM Strategy",
+    title: "Scientific Research & STEM Strategy",
+    desc: "Scientific program design, research frameworks, grant strategy, STEM curricula, or laboratory capacity building",
+    sub: "Scientific program design, research frameworks, grant strategy, STEM curricula, or laboratory capacity building",
+    keywords: ["scientific program", "stem curriculum", "research strategy", "scientific innovation", "grant writer", "lab consulting", "biotech", "fellowship", "scientist"]
+  },
+  {
     id: "finance",
     label: "Finance, Bookkeeping & Wealth",
     title: "Finance, Bookkeeping & Wealth",
@@ -633,13 +667,53 @@ window.ENJOYED_ACTIVITIES = [
   },
   {
     id: "act-realestate-hosting",
-    label: "House Hunting, Airbnb & Real Estate",
-    title: "House Hunting, Airbnb & Real Estate",
-    sub: "Browsing property listings, hosting out-of-town guests in a furnished space, or following local real estate",
-    desc: "Browsing property listings, hosting out-of-town guests in a furnished space, or following local real estate",
-    mappedSkills: ["realestate_property"],
-    models: ["service", "local-service", "licensed-advisory"],
-    keywords: ["co-host", "airbnb", "transaction coordinator", "notary", "mortgage"]
+    label: "House Hunting, Architecture & Beautiful Spaces",
+    title: "House Hunting, Architecture & Beautiful Spaces",
+    sub: "Browsing property listings, touring dream houses, home architecture, interior styling, or hosting guests in a stylish furnished space",
+    desc: "Browsing property listings, touring dream houses, home architecture, interior styling, or hosting guests in a stylish furnished space",
+    mappedSkills: ["realestate_property", "home_local"],
+    models: ["service", "local-service"],
+    keywords: ["home staging", "interior styling", "co-host", "airbnb", "architecture", "aesthetic", "furnished rental"]
+  },
+  {
+    id: "act-reading-books",
+    label: "Reading Novels, Fiction & Book Clubs",
+    title: "Reading Novels, Fiction & Book Clubs",
+    sub: "Immersing in novels, memoirs, book club discussions, and discovering new authors and stories",
+    desc: "Immersing in novels, memoirs, book club discussions, and discovering new authors and stories",
+    mappedSkills: ["writing", "teaching"],
+    models: ["service", "digital-product"],
+    keywords: ["author", "ghostwriter", "memoir", "book", "kdp", "editorial", "reading", "novel", "fiction"]
+  },
+  {
+    id: "act-creative-writing-blog",
+    label: "Creative Writing, Blogging & Storytelling",
+    title: "Creative Writing, Blogging & Storytelling",
+    sub: "Drafting personal essays, blogging, writing stories/children's books, or articulating deep ideas",
+    desc: "Drafting personal essays, blogging, writing stories/children's books, or articulating deep ideas",
+    mappedSkills: ["writing"],
+    models: ["service", "digital-product"],
+    keywords: ["author", "ghostwriter", "blogger", "memoir", "book", "kdp", "essay", "content writer", "publishing"]
+  },
+  {
+    id: "act-fiber-crafts",
+    label: "Knitting, Crochet, Sewing & Textile Crafts",
+    title: "Knitting, Crochet, Sewing & Textile Crafts",
+    sub: "Working with yarn, needles, or fabric to knit cozy blankets, crochet garments, or sew bespoke pieces",
+    desc: "Working with yarn, needles, or fabric to knit cozy blankets, crochet garments, or sew bespoke pieces",
+    mappedSkills: ["crafts"],
+    models: ["physical-product", "digital-product"],
+    keywords: ["knitting", "crochet", "sewing", "textile", "handmade", "artisan", "pattern design", "yarn", "heirloom"]
+  },
+  {
+    id: "act-scientific-stem",
+    label: "Scientific Discovery, STEM & Problem-Solving",
+    title: "Scientific Discovery, STEM & Problem-Solving",
+    sub: "Exploring scientific discoveries, analyzing complex problems, brainstorming educational frameworks, and advancing STEM",
+    desc: "Exploring scientific discoveries, analyzing complex problems, brainstorming educational frameworks, and advancing STEM",
+    mappedSkills: ["writing", "organization", "teaching"],
+    models: ["service"],
+    keywords: ["scientific program", "stem curriculum", "research strategy", "grant writer", "innovation consulting", "science", "stem"]
   },
   {
     id: "act-fashion-styling",
@@ -2399,10 +2473,12 @@ window.DEFAULT_VAULT_IDEAS = [
     first30DaysFocus: "Launch profitable Meta or Google Ad campaigns for your first 2 to 3 clients and transition them onto $1,500 to $2,500/mo ongoing media buying retainers."
   },
   {
+    id: "idea-52",
     name: "Personal Wardrobe Stylist, Capsule Wardrobe Consultant & Virtual Shopper",
     category: "Fashion, Styling & Personal Shopping",
     skills: ["beauty", "design_photo", "home_local"],
-    minHoursWeek: 4,
+    minHoursPerWeek: 4,
+    optimalHoursPerWeek: 12,
     easeOf5k: 4,
     maxMonthlyIncomePotential: 15000,
     workStyle: "both",
@@ -2426,10 +2502,12 @@ window.DEFAULT_VAULT_IDEAS = [
     first30DaysFocus: "Complete 3 closet edits, gather before-and-after photo testimonials, and partner with local boutiques, photographers, and hair stylists for client referrals."
   },
   {
+    id: "idea-53",
     name: "Independent Market Research, Feasibility & Academic Grant Synthesis Consultant",
     category: "Research, Academia & Analysis",
     skills: ["writing", "organization", "tech"],
-    minHoursWeek: 5,
+    minHoursPerWeek: 5,
+    optimalHoursPerWeek: 15,
     easeOf5k: 4,
     maxMonthlyIncomePotential: 20000,
     workStyle: "behind-the-scenes",
@@ -2451,6 +2529,156 @@ window.DEFAULT_VAULT_IDEAS = [
     ],
     quickTestStrategy: "Identify 10 academic faculty, independent research labs, or non-profit directors in your field. Send a tailored introductory note offering a fast 1-week literature review or data synthesis package for an upcoming paper or grant submission.",
     first30DaysFocus: "Secure 2 initial research or literature synthesis projects ($1,200 to $1,800 each) and establish relationships with 2 university departments or research firms for recurring contract work."
+  },
+  {
+    id: "idea-54",
+    name: "Management Consulting & Growth Strategy Advisor (Ex-Consultant / Corporate Strategy)",
+    category: "Management & Strategy Consulting",
+    businessModel: "service",
+    skills: ["strategy_consulting", "coaching_consulting", "organization"],
+    minHoursPerWeek: 4,
+    optimalHoursPerWeek: 12,
+    easeOf5k: 5,
+    maxMonthlyIncomePotential: 30000,
+    workStyle: "client-facing",
+    startupCost: 0,
+    incomeModel: "Monthly Strategic Advisory Retainer ($2,000 to $4,500/mo) or 1-Day Growth Intensive ($1,500 to $3,000)",
+    avgUnitRevenue: 2500,
+    unitLabel: "monthly advisory retainers or growth intensives",
+    hoursPerUnitPerWeek: 1.5,
+    description: "Advise growing 6- and 7-figure businesses, boutique agencies, or non-profits on strategic planning, pricing models, market expansion roadmaps, and executive decision-making. Leverage your management consulting (Bain, McKinsey, BCG, Big 4) or corporate strategy background without working 60-hour corporate weeks.",
+    targetAudience: "Founders of 6-to-7 figure businesses, agency owners, corporate spin-outs, and mission-driven non-profits",
+    requirements: [
+      "Past experience in management consulting, corporate strategy, or executive advisory",
+      "Clean 1-page advisory menu showing 2 clear options (Quarterly Strategy Retainer or 1-Day Growth Intensive)",
+      "$0 startup cost"
+    ],
+    tradeoffs: [
+      "Pros: Exceptional revenue per client ($2,500+/mo). Just 2 active clients reaches $5,000/mo inside 8 to 10 hours a week.",
+      "Tradeoff: Requires confidence speaking with founders and executives."
+    ],
+    quickTestStrategy: "Reach out to 3 former colleagues or founder acquaintances offering a complimentary 45-minute 'Growth & Strategy Diagnostic' identifying their top 3 strategic priorities for next quarter.",
+    first30DaysFocus: "Convert 1 to 2 diagnostic calls into your first paid $2,500/mo advisory retainer or a $1,500 1-day strategy intensive."
+  },
+  {
+    id: "idea-55",
+    name: "Scientific Program Design & Research Strategy Consultant",
+    category: "Scientific & Educational Advisory",
+    businessModel: "service",
+    skills: ["scientific_stem", "writing", "organization", "teaching"],
+    minHoursPerWeek: 4,
+    optimalHoursPerWeek: 12,
+    easeOf5k: 5,
+    maxMonthlyIncomePotential: 24000,
+    workStyle: "client-facing",
+    startupCost: 0,
+    incomeModel: "Scientific Program Design Package ($2,000 to $4,500/project) or Monthly Research Advisory ($1,500 to $3,000/mo)",
+    avgUnitRevenue: 2200,
+    unitLabel: "program design packages or research advisory retainers",
+    hoursPerUnitPerWeek: 1.5,
+    description: "Help universities, scientific foundations, biotech startups, and healthcare non-profits design fellowships, research initiatives, educational programs, and competitive grant strategies. Marries your scientific background with program design and mentorship.",
+    targetAudience: "Scientific societies, research institutes, university labs, STEM non-profits, and educational foundations",
+    requirements: [
+      "Scientific research or STEM background (PhD, MS, or equivalent experience)",
+      "Proven ability to synthesize scientific frameworks and organize program outcomes",
+      "Zoom, Google Docs, and a clean 1-page service scope"
+    ],
+    tradeoffs: [
+      "Pros: Deep intellectual fulfillment in science without being locked into full-time wet-lab hours or corporate bureaucracy.",
+      "Tradeoff: Non-profit and academic grant cycles operate on seasonal timelines."
+    ],
+    quickTestStrategy: "Connect with 5 program directors or academic colleagues asking what fellowships, training initiatives, or grant programs they are developing for the upcoming cycle.",
+    first30DaysFocus: "Deliver your first program design blueprint for a pilot university department or STEM non-profit."
+  },
+  {
+    id: "idea-56",
+    name: "STEM Education, Youth Mentorship & Curriculum Design Consultant",
+    category: "Education & Youth Empowerment",
+    businessModel: "service",
+    skills: ["scientific_stem", "teaching", "organization"],
+    minHoursPerWeek: 4,
+    optimalHoursPerWeek: 10,
+    easeOf5k: 4,
+    maxMonthlyIncomePotential: 18000,
+    workStyle: "client-facing",
+    startupCost: 0,
+    incomeModel: "Curriculum Module Package ($1,200 to $2,500) or School STEM Workshop Series ($850 to $1,800)",
+    avgUnitRevenue: 1400,
+    unitLabel: "curriculum modules or workshop series",
+    hoursPerUnitPerWeek: 1.2,
+    description: "Create hands-on STEM learning experiences, career-readiness workshops, and mentorship curricula for private schools, homeschooling cooperatives, and community organizations looking to inspire the next generation in science and technology.",
+    targetAudience: "Independent schools, STEM academies, homeschooling networks, and community youth programs",
+    requirements: [
+      "Passion for STEM education, hands-on learning, and youth mentorship",
+      "Modular workshop curriculum and materials list",
+      "$0 startup cost"
+    ],
+    tradeoffs: [
+      "Pros: Rewarding community impact with flexible daytime workshop delivery during school hours.",
+      "Tradeoff: Schools and homeschool groups often plan 1 to 2 semesters in advance."
+    ],
+    quickTestStrategy: "Host a free or low-cost pilot 'STEM Innovation & Discovery Workshop' for 6 to 10 local kids to gather testimonials and photos.",
+    first30DaysFocus: "Package your pilot workshop into a 4-part series and pitch it to 3 local private schools or homeschool cooperatives."
+  },
+  {
+    id: "idea-57",
+    name: "Executive Ghostwriter, Memoirist & Book Publishing Consultant",
+    category: "Writing, Publishing & Editorial",
+    businessModel: "service",
+    skills: ["writing", "coaching_consulting"],
+    minHoursPerWeek: 5,
+    optimalHoursPerWeek: 12,
+    easeOf5k: 5,
+    maxMonthlyIncomePotential: 25000,
+    workStyle: "solo-flexible",
+    startupCost: 0,
+    incomeModel: "Complete Manuscript Ghostwriting ($3,500 to $8,000) or Book Proposal & Launch Package ($1,500 to $2,500)",
+    avgUnitRevenue: 2500,
+    unitLabel: "manuscripts, book proposals, or ghostwriting packages",
+    hoursPerUnitPerWeek: 1.8,
+    description: "Transform personal stories, faith-based messages, executive lessons, or family legacies into published books and Amazon KDP bestsellers. Conduct recorded interview sessions during nap times and write the chapters on your own quiet schedule.",
+    targetAudience: "Founders, executives, faith leaders, grandparents wanting family legacy books, and aspiring first-time authors",
+    requirements: [
+      "Strong narrative storytelling and editing skills",
+      "Recording tool (Zoom / Otter.ai) and Google Docs",
+      "$0 startup cost"
+    ],
+    tradeoffs: [
+      "Pros: 100% remote and quiet asynchronous writing hours that fit around baby nap times.",
+      "Tradeoff: Requires discipline to deliver chapter drafts on schedule."
+    ],
+    quickTestStrategy: "Offer a '3-Chapter Story Blueprint & Book Outline' package for $500 to 2 leaders in your network to prove the workflow.",
+    first30DaysFocus: "Complete your first paid 3-chapter blueprint and roll that client into a full ghostwritten book contract."
+  },
+  {
+    id: "idea-58",
+    name: "Bespoke Knitwear, Crochet Patterns & Heirloom Textile Studio",
+    category: "Handmade Crafts & Artisan Goods",
+    businessModel: "physical-product",
+    skills: ["crafts", "design_photo"],
+    minHoursPerWeek: 4,
+    optimalHoursPerWeek: 10,
+    easeOf5k: 3,
+    maxMonthlyIncomePotential: 12000,
+    workStyle: "solo-flexible",
+    startupCost: 95,
+    incomeModel: "Made-to-Order Heirloom Baby Blankets ($140 to $280) + Digital Pattern Downloads ($8 to $14)",
+    avgUnitRevenue: 150,
+    unitLabel: "heirloom orders or digital pattern bundles",
+    hoursPerUnitPerWeek: 1,
+    description: "Craft luxurious made-to-order baby blankets, chunky knit sweaters, or heirloom christening sets, while turning your custom designs into downloadable PDF knitting and crochet patterns on Ravelry and Etsy with zero shipping overhead.",
+    targetAudience: "Expectant parents, grandparents looking for luxury heirloom gifts, and the global knitting/crochet community",
+    requirements: [
+      "Quality yarn, knitting needles/crochet hooks, and a smartphone for clean aesthetic photos",
+      "Digital PDF pattern layout in Canva",
+      "~$95 initial materials cost"
+    ],
+    tradeoffs: [
+      "Pros: Meditative, relaxing work you can do while watching your kids or relaxing in the evening.",
+      "Tradeoff: Physical custom orders take hands-on stitching time; digital patterns scale effortlessly."
+    ],
+    quickTestStrategy: "Knit or crochet 1 heirloom sample piece, photograph it in natural daylight, and post it to Instagram/Facebook groups with pre-orders open for 3 pieces.",
+    first30DaysFocus: "Secure 3 prepaid custom blanket orders and publish your first PDF pattern on Etsy."
   }
 ];
 
