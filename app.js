@@ -1175,17 +1175,20 @@
           </div>
 
           <div class="custom-dollar-input-wrap">
-            <span>Or type exact amount: ${cur.symbol}</span>
-            <input
-              type="number"
-              id="customIncomeInput"
-              class="custom-dollar-input"
-              min="100"
-              max="100000000"
-              step="${cur.step}"
-              value="${g}"
-            />
-            <span id="customIncomeUnitSuffix">${isFlash ? "in 14 days" : "/mo"}</span>
+            <span class="custom-dollar-label">Or type exact amount:</span>
+            <div class="custom-dollar-input-group">
+              <span class="custom-dollar-currency">${cur.symbol}</span>
+              <input
+                type="number"
+                id="customIncomeInput"
+                class="custom-dollar-input"
+                min="100"
+                max="100000000"
+                step="${cur.step}"
+                value="${g}"
+              />
+              <span class="custom-dollar-suffix" id="customIncomeUnitSuffix">${isFlash ? "in 14 days" : "/mo"}</span>
+            </div>
           </div>
 
           <div class="tier-insight-banner" id="tierInsightBanner">
@@ -3291,17 +3294,20 @@
           </div>
 
           <div class="custom-dollar-input-wrap">
-            <span>Or type exact monthly goal: ${cur.symbol}</span>
-            <input
-              type="number"
-              id="growthCustomTargetInput"
-              class="custom-dollar-input"
-              min="100"
-              max="100000000"
-              step="${cur.step}"
-              value="${targetRev}"
-            />
-            <span>/mo</span>
+            <span class="custom-dollar-label">Or type exact monthly goal:</span>
+            <div class="custom-dollar-input-group">
+              <span class="custom-dollar-currency">${cur.symbol}</span>
+              <input
+                type="number"
+                id="growthCustomTargetInput"
+                class="custom-dollar-input"
+                min="100"
+                max="100000000"
+                step="${cur.step}"
+                value="${targetRev}"
+              />
+              <span class="custom-dollar-suffix">/mo</span>
+            </div>
           </div>
         </div>
       `;

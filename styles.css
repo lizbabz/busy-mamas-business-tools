@@ -889,6 +889,30 @@ h1 em, h2 em, .step-title em {
   font-weight: 600;
   color: var(--mint);
   margin: 0 auto;
+  flex-wrap: wrap;
+}
+
+.custom-dollar-label {
+  white-space: nowrap;
+}
+
+.custom-dollar-input-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.custom-dollar-currency {
+  font-weight: 800;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+.custom-dollar-suffix {
+  color: var(--mint);
+  font-weight: 600;
+  font-size: 0.84rem;
 }
 
 .custom-dollar-input {
