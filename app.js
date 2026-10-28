@@ -79,7 +79,9 @@
     view: "home", // "home" (Portal Landing / Home Screen) or "assessment" (Active Assessment)
     mode: "fit", // "fit" (Business Fit) or "growth" (Business Growth Assessment)
     step: 1, // 1..6: 6-Step Deep-Fit Assessment, 7: Name & Email Gate, 8: Recommendations & Action Plan
+    subStep: 1, // 1..N: Typeform-style sub-question micro-step
     growthStep: 1, // 1..6: 6-Step Growth Diagnostic, 7: Name & Email Gate, 8: Growth Findings & 30-Day Plan
+    growthSubStep: 1, // 1..N: Typeform-style growth sub-question micro-step
     totalQuizSteps: 6,
     vaultIdeas: [...(window.DEFAULT_VAULT_IDEAS || [])],
     vaultSource: "Built-in Vault (Connect Google Sheet for all 200+ profiles)",
@@ -402,6 +404,7 @@
     if (state.mode === "growth") {
       const keepCurrency = state.growthProfile.currency || state.profile.currency || "USD";
       state.growthStep = 1;
+      state.growthSubStep = 1;
       state.growthShownStories = {};
       state.pendingNextStep = null;
       state.validationError = "";
@@ -415,6 +418,7 @@
     }
     const keepCurrency = state.profile.currency || "USD";
     state.step = 1;
+    state.subStep = 1;
     state.shownStories = {};
     state.pendingNextStep = null;
     state.validationError = "";
@@ -433,283 +437,320 @@
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  function validateCurrentStep() {
+  function getMaxSubSteps(step, mode = state.mode) {
+    if (mode === "growth") {
+      const growthMax = { 1: 5, 2: 3, 3: 2, 4: 2, 5: 2, 6: 1 };
+      return growthMax[step] || 1;
+    }
+    const fitMax = { 1: 2, 2: 2, 3: 2, 4: 2, 5: 2, 6: 3 };
+    return fitMax[step] || 1;
+  }
+
+  function validateFitSubStep() {
     const p = state.profile;
-    if (state.step === 1) {
-      if (!p.timeline) {
-        return {
-          ok: false,
-          message: "Please select your target timeline below before continuing to Section 02.",
-          scrollSelector: "#partTimelineHeading"
-        };
+    const s = state.step;
+    const sub = state.subStep || 1;
+
+    if (s === 1) {
+      if (sub === 1) {
+        if (!p.incomeGoal || Number(p.incomeGoal) <= 0) {
+          return { ok: false, message: "Please set a valid monthly income target." };
+        }
+        return { ok: true };
       }
-      return { ok: true };
+      if (sub === 2) {
+        if (!p.timeline) {
+          return { ok: false, message: "Please choose your target timeline." };
+        }
+        return { ok: true };
+      }
     }
-    if (state.step === 2) {
-      const hasHours = Number(p.hoursPerWeek) > 0;
-      const hasRhythm = Boolean(p.scheduleRhythm);
-      if (!hasHours && !hasRhythm) {
-        return {
-          ok: false,
-          message: "Please select your weekly hours (Part A) and when those hours happen (Part B) before continuing.",
-          scrollSelector: "#part2AHeading"
-        };
+    if (s === 2) {
+      if (sub === 1) {
+        if (!Number(p.hoursPerWeek)) {
+          return { ok: false, message: "Please select how many hours per week you can give." };
+        }
+        return { ok: true };
       }
-      if (!hasHours) {
-        return {
-          ok: false,
-          message: "Please select how many hours per week you can realistically give in Part A.",
-          scrollSelector: "#part2AHeading"
-        };
+      if (sub === 2) {
+        if (!p.scheduleRhythm) {
+          return { ok: false, message: "Please select when your available hours happen." };
+        }
+        return { ok: true };
       }
-      if (!hasRhythm) {
-        return {
-          ok: false,
-          message: "Please select when your hours happen in Part B before continuing.",
-          scrollSelector: "#part2BHeading"
-        };
-      }
-      return { ok: true };
     }
-    if (state.step === 3) {
-      const hasBg = Array.isArray(p.backgrounds) && p.backgrounds.length > 0;
-      const hasLic = Boolean(p.licensingOpenness);
-      if (!hasBg && !hasLic) {
-        return {
-          ok: false,
-          message: "Please select at least one background (Part A) and your licensing preference (Part B) before continuing.",
-          scrollSelector: "#part3AHeading"
-        };
+    if (s === 3) {
+      if (sub === 1) {
+        if (!p.backgrounds || p.backgrounds.length === 0) {
+          return { ok: false, message: "Please select at least one background area from the dropdown or quick buttons." };
+        }
+        return { ok: true };
       }
-      if (!hasBg) {
-        return {
-          ok: false,
-          message: "Please select at least one work, educational, or homemaker background in Part A.",
-          scrollSelector: "#part3AHeading"
-        };
+      if (sub === 2) {
+        if (!p.licensingOpenness) {
+          return { ok: false, message: "Please select your licensing or certification preference." };
+        }
+        return { ok: true };
       }
-      if (!hasLic) {
-        return {
-          ok: false,
-          message: "Please select how you feel about state licensing or certifications in Part B.",
-          scrollSelector: "#part3BHeading"
-        };
-      }
-      return { ok: true };
     }
-    if (state.step === 4) {
-      const hasSkills = Array.isArray(p.skills) && p.skills.length > 0;
-      const hasDir = Boolean(p.skillDirection);
-      if (!hasSkills && !hasDir) {
-        return {
-          ok: false,
-          message: "Please select at least one core skill (Part A) and how you want to use your skills (Part B) before continuing.",
-          scrollSelector: "#part4AHeading"
-        };
+    if (s === 4) {
+      if (sub === 1) {
+        if (!p.skills || p.skills.length === 0) {
+          return { ok: false, message: "Please select at least one core skill or choose 'Not Sure Yet'." };
+        }
+        return { ok: true };
       }
-      if (!hasSkills) {
-        return {
-          ok: false,
-          message: "Please select at least one skill area in Part A (or choose 'I Am Not Sure').",
-          scrollSelector: "#part4AHeading"
-        };
+      if (sub === 2) {
+        if (!p.skillDirection) {
+          return { ok: false, message: "Please select how you want to use your existing skills." };
+        }
+        return { ok: true };
       }
-      if (!hasDir) {
-        return {
-          ok: false,
-          message: "Please select how you want to use your existing skills in Part B.",
-          scrollSelector: "#part4BHeading"
-        };
-      }
-      return { ok: true };
     }
-    if (state.step === 5) {
-      const hasAct = Array.isArray(p.enjoyedActivities) && p.enjoyedActivities.length > 0;
-      const hasLife = Array.isArray(p.livedExperiences) && p.livedExperiences.length > 0;
-      if (!hasAct && !hasLife) {
-        return {
-          ok: false,
-          message: "Please select at least one real-life hobby (Part A) and one lived experience (Part B) before continuing.",
-          scrollSelector: "#part5AHeading"
-        };
+    if (s === 5) {
+      if (sub === 1) {
+        if (!p.enjoyedActivities || p.enjoyedActivities.length === 0) {
+          return { ok: false, message: "Please select at least one hobby or everyday activity you enjoy." };
+        }
+        return { ok: true };
       }
-      if (!hasAct) {
-        return {
-          ok: false,
-          message: "Please select at least one hobby or everyday activity you enjoy in Part A.",
-          scrollSelector: "#part5AHeading"
-        };
+      if (sub === 2) {
+        if (!p.livedExperiences || p.livedExperiences.length === 0) {
+          return { ok: false, message: "Please select at least one personal life or motherhood chapter." };
+        }
+        return { ok: true };
       }
-      if (!hasLife) {
-        return {
-          ok: false,
-          message: "Please select at least one personal life or motherhood chapter in Part B.",
-          scrollSelector: "#part5BHeading"
-        };
-      }
-      return { ok: true };
     }
-    if (state.step === 6) {
-      const hasStyle = Boolean(p.workStyle);
-      const hasBudget = p.budget !== null && p.budget !== undefined;
-      if (!hasStyle && !hasBudget) {
-        return {
-          ok: false,
-          message: "Please select your preferred business environment (Part A) and available startup budget (Part B). Parts C and D are optional.",
-          scrollSelector: "#part6AHeading"
-        };
+    if (s === 6) {
+      if (sub === 1) {
+        if (!p.workStyle) {
+          return { ok: false, message: "Please select your preferred business format." };
+        }
+        return { ok: true };
       }
-      if (!hasStyle) {
-        return {
-          ok: false,
-          message: "Please select your preferred business environment in Part A before viewing your matches.",
-          scrollSelector: "#part6AHeading"
-        };
+      if (sub === 2) {
+        if (p.budget === null || p.budget === undefined) {
+          return { ok: false, message: "Please select your available startup budget." };
+        }
+        return { ok: true };
       }
-      if (!hasBudget) {
-        return {
-          ok: false,
-          message: "Please select your available startup budget in Part B before viewing your matches.",
-          scrollSelector: "#part6BHeading"
-        };
+      if (sub === 3) {
+        return { ok: true };
+      }
+    }
+    return { ok: true };
+  }
+
+  function validateGrowthSubStep() {
+    const gp = state.growthProfile;
+    const s = state.growthStep;
+    const sub = state.growthSubStep || 1;
+
+    if (s === 1) {
+      if (sub === 1) {
+        if (!gp.businessType) {
+          return { ok: false, message: "Please select what type of business you run from the dropdown." };
+        }
+        return { ok: true };
+      }
+      if (sub === 2) {
+        if (!gp.subNicheId && !gp.specificNiche) {
+          return { ok: false, message: "Please select your closest specialty or describe your niche." };
+        }
+        return { ok: true };
+      }
+      if (sub === 3) {
+        if (!gp.revenueStageId) {
+          return { ok: false, message: "Please select your current monthly sales range." };
+        }
+        return { ok: true };
+      }
+      if (sub === 4) {
+        if (!gp.profitMarginId) {
+          return { ok: false, message: "Please select your estimated take-home profit margin." };
+        }
+        return { ok: true };
+      }
+      if (sub === 5) {
+        if (!gp.targetRevenue || Number(gp.targetRevenue) <= 0) {
+          return { ok: false, message: "Please set a valid 90-day sales goal." };
+        }
+        return { ok: true };
+      }
+    }
+    if (s === 2) {
+      if (sub === 1) {
+        if (!gp.offerStructure) {
+          return { ok: false, message: "Please select how your offers are currently structured." };
+        }
+        return { ok: true };
+      }
+      if (sub === 2) {
+        if (!gp.avgPriceTierId) {
+          return { ok: false, message: "Please select your average client price tier." };
+        }
+        return { ok: true };
+      }
+      if (sub === 3) {
+        if (!gp.priceConfidence) {
+          return { ok: false, message: "Please select how confident you feel in your current prices." };
+        }
+        return { ok: true };
+      }
+    }
+    if (s === 3) {
+      if (sub === 1) {
+        if (!gp.leadSources || gp.leadSources.length === 0) {
+          return { ok: false, message: "Please select your primary client acquisition channel." };
+        }
+        return { ok: true };
+      }
+      if (sub === 2) {
+        if (!gp.conversionIssue) {
+          return { ok: false, message: "Please select your primary sales or conversion bottleneck." };
+        }
+        return { ok: true };
+      }
+    }
+    if (s === 4) {
+      if (sub === 1) {
+        if (!gp.repeatRateId) {
+          return { ok: false, message: "Please select your repeat client or renewal rate." };
+        }
+        return { ok: true };
+      }
+      if (sub === 2) {
+        if (!gp.retentionSystem) {
+          return { ok: false, message: "Please select your client retention or follow-up system." };
+        }
+        return { ok: true };
+      }
+    }
+    if (s === 5) {
+      if (sub === 1) {
+        if (!gp.currentHours) {
+          return { ok: false, message: "Please select how many hours per week you work now." };
+        }
+        return { ok: true };
+      }
+      if (sub === 2) {
+        if (!gp.deliveryDrain) {
+          return { ok: false, message: "Please select what drains the most time or energy in your delivery." };
+        }
+        return { ok: true };
+      }
+    }
+    if (s === 6) {
+      if (!gp.primaryGoal) {
+        return { ok: false, message: "Please select your primary growth goal for the next 90 days." };
       }
       return { ok: true };
     }
     return { ok: true };
   }
 
-  function validateGrowthStep() {
-    const gp = state.growthProfile;
-    if (state.growthStep === 1) {
-      if (!gp.businessType) {
-        return {
-          ok: false,
-          message: "Please select what type of business you run in Part A before continuing.",
-          scrollSelector: "#growthPart1A"
-        };
+  function advanceSubStep() {
+    state.validationError = "";
+    if (state.mode === "growth") {
+      const v = validateGrowthSubStep();
+      if (!v.ok) {
+        state.validationError = v.message;
+        render();
+        return;
       }
-      if (!gp.specificNiche && gp.subNicheId && window.GROWTH_SUB_NICHES && window.GROWTH_SUB_NICHES[gp.businessType]) {
-        const found = window.GROWTH_SUB_NICHES[gp.businessType].find(sn => sn.id === gp.subNicheId);
-        if (found) gp.specificNiche = found.label;
+      const maxSub = getMaxSubSteps(state.growthStep, "growth");
+      if (state.growthSubStep < maxSub) {
+        state.growthSubStep++;
+        saveUserProgress();
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
       }
-      if (!gp.revenueStageId) {
-        return {
-          ok: false,
-          message: "Please select your current monthly revenue stage in Part B before continuing.",
-          scrollSelector: "#growthPart1B"
-        };
+      if (state.growthStep < state.totalQuizSteps) {
+        maybeShowGrowthStoryPopupThenAdvance(state.growthStep, state.growthStep + 1);
+        return;
       }
-      if (!gp.profitMarginId) {
-        return {
-          ok: false,
-          message: "Please select your estimated take-home profit margin in Part C (or choose 'Not Sure Yet').",
-          scrollSelector: "#growthPart1C"
-        };
-      }
-      return { ok: true };
+      state.growthStep = 7;
+      state.growthSubStep = 1;
+      saveUserProgress();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     }
-    if (state.growthStep === 2) {
-      if (!gp.offerStructure) {
-        return {
-          ok: false,
-          message: "Please select how your offers are currently structured in Part A.",
-          scrollSelector: "#growthPart2A"
-        };
-      }
-      if (!gp.avgPriceTierId) {
-        return {
-          ok: false,
-          message: "Please select your average order or package price in Part B.",
-          scrollSelector: "#growthPart2B"
-        };
-      }
-      if (!gp.priceConfidence) {
-        return {
-          ok: false,
-          message: "Please select how you feel about your current pricing in Part C.",
-          scrollSelector: "#growthPart2C"
-        };
-      }
-      return { ok: true };
+
+    const v = validateFitSubStep();
+    if (!v.ok) {
+      state.validationError = v.message;
+      render();
+      return;
     }
-    if (state.growthStep === 3) {
-      const hasLeadSources =
-        (Array.isArray(gp.leadSources) && gp.leadSources.length > 0) || Boolean(gp.leadSource);
-      if (!hasLeadSources) {
-        return {
-          ok: false,
-          message: "Please select at least one way your customers find you right now in Part A.",
-          scrollSelector: "#growthPart3A"
-        };
-      }
-      if (!gp.conversionIssue) {
-        return {
-          ok: false,
-          message: "Please select where prospective buyers drop off in Part B.",
-          scrollSelector: "#growthPart3B"
-        };
-      }
-      return { ok: true };
+    const maxSub = getMaxSubSteps(state.step, "fit");
+    if (state.subStep < maxSub) {
+      state.subStep++;
+      saveUserProgress();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     }
-    if (state.growthStep === 4) {
-      if (!gp.repeatRateId) {
-        return {
-          ok: false,
-          message: "Please select your approximate repeat customer rate in Part A.",
-          scrollSelector: "#growthPart4A"
-        };
-      }
-      if (!gp.retentionSystem) {
-        return {
-          ok: false,
-          message: "Please select how you currently follow up with past buyers in Part B.",
-          scrollSelector: "#growthPart4B"
-        };
-      }
-      return { ok: true };
+    if (state.step < state.totalQuizSteps) {
+      maybeShowStoryPopupThenAdvance(state.step, state.step + 1);
+      return;
     }
-    if (state.growthStep === 5) {
-      if (!gp.currentHours) {
-        return {
-          ok: false,
-          message: "Please select roughly how many hours per week you work now in Part A.",
-          scrollSelector: "#growthPart5A"
-        };
+    computeRecommendations();
+    state.step = 7;
+    state.subStep = 1;
+    saveUserProgress();
+    render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function retreatSubStep() {
+    state.validationError = "";
+    if (state.mode === "growth") {
+      if (state.growthSubStep > 1) {
+        state.growthSubStep--;
+        saveUserProgress();
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
       }
-      if (!gp.maxDesiredHours) {
-        return {
-          ok: false,
-          message: "Please select your maximum desired weekly hours in Part B.",
-          scrollSelector: "#growthPart5B"
-        };
+      if (state.growthStep > 1) {
+        state.growthStep--;
+        state.growthSubStep = getMaxSubSteps(state.growthStep, "growth");
+        saveUserProgress();
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
       }
-      if (!gp.deliveryDrain) {
-        return {
-          ok: false,
-          message: "Please select what takes up the most time or energy in your week in Part C.",
-          scrollSelector: "#growthPart5C"
-        };
-      }
-      return { ok: true };
+      navigateToHome();
+      return;
     }
-    if (state.growthStep === 6) {
-      if (!gp.primaryGoal) {
-        return {
-          ok: false,
-          message: "Please select your #1 growth priority for the next 30 to 90 days in Part A.",
-          scrollSelector: "#growthPart6A"
-        };
-      }
-      if (gp.growthBudget === null || gp.growthBudget === undefined) {
-        return {
-          ok: false,
-          message: "Please select your available monthly growth/systems budget in Part B.",
-          scrollSelector: "#growthPart6B"
-        };
-      }
-      return { ok: true };
+
+    if (state.subStep > 1) {
+      state.subStep--;
+      saveUserProgress();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
     }
-    return { ok: true };
+    if (state.step > 1) {
+      state.step--;
+      state.subStep = getMaxSubSteps(state.step, "fit");
+      saveUserProgress();
+      render();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      return;
+    }
+    navigateToHome();
+  }
+
+  function triggerAutoAdvance(callback) {
+    if (callback) callback();
+    saveUserProgress();
+    render();
+    setTimeout(() => {
+      advanceSubStep();
+    }, 220);
   }
 
   function getCur() {
@@ -746,7 +787,9 @@
         savedAt: new Date().toISOString(),
         mode: state.mode,
         step: state.step,
+        subStep: state.subStep || 1,
         growthStep: state.growthStep,
+        growthSubStep: state.growthSubStep || 1,
         profile: state.profile,
         growthProfile: state.growthProfile,
         completedTasks: state.completedTasks
@@ -786,6 +829,7 @@
         }
         if (saved.growthStep && saved.growthStep >= 1 && saved.growthStep <= 8) {
           state.growthStep = saved.growthStep;
+          state.growthSubStep = saved.growthSubStep && saved.growthSubStep >= 1 ? saved.growthSubStep : 1;
           if (state.growthStep >= 7 && window.GrowthEngine) {
             state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
           }
@@ -793,6 +837,10 @@
       }
       if (saved && saved.profile) {
         state.profile = { ...state.profile, ...saved.profile };
+        if (saved.step && saved.step >= 1 && saved.step <= 8) {
+          state.step = saved.step;
+          state.subStep = saved.subStep && saved.subStep >= 1 ? saved.subStep : 1;
+        }
         const supportedCodes = (window.SUPPORTED_CURRENCIES || []).map((c) => c.code);
         if (!supportedCodes.includes(state.profile.currency)) {
           state.profile.currency = "USD";
@@ -1106,9 +1154,8 @@
       return;
     }
 
-    const activeStep = state.mode === "growth" ? state.growthStep : state.step;
     if (heroHeader) {
-      heroHeader.style.display = activeStep === 1 ? "block" : "none";
+      heroHeader.style.display = "none";
     }
 
     if (state.mode === "growth") {
@@ -1312,8 +1359,10 @@
     if (state.pendingNextStep) {
       if (state.mode === "growth") {
         state.growthStep = state.pendingNextStep;
+        state.growthSubStep = 1;
       } else {
         state.step = state.pendingNextStep;
+        state.subStep = 1;
       }
       state.pendingNextStep = null;
       saveUserProgress();
@@ -1323,48 +1372,32 @@
   }
 
   // ============================================================================
-  // RENDER ASSESSMENT STEPS 1 - 4
+  // ============================================================================
+  // RENDER ASSESSMENT TYPEFORM-STYLE SUB-STEPS (FIT ASSESSMENT)
   // ============================================================================
   function renderQuizStep() {
-    const pct = Math.round((state.step / state.totalQuizSteps) * 100);
+    const s = state.step;
+    const sub = state.subStep || 1;
+    const maxSub = getMaxSubSteps(s, "fit");
+    const stepOffsets = { 1: 0, 2: 2, 3: 4, 4: 6, 5: 8, 6: 10 };
+    const completed = (stepOffsets[s] || 0) + (sub - 1);
+    const totalQuestions = 13;
+    const pct = Math.round((completed / totalQuestions) * 100);
     const cur = getCur();
     const flashAmount = fmtMoney(window.VaultEngine.scaleUsdToCurrency(1500, cur.code));
     let stepContent = "";
 
-    if (state.step === 1) {
+    if (s === 1 && sub === 1) {
       const g = Number(state.profile.incomeGoal) || cur.defaultGoal;
       const annual = g * 12;
       const isFlash = isFlashTimeline();
-      const timelines = [
-        {
-          id: "2-week flash",
-          title: `2-Week Flash (${flashAmount} in 14 Days)`,
-          sub: `Switches your target to a fast ${flashAmount} 14-day sprint using immediate presales, deposits, or starter bookings.`
-        },
-        {
-          id: "1 to 3 months",
-          title: "1 to 3 Months (Quick Start)",
-          sub: "Validate quickly and build steady monthly revenue over your first 30 to 90 days."
-        },
-        {
-          id: "3 to 6 months",
-          title: "3 to 6 Months (Steady Build)",
-          sub: "Balance early revenue with building repeat orders, B2B accounts, or local partnerships."
-        },
-        {
-          id: "6 to 12 months",
-          title: "6 to 12 Months (High-Ceiling Scale)",
-          sub: "Ideal for licensed high-earning professions (like financial advising or mortgage), government contracting, or large catalogs."
-        }
-      ];
-
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">01</span>
           <div>
-            <h2 class="step-title">Choose Your Currency, <em>Income Target</em> & Timeline</h2>
+            <h2 class="step-title">Choose Your Currency & <em>Monthly Income Target</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Pick your currency and set your income target and timeline. We will calculate what it takes and explain the honest requirements and tradeoffs.
+              Pick your currency and set your target income. We will calculate the honest math and tradeoffs for each business model.
             </p>
           </div>
         </div>
@@ -1438,10 +1471,42 @@
             ${getIncomeTierInsight(g)}
           </div>
         </div>
+      `;
+    } else if (s === 1 && sub === 2) {
+      const timelines = [
+        {
+          id: "2-week flash",
+          title: `2-Week Flash (${flashAmount} in 14 Days)`,
+          sub: `Switches your target to a fast ${flashAmount} 14-day sprint using immediate presales, deposits, or starter bookings.`
+        },
+        {
+          id: "1 to 3 months",
+          title: "1 to 3 Months (Quick Start)",
+          sub: "Validate quickly and build steady monthly revenue over your first 30 to 90 days."
+        },
+        {
+          id: "3 to 6 months",
+          title: "3 to 6 Months (Steady Build)",
+          sub: "Balance early revenue with building repeat orders, B2B accounts, or local partnerships."
+        },
+        {
+          id: "6 to 12 months",
+          title: "6 to 12 Months (High-Ceiling Scale)",
+          sub: "Ideal for licensed high-earning professions (like financial advising or mortgage), government contracting, or large catalogs."
+        }
+      ];
 
-        <h3 class="sub-section-heading" id="partTimelineHeading">
-          Choose your target timeline:
-        </h3>
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">01</span>
+          <div>
+            <h2 class="step-title">Choose Your <em>Target Timeline</em></h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Select how quickly you need your new business to start bringing in revenue.
+            </p>
+          </div>
+        </div>
+
         <div class="options-grid">
           ${timelines
             .map(
@@ -1458,7 +1523,7 @@
             .join("")}
         </div>
       `;
-    } else if (state.step === 2) {
+    } else if (s === 2 && sub === 1) {
       const hourOptions = [
         {
           val: 4,
@@ -1482,22 +1547,18 @@
         }
       ];
 
-      const rhythms = window.SCHEDULE_RHYTHMS || [];
-      const currentRhythm = state.profile.scheduleRhythm || "";
-
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">02</span>
           <div>
-            <h2 class="step-title">Weekly Hours & <em>Your Schedule Rhythm</em></h2>
+            <h2 class="step-title">How Many Hours Per Week Can You <em>Realistically Give</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Not all hours are created equal in motherhood. Tell us how many hours you have and <strong>how those hours are shaped</strong> so we match businesses that fit your actual daily life.
+              Be completely honest about your current season of life. We filter out business models that demand 30+ hours if you only have 10.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="part2AHeading">Part A: How many hours per week can you realistically give?</h3>
-        <div class="options-grid" style="margin-bottom: 26px;">
+        <div class="options-grid">
           ${hourOptions
             .map(
               (opt) => `
@@ -1512,8 +1573,22 @@
             )
             .join("")}
         </div>
+      `;
+    } else if (s === 2 && sub === 2) {
+      const rhythms = window.SCHEDULE_RHYTHMS || [];
+      const currentRhythm = state.profile.scheduleRhythm || "";
 
-        <h3 class="sub-section-heading" id="part2BHeading">Part B: When do those hours happen?</h3>
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">02</span>
+          <div>
+            <h2 class="step-title">When Do Those <em>Available Hours Happen</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Not all hours are created equal in motherhood. Tell us how those hours are shaped so we match businesses that fit your actual daily pattern.
+            </p>
+          </div>
+        </div>
+
         <div class="options-grid">
           ${rhythms
             .map(
@@ -1530,40 +1605,96 @@
             .join("")}
         </div>
       `;
-    } else if (state.step === 3) {
+    } else if (s === 3 && sub === 1) {
       const selectedBgs = state.profile.backgrounds || [];
-      const licensingChoice = state.profile.licensingOpenness || "";
+      const allBgs = window.PROFESSIONAL_BACKGROUNDS || [];
+      const popularBgIds = [
+        "bg-stay-at-home-mom",
+        "bg-corporate",
+        "bg-education",
+        "bg-healthcare",
+        "bg-marketing",
+        "bg-admin",
+        "bg-finance",
+        "bg-sales",
+        "bg-creative"
+      ];
+      const popularBgs = allBgs.filter((b) => popularBgIds.includes(b.id));
 
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">03</span>
           <div>
-            <h2 class="step-title">Professional Background, <em>Certifications & Licensing</em></h2>
+            <h2 class="step-title">Select Your <em>Background & Past Experience</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Your past work experience and openness to professional credentials can unlock high-margin consulting, B2B retainers, or high-commission licensed roles.
+              Select work, education, or homemaker backgrounds from the dropdown below or tap the quick buttons. You can select multiple.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="part3AHeading">Part A: Select all work or educational backgrounds you have (pick 1 or more):</h3>
-        <div class="options-grid options-grid-compact" style="margin-bottom: 26px;">
-          ${(window.PROFESSIONAL_BACKGROUNDS || [])
-            .map((bg) => {
-              const isSel = selectedBgs.includes(bg.id);
-              return `
-              <div class="option-card ${isSel ? "selected" : ""}" data-bg="${bg.id}">
-                <div class="option-content">
-                  <div class="option-title">${bg.label || bg.title || ""}</div>
-                  <div class="option-sub">${bg.sub || bg.desc || ""}</div>
-                </div>
-                <div class="option-check">✓</div>
-              </div>
-            `;
-            })
-            .join("")}
+        <div class="multi-select-dropdown-box">
+          <label for="fitBgSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Add Background Area (Dropdown):
+          </label>
+          <select id="fitBgSelect" class="form-input" style="cursor: pointer;">
+            <option value="">+ Choose a background to add...</option>
+            ${allBgs
+              .map((b) => {
+                const isSel = selectedBgs.includes(b.id);
+                return `<option value="${b.id}">${isSel ? "✓ " : ""}${b.label || b.title}</option>`;
+              })
+              .join("")}
+          </select>
+
+          <div class="multi-select-tags-wrap" id="fitBgTagsWrap">
+            ${
+              selectedBgs.length === 0
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No backgrounds selected yet. Choose from the dropdown or quick buttons below.</span>`
+                : selectedBgs
+                    .map((id) => {
+                      const item = allBgs.find((b) => b.id === id);
+                      const name = item ? (item.label || item.title) : id;
+                      return `
+                        <span class="multi-select-tag">
+                          ${name}
+                          <button type="button" class="tag-remove-btn" data-remove-bg="${id}" aria-label="Remove ${name}">×</button>
+                        </span>
+                      `;
+                    })
+                    .join("")
+            }
+          </div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
+            Quick Select Common Backgrounds:
+          </div>
+          <div class="quick-chips-wrap">
+            ${popularBgs
+              .map((b) => {
+                const isSel = selectedBgs.includes(b.id);
+                return `
+                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-bg="${b.id}">
+                    ${isSel ? "✓" : "+"} ${b.label || b.title}
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
+        </div>
+      `;
+    } else if (s === 3 && sub === 2) {
+      const licensingChoice = state.profile.licensingOpenness || "";
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">03</span>
+          <div>
+            <h2 class="step-title">How Do You Feel About <em>Licensing or Certifications</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Certain high-earning professions (like financial advisory, mortgage, bookkeeping certifications) have high income potential but require licensing.
+            </p>
+          </div>
         </div>
 
-        <h3 class="sub-section-heading" id="part3BHeading">Part B: How do you feel about state licensing or certifications?</h3>
         <div class="options-grid">
           ${(window.LICENSING_OPTIONS || [])
             .map(
@@ -1580,58 +1711,103 @@
             .join("")}
         </div>
       `;
-    } else if (state.step === 4) {
+    } else if (s === 4 && sub === 1) {
       const selected = state.profile.skills || [];
-      const activeSkillCount = selected.filter((s) => s !== "unsure").length;
-      const isSkillLimitReached = activeSkillCount >= 4;
-      const directionChoice = state.profile.skillDirection || "";
+      const activeSkillCount = selected.filter((x) => x !== "unsure").length;
+      const isUnsure = selected.includes("unsure");
+      const allSkills = window.SKILL_CATEGORIES || [];
 
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">04</span>
           <div>
-            <h2 class="step-title">Your Core Skills & <em>How You Want to Use Them</em></h2>
+            <h2 class="step-title">What Are Your <em>Strongest Core Skills</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Just because you are skilled at something does not always mean you want to build your next business around it. Let's look at <strong>what you are already good at</strong> and <strong>whether you want to monetize it or pivot</strong>.
+              Select up to 4 core capabilities from the dropdown or quick buttons below, or choose "Not Sure Yet" to see approachable starter businesses.
             </p>
           </div>
         </div>
 
-        <div class="sub-section-heading-row" id="part4AHeading">
-          <h3 class="sub-section-heading" style="margin-bottom: 0;">Part A: What are your strongest existing capabilities? (Pick 1 to 4 areas you already do well):</h3>
-          <span class="selection-counter-pill ${isSkillLimitReached ? "max-reached" : ""}">${activeSkillCount} of 4 selected</span>
+        <div class="multi-select-dropdown-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label for="fitSkillSelect" style="font-size: 0.86rem; font-weight: 800; color: var(--forest-dark);">
+              Add Skill Area (Dropdown):
+            </label>
+            <span class="selection-counter-pill ${activeSkillCount >= 4 ? "max-reached" : ""}">
+              ${isUnsure ? "Starter Mode" : `${activeSkillCount} of 4 selected`}
+            </span>
+          </div>
+
+          <select id="fitSkillSelect" class="form-input" style="cursor: pointer;">
+            <option value="">+ Choose a skill to add (up to 4)...</option>
+            ${allSkills
+              .map((cat) => {
+                const isSel = selected.includes(cat.id);
+                return `<option value="${cat.id}">${isSel ? "✓ " : ""}${cat.label || cat.title}</option>`;
+              })
+              .join("")}
+          </select>
+
+          <div class="multi-select-tags-wrap" id="fitSkillTagsWrap">
+            ${
+              selected.length === 0
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No skills selected yet. Select from the dropdown or tap the quick buttons below.</span>`
+                : selected
+                    .map((id) => {
+                      if (id === "unsure") {
+                        return `
+                          <span class="multi-select-tag" style="background:#FFF0F5; border-color:var(--hot-pink); color:var(--forest-dark);">
+                            Not Sure Yet (Starter Ideas)
+                            <button type="button" class="tag-remove-btn" data-remove-skill="unsure" aria-label="Remove unsure">×</button>
+                          </span>
+                        `;
+                      }
+                      const item = allSkills.find((cat) => cat.id === id);
+                      const name = item ? (item.label || item.title) : id;
+                      return `
+                        <span class="multi-select-tag">
+                          ${name}
+                          <button type="button" class="tag-remove-btn" data-remove-skill="${id}" aria-label="Remove ${name}">×</button>
+                        </span>
+                      `;
+                    })
+                    .join("")
+            }
+          </div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
+            Quick Select Skills:
+          </div>
+          <div class="quick-chips-wrap">
+            ${allSkills
+              .map((cat) => {
+                const isSel = selected.includes(cat.id);
+                return `
+                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-skill="${cat.id}">
+                    ${isSel ? "✓" : "+"} ${cat.label || cat.title}
+                  </button>
+                `;
+              })
+              .join("")}
+            <button type="button" class="quick-chip-btn ${isUnsure ? "active" : ""}" data-quick-skill="unsure" style="border-color: var(--hot-pink);">
+              ${isUnsure ? "✓" : "+"} Not Sure Yet (Starter Ideas)
+            </button>
+          </div>
         </div>
-        ${
-          state.limitNotice
-            ? `<div class="selection-limit-notice" role="status">${state.limitNotice}</div>`
-            : ``
-        }
-        <div class="options-grid options-grid-compact" style="margin-bottom: 26px;">
-          ${(window.SKILL_CATEGORIES || [])
-            .map((cat) => {
-              const isSel = selected.includes(cat.id);
-              const isDimmed = !isSel && isSkillLimitReached;
-              return `
-              <div class="option-card ${isSel ? "selected" : ""} ${isDimmed ? "limit-dimmed" : ""}" data-skill="${cat.id}">
-                <div class="option-content">
-                  <div class="option-title">${cat.label || cat.title || ""}</div>
-                  <div class="option-sub">${cat.desc || cat.sub || ""}</div>
-                </div>
-                <div class="option-check">✓</div>
-              </div>
-            `;
-            })
-            .join("")}
-          <div class="option-card ${selected.includes("unsure") ? "selected" : ""}" data-skill="unsure">
-            <div class="option-content">
-              <div class="option-title">Not Sure Yet (Show Starter Ideas)</div>
-              <div class="option-sub">Prioritize approachable, step-by-step businesses that do not require specialized technical backgrounds.</div>
-            </div>
-            <div class="option-check">✓</div>
+      `;
+    } else if (s === 4 && sub === 2) {
+      const directionChoice = state.profile.skillDirection || "";
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">04</span>
+          <div>
+            <h2 class="step-title">How Do You Want to <em>Use Your Existing Skills</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Just because you are skilled at something does not mean you have to build around it. Tell us your preference.
+            </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="part4BHeading">Part B: How do you want to use your existing skills?</h3>
         <div class="options-grid">
           ${(window.SKILL_DIRECTIONS || [])
             .map(
@@ -1648,68 +1824,143 @@
             .join("")}
         </div>
       `;
-    } else if (state.step === 5) {
+    } else if (s === 5 && sub === 1) {
       const selectedActivities = state.profile.enjoyedActivities || [];
-      const isActivityLimitReached = selectedActivities.length >= 3;
-      const selectedLifeExp = state.profile.livedExperiences || [];
+      const allActs = window.ENJOYED_ACTIVITIES || [];
 
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">05</span>
           <div>
-            <h2 class="step-title">Real-Life Hobbies, Passions & <em>Lived Mom Experience</em></h2>
+            <h2 class="step-title">What Activities or Hobbies Do You <em>Genuinely Enjoy</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Set aside your resume for a moment. What do you <strong>genuinely love doing for fun on a Saturday</strong>, and what <strong>personal life or motherhood chapters</strong> have you lived through that other families would love your help with?
+              Set aside your resume for a moment. What do you naturally love doing for fun on a Saturday? Pick up to 3 from the dropdown or quick chips.
             </p>
           </div>
         </div>
 
-        <div class="sub-section-heading-row" id="part5AHeading">
-          <h3 class="sub-section-heading" style="margin-bottom: 0;">Part A: What hobbies or everyday activities do you genuinely enjoy doing in real life? (Pick 1 to 3):</h3>
-          <span class="selection-counter-pill ${isActivityLimitReached ? "max-reached" : ""}">${selectedActivities.length} of 3 selected</span>
-        </div>
-        ${
-          state.limitNotice
-            ? `<div class="selection-limit-notice" role="status">${state.limitNotice}</div>`
-            : ``
-        }
-        <div class="options-grid options-grid-compact" style="margin-bottom: 26px;">
-          ${(window.ENJOYED_ACTIVITIES || [])
-            .map((act) => {
-              const isSel = selectedActivities.includes(act.id);
-              const isDimmed = !isSel && isActivityLimitReached;
-              return `
-              <div class="option-card ${isSel ? "selected" : ""} ${isDimmed ? "limit-dimmed" : ""}" data-activity="${act.id}">
-                <div class="option-content">
-                  <div class="option-title">${act.label || act.title || ""}</div>
-                  <div class="option-sub">${act.sub || act.desc || ""}</div>
-                </div>
-                <div class="option-check">✓</div>
-              </div>
-            `;
-            })
-            .join("")}
-        </div>
+        <div class="multi-select-dropdown-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <label for="fitHobbySelect" style="font-size: 0.86rem; font-weight: 800; color: var(--forest-dark);">
+              Add Hobby or Activity (Dropdown):
+            </label>
+            <span class="selection-counter-pill ${selectedActivities.length >= 3 ? "max-reached" : ""}">
+              ${selectedActivities.length} of 3 selected
+            </span>
+          </div>
 
-        <h3 class="sub-section-heading" id="part5BHeading">Part B: Which personal life or motherhood chapters have you personally navigated? (Pick all that apply):</h3>
-        <div class="options-grid options-grid-compact">
-          ${(window.LIVED_EXPERIENCES || [])
-            .map((lex) => {
-              const isSel = selectedLifeExp.includes(lex.id);
-              return `
-              <div class="option-card ${isSel ? "selected" : ""}" data-life-exp="${lex.id}">
-                <div class="option-content">
-                  <div class="option-title">${lex.label || lex.title || ""}</div>
-                  <div class="option-sub">${lex.sub || lex.desc || ""}</div>
-                </div>
-                <div class="option-check">✓</div>
-              </div>
-            `;
-            })
-            .join("")}
+          <select id="fitHobbySelect" class="form-input" style="cursor: pointer;">
+            <option value="">+ Choose a hobby to add (up to 3)...</option>
+            ${allActs
+              .map((act) => {
+                const isSel = selectedActivities.includes(act.id);
+                return `<option value="${act.id}">${isSel ? "✓ " : ""}${act.label || act.title}</option>`;
+              })
+              .join("")}
+          </select>
+
+          <div class="multi-select-tags-wrap" id="fitHobbyTagsWrap">
+            ${
+              selectedActivities.length === 0
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No hobbies selected yet. Select from the dropdown or quick buttons below.</span>`
+                : selectedActivities
+                    .map((id) => {
+                      const item = allActs.find((act) => act.id === id);
+                      const name = item ? (item.label || item.title) : id;
+                      return `
+                        <span class="multi-select-tag">
+                          ${name}
+                          <button type="button" class="tag-remove-btn" data-remove-hobby="${id}" aria-label="Remove ${name}">×</button>
+                        </span>
+                      `;
+                    })
+                    .join("")
+            }
+          </div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
+            Quick Select Hobbies:
+          </div>
+          <div class="quick-chips-wrap">
+            ${allActs
+              .map((act) => {
+                const isSel = selectedActivities.includes(act.id);
+                return `
+                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-hobby="${act.id}">
+                    ${isSel ? "✓" : "+"} ${act.label || act.title}
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
         </div>
       `;
-    } else if (state.step === 6) {
+    } else if (s === 5 && sub === 2) {
+      const selectedLife = state.profile.livedExperiences || [];
+      const allLife = window.LIVED_EXPERIENCES || [];
+
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">05</span>
+          <div>
+            <h2 class="step-title">Which Life or Motherhood Chapters Have You <em>Personally Walked Through</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Your lived journey is often your strongest authority and marketing magnet. Select any chapters that apply.
+            </p>
+          </div>
+        </div>
+
+        <div class="multi-select-dropdown-box">
+          <label for="fitLifeSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Add Lived Experience (Dropdown):
+          </label>
+          <select id="fitLifeSelect" class="form-input" style="cursor: pointer;">
+            <option value="">+ Choose a lived chapter to add...</option>
+            ${allLife
+              .map((lex) => {
+                const isSel = selectedLife.includes(lex.id);
+                return `<option value="${lex.id}">${isSel ? "✓ " : ""}${lex.label || lex.title}</option>`;
+              })
+              .join("")}
+          </select>
+
+          <div class="multi-select-tags-wrap" id="fitLifeTagsWrap">
+            ${
+              selectedLife.length === 0
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lived experiences selected yet. Select from the dropdown or quick buttons below.</span>`
+                : selectedLife
+                    .map((id) => {
+                      const item = allLife.find((lex) => lex.id === id);
+                      const name = item ? (item.label || item.title) : id;
+                      return `
+                        <span class="multi-select-tag">
+                          ${name}
+                          <button type="button" class="tag-remove-btn" data-remove-life="${id}" aria-label="Remove ${name}">×</button>
+                        </span>
+                      `;
+                    })
+                    .join("")
+            }
+          </div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
+            Quick Select Lived Chapters:
+          </div>
+          <div class="quick-chips-wrap">
+            ${allLife
+              .map((lex) => {
+                const isSel = selectedLife.includes(lex.id);
+                return `
+                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-life="${lex.id}">
+                    ${isSel ? "✓" : "+"} ${lex.label || lex.title}
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
+        </div>
+      `;
+    } else if (s === 6 && sub === 1) {
       const styles = [
         {
           id: "behind-the-scenes",
@@ -1728,6 +1979,34 @@
         }
       ];
 
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">06</span>
+          <div>
+            <h2 class="step-title">Preferred <em>Business Environment</em></h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Do you prefer working quietly behind-the-scenes solo, or interacting directly with clients and people?
+            </p>
+          </div>
+        </div>
+
+        <div class="options-grid">
+          ${styles
+            .map(
+              (st) => `
+            <div class="option-card ${state.profile.workStyle === st.id ? "selected" : ""}" data-workstyle="${st.id}">
+              <div class="option-content">
+                <div class="option-title">${st.title}</div>
+                <div class="option-sub">${st.sub}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    } else if (s === 6 && sub === 2) {
       const b250 = window.VaultEngine.scaleUsdToCurrency(250, cur.code);
       const b1000 = window.VaultEngine.scaleUsdToCurrency(1000, cur.code);
       const b3000 = window.VaultEngine.scaleUsdToCurrency(3000, cur.code);
@@ -1760,38 +2039,18 @@
         }
       ];
 
-      const selectedDealbreakers = state.profile.dealbreakers || [];
-
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">06</span>
           <div>
-            <h2 class="step-title">Work Environment, Budget & <em>Hard Dealbreakers</em></h2>
+            <h2 class="step-title">What Is Your <em>Available Startup Budget</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Final step before we score all 200+ business profiles for you. Filter out anything you refuse to do so your Top 3 matches truly fit.
+              What are you comfortable investing right now to get your business off the ground?
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="part6AHeading">Part A: Preferred Business Environment:</h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${styles
-            .map(
-              (st) => `
-            <div class="option-card ${state.profile.workStyle === st.id ? "selected" : ""}" data-workstyle="${st.id}">
-              <div class="option-content">
-                <div class="option-title">${st.title}</div>
-                <div class="option-sub">${st.sub}</div>
-              </div>
-              <div class="option-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-
-        <h3 class="sub-section-heading" id="part6BHeading">Part B: Available Startup Budget:</h3>
-          <div class="options-grid" style="margin-bottom: 24px;">
+        <div class="options-grid">
           ${budgets
             .map(
               (b) => `
@@ -1806,8 +2065,22 @@
             )
             .join("")}
         </div>
+      `;
+    } else if (s === 6 && sub === 3) {
+      const selectedDealbreakers = state.profile.dealbreakers || [];
 
-        <h3 class="sub-section-heading">Part C: Any Hard Dealbreakers? (Optional: select anything you want us to filter out):</h3>
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">06</span>
+          <div>
+            <h2 class="step-title">Any Hard Dealbreakers or <em>Unique Passions</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Filter out anything you refuse to do, and share any specific industry or dream business idea.
+            </p>
+          </div>
+        </div>
+
+        <h3 class="sub-section-heading">Part A: Hard Dealbreakers (Optional, select anything you want filtered out):</h3>
         <div class="options-grid options-grid-compact" style="margin-bottom: 24px;">
           ${(window.HARD_DEALBREAKERS || [])
             .map((db) => {
@@ -1825,7 +2098,7 @@
             .join("")}
         </div>
 
-        <h3 class="sub-section-heading">Part D: Your Specific Industry, Background or Passion (Optional):</h3>
+        <h3 class="sub-section-heading">Part B: Your Specific Industry, Background or Passion (Optional):</h3>
         <p style="font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 8px;">
           Have a unique career, degree, or specialty you love? Type it here (e.g., ex-Bain / management consulting, STEM curriculum & scientific research, admissions consulting, creative writing, knitting) so your matches are tailored to your exact world.
         </p>
@@ -1841,11 +2114,13 @@
       `;
     }
 
+    const isLastFitQuestion = s === 6 && sub === 3;
+
     return `
       <div class="quiz-shell">
         <div class="progress-header">
           <div class="progress-meta">
-            <span>SECTION ${state.step} OF ${state.totalQuizSteps}</span>
+            <span>SECTION ${s} OF ${state.totalQuizSteps} (PART ${sub} OF ${maxSub})</span>
             <span>Target: ${fmtTargetHeaderSummary()} • ${pct}% Complete</span>
           </div>
           <div class="progress-track">
@@ -1853,7 +2128,14 @@
           </div>
         </div>
 
-        <div class="quiz-body">
+        <div class="quiz-body typeform-card">
+          <div class="typeform-nav-bar">
+            <button type="button" class="btn-typeform-back" id="btnPrevStep">
+              ${s === 1 && sub === 1 ? "← Back to Tools Home" : "← Back"}
+            </button>
+            <span class="typeform-step-badge">Question ${s}.${sub} of ${maxSub}</span>
+          </div>
+
           ${stepContent}
 
           ${
@@ -1864,23 +2146,20 @@
               : ``
           }
 
+          ${
+            state.limitNotice
+              ? `<div class="selection-limit-notice" role="status">${state.limitNotice}</div>`
+              : ``
+          }
+
           <div class="quiz-footer">
             <div style="display: flex; align-items: center; gap: 10px;">
-              ${
-                state.step > 1
-                  ? `<button type="button" class="btn-secondary" id="btnPrevStep">Back</button>`
-                  : ``
-              }
               <button type="button" class="btn-ghost-sm" id="btnStartOverQuiz" style="font-size: 0.82rem; color: var(--ink-muted);">
                 Start Over
               </button>
             </div>
             <button type="button" class="btn-primary" id="btnNextStep">
-              ${
-                state.step < state.totalQuizSteps
-                  ? "Continue"
-                  : `See My Top 3 Business Matches`
-              }
+              ${isLastFitQuestion ? "See My Top 3 Business Matches" : "Continue →"}
             </button>
           </div>
         </div>
@@ -1889,6 +2168,10 @@
   }
 
   function bindQuizEvents() {
+    const s = state.step;
+    const sub = state.subStep || 1;
+
+    // Currency Switcher
     document.querySelectorAll("[data-currency]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const newCode = btn.getAttribute("data-currency");
@@ -1900,273 +2183,393 @@
       });
     });
 
-    const slider = document.getElementById("incomeSlider");
-    const customInput = document.getElementById("customIncomeInput");
-    const displayNum = document.getElementById("incomeDisplayNum");
-    const annualSub = document.getElementById("incomeAnnualSub");
-    const insightBanner = document.getElementById("tierInsightBanner");
+    // Step 1 Sub 1: Income Goal
+    if (s === 1 && sub === 1) {
+      const slider = document.getElementById("incomeSlider");
+      const customInput = document.getElementById("customIncomeInput");
+      const displayNum = document.getElementById("incomeDisplayNum");
+      const annualSub = document.getElementById("incomeAnnualSub");
+      const insightBanner = document.getElementById("tierInsightBanner");
 
-    function updateIncomeGoal(val, switchToMonthlyIfFlash = false) {
-      const cur = getCur();
-      const clean = Math.max(100, Number(val) || cur.defaultGoal);
-      state.profile.incomeGoal = clean;
-      if (switchToMonthlyIfFlash && state.profile.timeline === "2-week flash") {
-        state.profile.timeline = "1 to 3 months";
-        state.validationError = "";
+      function updateIncomeGoal(val, switchToMonthlyIfFlash = false) {
+        const cur = getCur();
+        const clean = Math.max(100, Number(val) || cur.defaultGoal);
+        state.profile.incomeGoal = clean;
+        if (switchToMonthlyIfFlash && state.profile.timeline === "2-week flash") {
+          state.profile.timeline = "1 to 3 months";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+          return;
+        }
+        if (state.profile.timeline === "2-week flash" && clean > 2500) {
+          state.profile.timeline = "1 to 3 months";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+          return;
+        }
+        if (displayNum) displayNum.textContent = fmtMoney(clean);
+        if (annualSub) {
+          annualSub.innerHTML = isFlashTimeline()
+            ? `2-Week Flash Sprint (<strong>${fmtMoney(clean * 2)}/month</strong> pace)`
+            : `That is <strong>${fmtMoney(clean * 12)}/year</strong> in additional income`;
+        }
+        if (insightBanner) insightBanner.innerHTML = getIncomeTierInsight(clean);
+        if (slider && clean <= cur.max) slider.value = clean;
+        if (customInput && Number(customInput.value) !== clean) customInput.value = clean;
+        document.querySelectorAll("[data-preset]").forEach((btn) => {
+          btn.classList.toggle("active", !isFlashTimeline() && Number(btn.getAttribute("data-preset")) === clean);
+        });
         saveUserProgress();
-        render();
-        return;
       }
-      if (state.profile.timeline === "2-week flash" && clean > 2500) {
-        state.profile.timeline = "1 to 3 months";
-        state.validationError = "";
-        saveUserProgress();
-        render();
-        return;
-      }
-      if (displayNum) displayNum.textContent = fmtMoney(clean);
-      if (annualSub) {
-        annualSub.innerHTML = isFlashTimeline()
-          ? `2-Week Flash Sprint (<strong>${fmtMoney(clean * 2)}/month</strong> pace)`
-          : `That is <strong>${fmtMoney(clean * 12)}/year</strong> in additional income`;
-      }
-      if (insightBanner) insightBanner.innerHTML = getIncomeTierInsight(clean);
-      if (slider && clean <= cur.max) slider.value = clean;
-      if (customInput && Number(customInput.value) !== clean) customInput.value = clean;
+
+      if (slider) slider.addEventListener("input", (e) => updateIncomeGoal(e.target.value, false));
+      if (customInput) customInput.addEventListener("input", (e) => updateIncomeGoal(e.target.value, false));
       document.querySelectorAll("[data-preset]").forEach((btn) => {
-        btn.classList.toggle("active", !isFlashTimeline() && Number(btn.getAttribute("data-preset")) === clean);
+        btn.addEventListener("click", () => updateIncomeGoal(btn.getAttribute("data-preset"), true));
       });
-      document.querySelectorAll("[data-flash-preset]").forEach((btn) => {
-        btn.classList.toggle("active", isFlashTimeline() && Number(btn.getAttribute("data-flash-preset")) === clean);
-      });
-      const headerMeta = document.querySelector(".progress-meta span:last-child");
-      if (headerMeta) {
-        const pct = Math.round((state.step / state.totalQuizSteps) * 100);
-        headerMeta.textContent = `Target: ${fmtTargetHeaderSummary()} • ${pct}% Complete`;
-      }
-      saveUserProgress();
     }
 
-    if (slider) slider.addEventListener("input", (e) => updateIncomeGoal(e.target.value, false));
-    if (customInput) customInput.addEventListener("input", (e) => updateIncomeGoal(e.target.value, false));
-    document.querySelectorAll("[data-preset]").forEach((btn) => {
-      btn.addEventListener("click", () => updateIncomeGoal(btn.getAttribute("data-preset"), true));
-    });
-    document.querySelectorAll("[data-flash-preset]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        state.profile.timeline = "2-week flash";
-        state.profile.incomeGoal = Number(btn.getAttribute("data-flash-preset")) || 1500;
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-    document.querySelectorAll("[data-timeline]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const chosenTimeline = card.getAttribute("data-timeline");
-        const wasFlash = state.profile.timeline === "2-week flash";
-        if (state.profile.timeline === chosenTimeline) {
-          state.profile.timeline = "";
-        } else {
-          state.profile.timeline = chosenTimeline;
-          if (chosenTimeline === "2-week flash") {
-            state.profile.incomeGoal = 1500;
-          } else if (wasFlash && state.profile.incomeGoal === 1500) {
-            state.profile.incomeGoal = 5000;
+    // Step 1 Sub 2: Timeline
+    if (s === 1 && sub === 2) {
+      document.querySelectorAll("[data-timeline]").forEach((card) => {
+        card.addEventListener("click", () => {
+          const val = card.getAttribute("data-timeline");
+          const cur = getCur();
+          const currentGoal = Number(state.profile.incomeGoal) || cur.defaultGoal;
+          const flashLimit = window.VaultEngine.scaleUsdToCurrency(2500, cur.code);
+          if (val === "2-week flash" && currentGoal > flashLimit) {
+            state.profile.incomeGoal = window.VaultEngine.scaleUsdToCurrency(1500, cur.code);
           }
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
+          state.profile.timeline = val;
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
       });
-    });
+    }
 
-    // Step 2: Weekly Hours & Schedule Rhythm
-    document.querySelectorAll("[data-hours]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const val = Number(card.getAttribute("data-hours"));
-        if (Number(state.profile.hoursPerWeek) === val) {
-          state.profile.hoursPerWeek = 0;
-          state.profile.hoursLabel = "";
-        } else {
-          state.profile.hoursPerWeek = val;
-          state.profile.hoursLabel = card.getAttribute("data-hours-label");
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
+    // Step 2 Sub 1: Hours
+    if (s === 2 && sub === 1) {
+      document.querySelectorAll("[data-hours]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.profile.hoursPerWeek = Number(card.getAttribute("data-hours"));
+          state.profile.hoursLabel = card.getAttribute("data-hours-label") || "";
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
       });
-    });
-    document.querySelectorAll("[data-rhythm]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const val = card.getAttribute("data-rhythm");
-        state.profile.scheduleRhythm = state.profile.scheduleRhythm === val ? "" : val;
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
+    }
 
-    // Step 3: Professional Backgrounds & Licensing Openness
-    document.querySelectorAll("[data-bg]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const bgId = card.getAttribute("data-bg");
-        const current = state.profile.backgrounds || [];
-        if (bgId === "bg-fresh") {
-          state.profile.backgrounds = current.includes("bg-fresh") ? [] : ["bg-fresh"];
-        } else {
-          const withoutFresh = current.filter((b) => b !== "bg-fresh");
-          if (withoutFresh.includes(bgId)) {
-            state.profile.backgrounds = withoutFresh.filter((b) => b !== bgId);
+    // Step 2 Sub 2: Rhythm
+    if (s === 2 && sub === 2) {
+      document.querySelectorAll("[data-rhythm]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.profile.scheduleRhythm = card.getAttribute("data-rhythm");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 3 Sub 1: Backgrounds (Dropdown, Tags & Quick Chips)
+    if (s === 3 && sub === 1) {
+      const bgSelect = document.getElementById("fitBgSelect");
+      if (bgSelect) {
+        bgSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          const current = state.profile.backgrounds || [];
+          if (!current.includes(val)) {
+            state.profile.backgrounds = [...current, val];
+            state.validationError = "";
+            saveUserProgress();
+            render();
+          }
+          bgSelect.value = "";
+        });
+      }
+
+      document.querySelectorAll("[data-remove-bg]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute("data-remove-bg");
+          state.profile.backgrounds = (state.profile.backgrounds || []).filter((x) => x !== id);
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-quick-bg]").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const id = chip.getAttribute("data-quick-bg");
+          const current = state.profile.backgrounds || [];
+          if (current.includes(id)) {
+            state.profile.backgrounds = current.filter((x) => x !== id);
           } else {
-            state.profile.backgrounds = [...withoutFresh, bgId];
+            state.profile.backgrounds = [...current, id];
           }
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
       });
-    });
-    document.querySelectorAll("[data-licensing]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const val = card.getAttribute("data-licensing");
-        state.profile.licensingOpenness = state.profile.licensingOpenness === val ? "" : val;
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
+    }
 
-    // Step 4: 2-Part Skills Question (Core Skills + Skill Direction)
-    document.querySelectorAll("[data-skill]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const skillId = card.getAttribute("data-skill");
-        const current = state.profile.skills || [];
-        if (skillId === "unsure") {
-          state.profile.skills = current.includes("unsure") ? [] : ["unsure"];
-          state.limitNotice = "";
-        } else {
-          const filtered = current.filter((s) => s !== "unsure");
-          if (filtered.includes(skillId)) {
-            state.profile.skills = filtered.filter((s) => s !== skillId);
-            state.limitNotice = "";
-          } else {
-            if (filtered.length >= 4) {
-              state.limitNotice =
-                "You can select up to 4 core skills so your recommendations stay hyper-focused. Tap any selected skill card to uncheck it if you want to swap.";
-              render();
-              return;
-            }
-            state.profile.skills = [...filtered, skillId];
-            state.limitNotice = "";
+    // Step 3 Sub 2: Licensing
+    if (s === 3 && sub === 2) {
+      document.querySelectorAll("[data-licensing]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.profile.licensingOpenness = card.getAttribute("data-licensing");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 4 Sub 1: Skills (Dropdown, Tags & Quick Chips)
+    if (s === 4 && sub === 1) {
+      const skillSelect = document.getElementById("fitSkillSelect");
+      if (skillSelect) {
+        skillSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          const current = state.profile.skills || [];
+          const filtered = current.filter((x) => x !== "unsure");
+          if (filtered.includes(val)) {
+            skillSelect.value = "";
+            return;
           }
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-    document.querySelectorAll("[data-skill-direction]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const val = card.getAttribute("data-skill-direction");
-        state.profile.skillDirection = state.profile.skillDirection === val ? "" : val;
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    // Step 5: Activities You Enjoy + Lived Mom/Life Experience
-    document.querySelectorAll("[data-activity]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const actId = card.getAttribute("data-activity");
-        const current = state.profile.enjoyedActivities || [];
-        if (current.includes(actId)) {
-          state.profile.enjoyedActivities = current.filter((a) => a !== actId);
-          state.limitNotice = "";
-        } else {
-          if (current.length >= 3) {
-            state.limitNotice =
-              "You can select up to 3 real-life hobbies so your recommendations stay hyper-focused. Tap any selected hobby card to uncheck it if you want to swap.";
+          if (filtered.length >= 4) {
+            state.limitNotice = "You can select up to 4 core skills so your recommendations stay hyper-focused. Tap the (x) on any selected skill tag to swap it.";
             render();
             return;
           }
-          state.profile.enjoyedActivities = [...current, actId];
+          state.profile.skills = [...filtered, val];
           state.limitNotice = "";
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-    document.querySelectorAll("[data-life-exp]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const expId = card.getAttribute("data-life-exp");
-        const current = state.profile.livedExperiences || [];
-        if (current.includes(expId)) {
-          state.profile.livedExperiences = current.filter((x) => x !== expId);
-        } else {
-          state.profile.livedExperiences = [...current, expId];
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      }
 
-    // Step 6: Work Environment, Startup Budget, Dealbreakers & Custom Note
-    document.querySelectorAll("[data-workstyle]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const val = card.getAttribute("data-workstyle");
-        state.profile.workStyle = state.profile.workStyle === val ? "" : val;
-        state.validationError = "";
-        saveUserProgress();
-        render();
+      document.querySelectorAll("[data-remove-skill]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute("data-remove-skill");
+          state.profile.skills = (state.profile.skills || []).filter((x) => x !== id);
+          state.limitNotice = "";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
       });
-    });
-    document.querySelectorAll("[data-budget]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const val = Number(card.getAttribute("data-budget"));
-        if (state.profile.budget !== null && state.profile.budget !== undefined && Number(state.profile.budget) === val) {
-          state.profile.budget = null;
-        } else {
-          state.profile.budget = val;
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-    document.querySelectorAll("[data-dealbreaker]").forEach((card) => {
-      card.addEventListener("click", () => {
-        const dbId = card.getAttribute("data-dealbreaker");
-        const current = state.profile.dealbreakers || [];
-        if (current.includes(dbId)) {
-          state.profile.dealbreakers = current.filter((d) => d !== dbId);
-        } else {
-          state.profile.dealbreakers = [...current, dbId];
-        }
-        saveUserProgress();
-        render();
-      });
-    });
-    const customNoteEl = document.getElementById("customNoteInput");
-    if (customNoteEl) {
-      customNoteEl.addEventListener("input", (e) => {
-        state.profile.customNote = e.target.value;
-        saveUserProgress();
+
+      document.querySelectorAll("[data-quick-skill]").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const id = chip.getAttribute("data-quick-skill");
+          const current = state.profile.skills || [];
+          if (id === "unsure") {
+            state.profile.skills = current.includes("unsure") ? [] : ["unsure"];
+            state.limitNotice = "";
+          } else {
+            const filtered = current.filter((x) => x !== "unsure");
+            if (filtered.includes(id)) {
+              state.profile.skills = filtered.filter((x) => x !== id);
+              state.limitNotice = "";
+            } else {
+              if (filtered.length >= 4) {
+                state.limitNotice = "You can select up to 4 core skills so your recommendations stay hyper-focused. Tap the (x) on any selected skill tag to swap it.";
+                render();
+                return;
+              }
+              state.profile.skills = [...filtered, id];
+              state.limitNotice = "";
+            }
+          }
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
       });
     }
 
+    // Step 4 Sub 2: Skill Direction
+    if (s === 4 && sub === 2) {
+      document.querySelectorAll("[data-skill-direction]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.profile.skillDirection = card.getAttribute("data-skill-direction");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 5 Sub 1: Hobbies (Dropdown, Tags & Quick Chips)
+    if (s === 5 && sub === 1) {
+      const hobbySelect = document.getElementById("fitHobbySelect");
+      if (hobbySelect) {
+        hobbySelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          const current = state.profile.enjoyedActivities || [];
+          if (current.includes(val)) {
+            hobbySelect.value = "";
+            return;
+          }
+          if (current.length >= 3) {
+            state.limitNotice = "You can select up to 3 real-life hobbies so your recommendations stay hyper-focused. Tap the (x) on any selected hobby tag to swap it.";
+            render();
+            return;
+          }
+          state.profile.enjoyedActivities = [...current, val];
+          state.limitNotice = "";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      }
+
+      document.querySelectorAll("[data-remove-hobby]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute("data-remove-hobby");
+          state.profile.enjoyedActivities = (state.profile.enjoyedActivities || []).filter((x) => x !== id);
+          state.limitNotice = "";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-quick-hobby]").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const id = chip.getAttribute("data-quick-hobby");
+          const current = state.profile.enjoyedActivities || [];
+          if (current.includes(id)) {
+            state.profile.enjoyedActivities = current.filter((x) => x !== id);
+            state.limitNotice = "";
+          } else {
+            if (current.length >= 3) {
+              state.limitNotice = "You can select up to 3 real-life hobbies so your recommendations stay hyper-focused. Tap the (x) on any selected hobby tag to swap it.";
+              render();
+              return;
+            }
+            state.profile.enjoyedActivities = [...current, id];
+            state.limitNotice = "";
+          }
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+    }
+
+    // Step 5 Sub 2: Lived Experiences (Dropdown, Tags & Quick Chips)
+    if (s === 5 && sub === 2) {
+      const lifeSelect = document.getElementById("fitLifeSelect");
+      if (lifeSelect) {
+        lifeSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          const current = state.profile.livedExperiences || [];
+          if (!current.includes(val)) {
+            state.profile.livedExperiences = [...current, val];
+            state.validationError = "";
+            saveUserProgress();
+            render();
+          }
+          lifeSelect.value = "";
+        });
+      }
+
+      document.querySelectorAll("[data-remove-life]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute("data-remove-life");
+          state.profile.livedExperiences = (state.profile.livedExperiences || []).filter((x) => x !== id);
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-quick-life]").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const id = chip.getAttribute("data-quick-life");
+          const current = state.profile.livedExperiences || [];
+          if (current.includes(id)) {
+            state.profile.livedExperiences = current.filter((x) => x !== id);
+          } else {
+            state.profile.livedExperiences = [...current, id];
+          }
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+    }
+
+    // Step 6 Sub 1: Workstyle
+    if (s === 6 && sub === 1) {
+      document.querySelectorAll("[data-workstyle]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.profile.workStyle = card.getAttribute("data-workstyle");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 6 Sub 2: Budget
+    if (s === 6 && sub === 2) {
+      document.querySelectorAll("[data-budget]").forEach((card) => {
+        card.addEventListener("click", () => {
+          state.profile.budget = Number(card.getAttribute("data-budget"));
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 6 Sub 3: Dealbreakers & Custom Note
+    if (s === 6 && sub === 3) {
+      document.querySelectorAll("[data-dealbreaker]").forEach((card) => {
+        card.addEventListener("click", () => {
+          const dbId = card.getAttribute("data-dealbreaker");
+          const current = state.profile.dealbreakers || [];
+          if (current.includes(dbId)) {
+            state.profile.dealbreakers = current.filter((d) => d !== dbId);
+          } else {
+            state.profile.dealbreakers = [...current, dbId];
+          }
+          saveUserProgress();
+          render();
+        });
+      });
+
+      const customNoteEl = document.getElementById("customNoteInput");
+      if (customNoteEl) {
+        customNoteEl.addEventListener("input", (e) => {
+          state.profile.customNote = e.target.value;
+          saveUserProgress();
+        });
+      }
+    }
+
+    // Global Navigation: Back, Continue, Start Over
     const prevBtn = document.getElementById("btnPrevStep");
     if (prevBtn) {
       prevBtn.addEventListener("click", () => {
-        state.validationError = "";
-        state.limitNotice = "";
-        state.step = Math.max(1, state.step - 1);
-        saveUserProgress();
-        render();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        retreatSubStep();
+      });
+    }
+
+    const nextBtn = document.getElementById("btnNextStep");
+    if (nextBtn) {
+      nextBtn.addEventListener("click", () => {
+        advanceSubStep();
       });
     }
 
@@ -2174,35 +2577,6 @@
     if (startOverQuizBtn) {
       startOverQuizBtn.addEventListener("click", () => {
         resetAssessmentAndStartOver();
-      });
-    }
-
-    const nextBtn = document.getElementById("btnNextStep");
-    if (nextBtn) {
-      nextBtn.addEventListener("click", () => {
-        const validation = validateCurrentStep();
-        if (!validation.ok) {
-          state.validationError = validation.message;
-          render();
-          const targetEl =
-            (validation.scrollSelector && document.querySelector(validation.scrollSelector)) ||
-            document.getElementById("stepValidationBanner");
-          if (targetEl) {
-            targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-          return;
-        }
-        state.validationError = "";
-        state.limitNotice = "";
-        if (state.step < state.totalQuizSteps) {
-          maybeShowStoryPopupThenAdvance(state.step, state.step + 1);
-        } else {
-          computeRecommendations();
-          state.step = 7;
-          saveUserProgress();
-          render();
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
       });
     }
   }
@@ -3308,41 +3682,46 @@
   // ============================================================================
   // BUSY MAMAS BUSINESS GROWTH ASSESSMENT - STEPS 1 TO 6, GATE & RESULTS
   // ============================================================================
+  // ============================================================================
+  // RENDER GROWTH DIAGNOSTIC TYPEFORM-STYLE SUB-STEPS
+  // ============================================================================
   function renderGrowthQuizStep() {
-    const pct = Math.round((state.growthStep / state.totalQuizSteps) * 100);
+    const s = state.growthStep;
+    const sub = state.growthSubStep || 1;
+    const maxSub = getMaxSubSteps(s, "growth");
+    const stepOffsets = { 1: 0, 2: 5, 3: 8, 4: 10, 5: 12, 6: 14 };
+    const completed = (stepOffsets[s] || 0) + (sub - 1);
+    const totalQuestions = 15;
+    const pct = Math.round((completed / totalQuestions) * 100);
     const gp = state.growthProfile;
     const cur = getCur();
-    const scaleAmt = (usdVal) => window.VaultEngine.scaleUsdToCurrency(usdVal, cur.code);
     let stepContent = "";
 
-    if (state.growthStep === 1) {
-      const targetRev = Number(gp.targetRevenue) || cur.defaultGoal || scaleAmt(6000);
-      const currentRev = Number(gp.currentRevenue) || 0;
-      const gap = Math.max(scaleAmt(500), targetRev - currentRev);
-      const annualTarget = targetRev * 12;
-      const showEarlyBridge = gp.businessType === "unsure-model" || gp.revenueStageId === "pre-revenue";
-
-      const hasBusinessType = Boolean(gp.businessType);
-      const hasRevenueStage = Boolean(gp.revenueStageId);
-      const hasMargin = Boolean(gp.profitMarginId);
-
-      const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
-
+    if (s === 1 && sub === 1) {
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">01</span>
           <div>
-            <h2 class="step-title">Your Business, <em>Monthly Sales</em> & 90-Day Goal</h2>
+            <h2 class="step-title">What Category Best Describes <em>Your Business</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Tell us roughly what your business brings in right now and where you want to be in 90 days. If you do not track your exact numbers yet, pick the closest estimate or choose "Not Sure Yet."
+              Select your main business model from the dropdown or cards below.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart1A">
-          Part A: What type of business do you currently run?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 20px;">
+        <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
+          <label for="growthBTypeSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Choose Business Category (Dropdown):
+          </label>
+          <select id="growthBTypeSelect" class="form-input" style="cursor: pointer;">
+            <option value="">Select your business category...</option>
+            ${(window.GROWTH_BUSINESS_TYPES || [])
+              .map((item) => `<option value="${item.id}" ${gp.businessType === item.id ? "selected" : ""}>${item.label}</option>`)
+              .join("")}
+          </select>
+        </div>
+
+        <div class="options-grid">
           ${(window.GROWTH_BUSINESS_TYPES || [])
             .map(
               (item) => `
@@ -3357,249 +3736,87 @@
             )
             .join("")}
         </div>
-
-        ${!hasBusinessType ? `
-          <div class="progressive-hint-box" style="margin-bottom: 24px;">
-            Tap your business type above to unlock your tailored niche questions and sales goal.
-          </div>
-        ` : `
-          ${subNiches.length > 0 ? `
-            <div class="growth-niche-customizer growth-progressive-section" id="growthPart1A2">
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex-wrap: wrap;">
-                <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--hot-pink);">
-                  Part A-2 • Your Specific Specialty & Ideal Client
-                </span>
-                <span style="font-size: 0.78rem; font-weight: 700; color: var(--forest); background: var(--mint-soft); padding: 3px 10px; border-radius: 100px;">
-                  Personalized 30-Day Plan
-                </span>
-              </div>
-              <h4 style="font-size: 1.15rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
-                What is your specific specialty, niche, or main service?
-              </h4>
-              <p style="font-size: 0.92rem; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
-                Select your closest specialty below, or describe your niche in your own words so your 30-day priorities and outreach messages are 100% custom to what you do.
-              </p>
-
-              <!-- Specialty Dropdown -->
-              <label for="growthSubNicheSelect" style="display: block; font-size: 0.84rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 7px;">
-                Choose specialty or main service:
-              </label>
-              <select id="growthSubNicheSelect" class="growth-subniche-select" style="margin-bottom: 18px;">
-                <option value="">-- Choose your closest specialty --</option>
-                ${subNiches.map(sn => `
-                  <option value="${sn.id}" ${gp.subNicheId === sn.id ? 'selected' : ''}>
-                    ${sn.label}
-                  </option>
-                `).join('')}
-                <option value="other" ${gp.subNicheId === 'other' ? 'selected' : ''}>
-                  Other / Custom Specialty (type below)
-                </option>
-              </select>
-
-              <!-- Full-Width Stacked Custom Prompts -->
-              <div class="growth-niche-inputs-grid">
-                <div>
-                  <label for="growthSpecificNicheInput" style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
-                    What specifically do you sell or offer?
-                  </label>
-                  <input
-                    type="text"
-                    id="growthSpecificNicheInput"
-                    class="form-input"
-                    style="width: 100%; font-size: 0.92rem; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border); box-sizing: border-box;"
-                    placeholder="${escapeHtml((subNiches.find(s => s.id === gp.subNicheId)?.placeholder) || subNiches[0]?.placeholder || 'e.g., Virtual assistance packages, sleep consulting, custom knitwear')}"
-                    value="${escapeHtml(gp.specificNiche || '')}"
-                  />
-                </div>
-                <div>
-                  <label for="growthTargetAudienceInput" style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
-                    Who is your primary ideal customer / client?
-                  </label>
-                  <input
-                    type="text"
-                    id="growthTargetAudienceInput"
-                    class="form-input"
-                    style="width: 100%; font-size: 0.92rem; padding: 12px 14px; border-radius: 12px; border: 1.5px solid var(--border); box-sizing: border-box;"
-                    placeholder="e.g., Exhausted working moms of babies 0-2, wedding couples, corporate HR leaders"
-                    value="${escapeHtml(gp.targetAudience || '')}"
-                  />
-                </div>
-              </div>
-            </div>
-          ` : ''}
-
-          ${showEarlyBridge ? `
-            <div class="growth-bridge-nudge-card growth-progressive-section">
-              <div style="flex: 1; min-width: 240px;">
-                <div style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 4px;">
-                  Helpful Note · Still Figuring Out Your Business?
-                </div>
-                <h4 style="margin-bottom: 4px;">Want to compare your current business against 200+ flexible ideas first?</h4>
-                <p style="margin-bottom: 0;">
-                  You can finish this Growth Checkup to get a 30-day starter plan for your current business, OR switch to our <strong>Business Fit Assessment</strong> anytime to see which business ideas best match your skills, hours, and income goal.
-                </p>
-              </div>
-              <button type="button" class="btn-secondary" data-switch-mode="fit" style="padding: 10px 18px; font-size: 0.85rem; white-space: nowrap;">
-                Switch to Business Fit Assessment
-              </button>
-            </div>
-          ` : ''}
-
-          <div class="growth-progressive-section" id="growthPart1B">
-            <h3 class="sub-section-heading">
-              Part B: Roughly how much does your business bring in each month right now?
-            </h3>
-            <div class="options-grid" style="margin-bottom: 20px;">
-              ${(window.GROWTH_REVENUE_STAGES || [])
-                .map((st) => {
-                  const localVal = scaleAmt(st.valUsd);
-                  const labelAdapted = st.label.replace(/\$([0-9,]+)/g, (_, numStr) => {
-                    const rawNum = Number(numStr.replace(/,/g, ""));
-                    return fmtMoney(scaleAmt(rawNum));
-                  });
-                  const subAdapted = st.sub.replace(/\$([0-9,]+)/g, (_, numStr) => {
-                    const rawNum = Number(numStr.replace(/,/g, ""));
-                    return fmtMoney(scaleAmt(rawNum));
-                  });
-                  return `
-                    <div class="option-card ${gp.revenueStageId === st.id ? "selected" : ""}" data-growth-revstage="${st.id}" data-growth-revval="${localVal}">
-                      <div class="option-content">
-                        <div class="option-title">${labelAdapted}</div>
-                        <div class="option-sub">${subAdapted}</div>
-                      </div>
-                      <div class="option-check">✓</div>
-                    </div>
-                  `;
-                })
-                .join("")}
-            </div>
-          </div>
-
-          ${!hasRevenueStage ? `
-            <div class="progressive-hint-box" style="margin-bottom: 24px;">
-              Select your current monthly revenue range above to unlock profit margin and 90-day goal.
-            </div>
-          ` : `
-            <div class="growth-progressive-section" id="growthPart1C">
-              <h3 class="sub-section-heading">
-                Part C: After paying for supplies and expenses, how much do you keep as take-home profit?
-              </h3>
-              <div class="options-grid" style="margin-bottom: 20px;">
-                ${(window.GROWTH_PROFIT_MARGINS || [])
-                  .map(
-                    (m) => `
-                  <div class="option-card ${gp.profitMarginId === m.id ? "selected" : ""}" data-growth-margin="${m.id}">
-                    <div class="option-content">
-                      <div class="option-title">${m.label}</div>
-                      <div class="option-sub">${m.sub}</div>
-                    </div>
-                    <div class="option-check">✓</div>
-                  </div>
-                `
-                  )
-                  .join("")}
-              </div>
-            </div>
-
-            ${!hasMargin ? `
-              <div class="progressive-hint-box" style="margin-bottom: 24px;">
-                Select your profit margin above to unlock your 90-day goal calculator.
-              </div>
-            ` : `
-              <div class="growth-progressive-section" id="growthPart1D">
-                <h3 class="sub-section-heading">
-                  Part D: Choose your currency & 90-day monthly sales goal:
-                </h3>
-                <div class="income-showcase-box">
-                  <div class="currency-selector-row">
-                    <span class="currency-label-text">Currency:</span>
-                    ${(window.SUPPORTED_CURRENCIES || [])
-                      .map(
-                        (c) => `
-                      <button type="button" class="currency-pill ${gp.currency === c.code ? "active" : ""}" data-growth-currency="${c.code}">
-                        ${c.label}
-                      </button>
-                    `
-                      )
-                      .join("")}
-                  </div>
-
-                  <div class="income-amount-row">
-                    <span class="income-big-number" id="growthTargetDisplay">${fmtMoney(targetRev)}</span>
-                    <span class="income-per-mo">/ month goal</span>
-                  </div>
-                  <div class="income-annual-sub" id="growthGapDisplay">
-                    +${fmtMoney(gap)}/mo more than your current monthly sales (<strong>${fmtMoney(annualTarget)}/year</strong> pace)
-                  </div>
-
-                  <input
-                    type="range"
-                    id="growthTargetSlider"
-                    class="income-slider"
-                    min="${cur.min}"
-                    max="${cur.max}"
-                    step="${cur.step}"
-                    value="${Math.min(cur.max, Math.max(cur.min, targetRev))}"
-                  />
-
-                  <div class="income-presets">
-                    ${(cur.presets || [])
-                      .map(
-                        (val) => `
-                      <button type="button" class="preset-btn ${Number(targetRev) === val ? "active" : ""}" data-growth-preset="${val}">
-                        ${fmtMoney(val)}/mo
-                      </button>
-                    `
-                      )
-                      .join("")}
-                  </div>
-
-                  <div class="custom-dollar-input-wrap">
-                    <span class="custom-dollar-label">Or type exact monthly goal:</span>
-                    <div class="custom-dollar-input-group">
-                      <span class="custom-dollar-currency">${cur.symbol}</span>
-                      <input
-                        type="number"
-                        id="growthCustomTargetInput"
-                        class="custom-dollar-input"
-                        min="100"
-                        max="100000000"
-                        step="${cur.step}"
-                        value="${targetRev}"
-                      />
-                      <span class="custom-dollar-suffix">/mo</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            `}
-          `}
-        `}
       `;
-    } else if (state.growthStep === 2) {
-      const showOfferBridge = gp.offerStructure === "unsure-offer";
+    } else if (s === 1 && sub === 2) {
+      const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
+
       stepContent = `
         <div class="step-header-row">
-          <span class="step-num-editorial">02</span>
+          <span class="step-num-editorial">01</span>
           <div>
-            <h2 class="step-title">What You Sell & <em>How You Price It</em></h2>
+            <h2 class="step-title">Your Specific Specialty & <em>Ideal Client</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Most business owners who feel stuck do not need to work longer hours. They just need simpler packages and better pricing so each sale brings in more profit.
+              Select your closest specialty below or describe your niche so your 30-day priorities and outreach messages are 100% custom.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart2A">
-          Part A: How do you sell your products or services right now?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${(window.GROWTH_OFFER_STRUCTURES || [])
+        <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
+          ${
+            subNiches.length > 0
+              ? `
+              <div style="margin-bottom: 18px;">
+                <label for="growthSubNicheSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+                  Select Your Closest Specialty (Dropdown):
+                </label>
+                <select id="growthSubNicheSelect" class="form-input" style="cursor: pointer;">
+                  <option value="">Choose your specialty...</option>
+                  ${subNiches
+                    .map((sn) => `<option value="${sn.id}" ${gp.subNicheId === sn.id ? "selected" : ""}>${sn.label}</option>`)
+                    .join("")}
+                </select>
+              </div>
+            `
+              : ""
+          }
+
+          <div style="margin-bottom: 18px;">
+            <label for="growthSpecificNicheInput" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+              Or describe your exact service / niche in your own words:
+            </label>
+            <input
+              type="text"
+              id="growthSpecificNicheInput"
+              class="form-input"
+              placeholder="e.g., Postpartum doula, custom balloon garlands, Shopify web design, Pinterest ads..."
+              value="${(gp.specificNiche || "").replace(/"/g, "&quot;")}"
+            />
+          </div>
+
+          <div>
+            <label for="growthTargetAudienceInput" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+              Who is your ideal client or audience? (Optional):
+            </label>
+            <input
+              type="text"
+              id="growthTargetAudienceInput"
+              class="form-input"
+              placeholder="e.g., First-time moms, local wedding planners, female real estate agents, high-earning corporate parents..."
+              value="${(gp.targetAudience || "").replace(/"/g, "&quot;")}"
+            />
+          </div>
+        </div>
+      `;
+    } else if (s === 1 && sub === 3) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">01</span>
+          <div>
+            <h2 class="step-title">What Are Your <em>Current Monthly Sales</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Pick the closest range. If you are just starting or pre-revenue, choose Pre-revenue.
+            </p>
+          </div>
+        </div>
+
+        <div class="options-grid">
+          ${(window.GROWTH_REVENUE_STAGES || [])
             .map(
-              (item) => `
-            <div class="option-card ${gp.offerStructure === item.id ? "selected" : ""}" data-growth-offer="${item.id}">
+              (stg) => `
+            <div class="option-card ${gp.revenueStageId === stg.id ? "selected" : ""}" data-growth-revstage="${stg.id}" data-growth-revval="${stg.val}">
               <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
+                <div class="option-title">${formatStoryWithUserCurrency(stg.label)}</div>
+                <div class="option-sub">${formatStoryWithUserCurrency(stg.sub)}</div>
               </div>
               <div class="option-check">✓</div>
             </div>
@@ -3607,59 +3824,186 @@
             )
             .join("")}
         </div>
-
-        ${
-          showOfferBridge
-            ? `
-          <div class="growth-bridge-nudge-card">
-            <div style="flex: 1; min-width: 240px;">
-              <div style="font-size: 0.75rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 4px;">
-                Still Figuring Out What to Offer? You Have Options
-              </div>
-              <h4 style="margin-bottom: 4px;">We can help you create simple packages OR test new business ideas</h4>
-              <p style="margin-bottom: 0;">
-                Keep going below and Priority #1 of your Growth Report will show you how to create a simple 3-option package menu in 7 days. Or, if you want to explore new business ideas from scratch, switch to Business Fit anytime.
-              </p>
-            </div>
-            <button type="button" class="btn-secondary" data-switch-mode="fit" style="padding: 10px 18px; font-size: 0.85rem; white-space: nowrap;">
-              Switch to Business Fit Assessment
-            </button>
+      `;
+    } else if (s === 1 && sub === 4) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">01</span>
+          <div>
+            <h2 class="step-title">Roughly What Is Your <em>Take-Home Profit Margin</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              After paying business expenses, tools, and materials, what percentage stays as profit?
+            </p>
           </div>
-        `
-            : ""
-        }
-
-        <h3 class="sub-section-heading" id="growthPart2B">
-          Part B: What does a typical customer spend per order, appointment, or package?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${(window.GROWTH_AVG_PRICE_TIERS || [])
-            .map((t) => {
-              const labelAdapted = t.label.replace(/\$([0-9,]+)/g, (_, numStr) => {
-                const rawNum = Number(numStr.replace(/,/g, ""));
-                return fmtMoney(scaleAmt(rawNum));
-              });
-              return `
-                <div class="option-card ${gp.avgPriceTierId === t.id ? "selected" : ""}" data-growth-pricetier="${t.id}">
-                  <div class="option-content">
-                    <div class="option-title">${labelAdapted}</div>
-                    <div class="option-sub">${t.sub}</div>
-                  </div>
-                  <div class="option-check">✓</div>
-                </div>
-              `;
-            })
-            .join("")}
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart2C">
-          Part C: How do you feel about your current prices?
-        </h3>
+        <div class="options-grid">
+          ${(window.GROWTH_PROFIT_MARGINS || [])
+            .map(
+              (m) => `
+            <div class="option-card ${gp.profitMarginId === m.id ? "selected" : ""}" data-growth-margin="${m.id}">
+              <div class="option-content">
+                <div class="option-title">${m.label}</div>
+                <div class="option-sub">${m.sub}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    } else if (s === 1 && sub === 5) {
+      const targetRev = Number(gp.targetRevenue) || cur.defaultGoal;
+      const currentRev = Number(gp.currentRevenue) || 0;
+      const gap = Math.max(window.VaultEngine.scaleUsdToCurrency(500, cur.code), targetRev - currentRev);
+
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">01</span>
+          <div>
+            <h2 class="step-title">What Is Your <em>Target Monthly Revenue</em> in 90 Days?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Pick your currency and set your 90-day goal. We will calculate the math to reach it.
+            </p>
+          </div>
+        </div>
+
+        <div class="income-showcase-box">
+          <div class="currency-selector-row">
+            <span class="currency-label-text">Currency:</span>
+            ${(window.SUPPORTED_CURRENCIES || [])
+              .map(
+                (c) => `
+              <button type="button" class="currency-pill ${c.code === cur.code ? "active" : ""}" data-currency="${c.code}">
+                ${c.label}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+
+          <div class="income-amount-row">
+            <span class="income-big-number" id="growthTargetDisplay">${fmtMoney(targetRev)}</span>
+            <span class="income-per-mo">/ month</span>
+          </div>
+          <div class="income-annual-sub" id="growthGapDisplay">
+            +${fmtMoney(gap)}/mo more than your current monthly sales (<strong>${fmtMoney(targetRev * 12)}/year</strong> pace)
+          </div>
+
+          <input
+            type="range"
+            id="growthTargetSlider"
+            class="income-slider"
+            min="${cur.min}"
+            max="${cur.max}"
+            step="${cur.step}"
+            value="${Math.min(cur.max, Math.max(cur.min, targetRev))}"
+          />
+
+          <div class="income-presets">
+            ${(cur.presets || [])
+              .map(
+                (amt) => `
+              <button type="button" class="preset-btn ${targetRev === amt ? "active" : ""}" data-growth-preset="${amt}">
+                ${fmtMoney(amt)}/mo
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+
+          <div class="custom-dollar-input-wrap">
+            <span class="custom-dollar-label">Or type exact monthly target:</span>
+            <div class="custom-dollar-input-group">
+              <span class="custom-dollar-currency">${cur.symbol}</span>
+              <input
+                type="number"
+                id="growthCustomTargetInput"
+                class="custom-dollar-input"
+                min="100"
+                max="100000000"
+                step="${cur.step}"
+                value="${targetRev}"
+              />
+              <span class="custom-dollar-suffix">/mo</span>
+            </div>
+          </div>
+        </div>
+      `;
+    } else if (s === 2 && sub === 1) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">02</span>
+          <div>
+            <h2 class="step-title">How Is Your <em>Primary Offer Structured</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Choose the main way clients or customers pay you.
+            </p>
+          </div>
+        </div>
+
+        <div class="options-grid">
+          ${(window.GROWTH_OFFER_STRUCTURES || [])
+            .map(
+              (o) => `
+            <div class="option-card ${gp.offerStructure === o.id ? "selected" : ""}" data-growth-offer="${o.id}">
+              <div class="option-content">
+                <div class="option-title">${o.label}</div>
+                <div class="option-sub">${o.sub}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    } else if (s === 2 && sub === 2) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">02</span>
+          <div>
+            <h2 class="step-title">What Is Your <em>Typical Price Point</em> Per Sale or Client?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Select the closest average transaction size for your core offer.
+            </p>
+          </div>
+        </div>
+
+        <div class="options-grid">
+          ${(window.GROWTH_AVG_PRICE_TIERS || [])
+            .map(
+              (t) => `
+            <div class="option-card ${gp.avgPriceTierId === t.id ? "selected" : ""}" data-growth-pricetier="${t.id}">
+              <div class="option-content">
+                <div class="option-title">${formatStoryWithUserCurrency(t.label)}</div>
+                <div class="option-sub">${formatStoryWithUserCurrency(t.sub)}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    } else if (s === 2 && sub === 3) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">02</span>
+          <div>
+            <h2 class="step-title">How Confident Do You Feel About <em>Your Current Pricing</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Be completely honest about whether your pricing reflects your real value.
+            </p>
+          </div>
+        </div>
+
         <div class="options-grid">
           ${(window.GROWTH_PRICE_CONFIDENCE || [])
             .map(
               (c) => `
-            <div class="option-card ${gp.priceConfidence === c.id ? "selected" : ""}" data-growth-priceconf="${c.id}">
+            <div class="option-card ${gp.priceConfidence === c.id ? "selected" : ""}" data-growth-confidence="${c.id}">
               <div class="option-content">
                 <div class="option-title">${c.label}</div>
                 <div class="option-sub">${c.sub}</div>
@@ -3671,54 +4015,103 @@
             .join("")}
         </div>
       `;
-    } else if (state.growthStep === 3) {
-      const selectedLeads = Array.isArray(gp.leadSources)
-        ? gp.leadSources
-        : gp.leadSource
-        ? [gp.leadSource]
-        : [];
+    } else if (s === 3 && sub === 1) {
+      const selectedSources = Array.isArray(gp.leadSources) ? gp.leadSources : (gp.leadSource ? [gp.leadSource] : []);
+      const allSources = window.GROWTH_LEAD_SOURCES || [];
 
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">03</span>
           <div>
-            <h2 class="step-title">How Customers <em>Find & Buy From You</em></h2>
+            <h2 class="step-title">Where Do Your Leads & Clients <em>Currently Come From</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Let's look at how people hear about your business and what stops more of them from buying.
+              Select your primary client acquisition channels from the dropdown or quick buttons below. You can select multiple.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart3A">
-          Part A: How do your paying customers find you today? (Select all that apply)
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${(window.GROWTH_LEAD_SOURCES || [])
-            .map(
-              (item) => `
-            <div class="option-card ${selectedLeads.includes(item.id) ? "selected" : ""}" data-growth-leadsource="${item.id}">
-              <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
-              </div>
-              <div class="option-check multi-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
+        <div class="multi-select-dropdown-box">
+          <label for="growthLeadSourceSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Add Client Acquisition Channel (Dropdown):
+          </label>
+          <select id="growthLeadSourceSelect" class="form-input" style="cursor: pointer;">
+            <option value="">+ Choose a channel to add...</option>
+            ${allSources
+              .map((src) => {
+                const isSel = selectedSources.includes(src.id);
+                return `<option value="${src.id}">${isSel ? "✓ " : ""}${src.label}</option>`;
+              })
+              .join("")}
+          </select>
+
+          <div class="multi-select-tags-wrap" id="growthLeadTagsWrap">
+            ${
+              selectedSources.length === 0
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lead channels selected yet. Choose from the dropdown or quick buttons below.</span>`
+                : selectedSources
+                    .map((id) => {
+                      const item = allSources.find((s) => s.id === id);
+                      const name = item ? item.label : id;
+                      return `
+                        <span class="multi-select-tag">
+                          ${name}
+                          <button type="button" class="tag-remove-btn" data-remove-growth-lead="${id}" aria-label="Remove ${name}">×</button>
+                        </span>
+                      `;
+                    })
+                    .join("")
+            }
+          </div>
+
+          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
+            Quick Select Channels:
+          </div>
+          <div class="quick-chips-wrap">
+            ${allSources
+              .map((src) => {
+                const isSel = selectedSources.includes(src.id);
+                return `
+                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-growth-lead="${src.id}">
+                    ${isSel ? "✓" : "+"} ${src.label}
+                  </button>
+                `;
+              })
+              .join("")}
+          </div>
+        </div>
+      `;
+    } else if (s === 3 && sub === 2) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">03</span>
+          <div>
+            <h2 class="step-title">Where Do Potential Clients <em>Drop Off Most Often</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Select your biggest sales or conversion hurdle from the dropdown or cards below.
+            </p>
+          </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart3B">
-          Part B: What is your biggest frustration with getting steady sales?
-        </h3>
+        <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
+          <label for="growthConversionSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Select Bottleneck (Dropdown):
+          </label>
+          <select id="growthConversionSelect" class="form-input" style="cursor: pointer;">
+            <option value="">Choose your primary sales bottleneck...</option>
+            ${(window.GROWTH_CONVERSION_ISSUES || [])
+              .map((iss) => `<option value="${iss.id}" ${gp.conversionIssue === iss.id ? "selected" : ""}>${iss.label}</option>`)
+              .join("")}
+          </select>
+        </div>
+
         <div class="options-grid">
           ${(window.GROWTH_CONVERSION_ISSUES || [])
             .map(
-              (item) => `
-            <div class="option-card ${gp.conversionIssue === item.id ? "selected" : ""}" data-growth-conversion="${item.id}">
+              (iss) => `
+            <div class="option-card ${gp.conversionIssue === iss.id ? "selected" : ""}" data-growth-conversion="${iss.id}">
               <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
+                <div class="option-title">${iss.label}</div>
+                <div class="option-sub">${iss.sub}</div>
               </div>
               <div class="option-check">✓</div>
             </div>
@@ -3727,48 +4120,26 @@
             .join("")}
         </div>
       `;
-    } else if (state.growthStep === 4) {
+    } else if (s === 4 && sub === 1) {
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">04</span>
           <div>
-            <h2 class="step-title">Repeat Customers & <em>Staying in Touch</em></h2>
+            <h2 class="step-title">How Often Do Past Clients <em>Buy Again or Refer Others</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Selling again to a happy past customer is 5 times easier than convincing a stranger online. Let's look at how often buyers come back.
+              Repeat revenue and word-of-mouth are the highest-margin growth levers for busy moms.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart4A">
-          Part A: Roughly how much of your monthly sales come from repeat customers or monthly clients?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
+        <div class="options-grid">
           ${(window.GROWTH_REPEAT_RATES || [])
             .map(
-              (item) => `
-            <div class="option-card ${gp.repeatRateId === item.id ? "selected" : ""}" data-growth-repeat="${item.id}">
+              (r) => `
+            <div class="option-card ${gp.repeatRateId === r.id ? "selected" : ""}" data-growth-repeat="${r.id}">
               <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
-              </div>
-              <div class="option-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-
-        <h3 class="sub-section-heading" id="growthPart4B">
-          Part B: How do you stay in touch with past customers after you finish their order?
-        </h3>
-        <div class="options-grid">
-          ${(window.GROWTH_RETENTION_SYSTEMS || [])
-            .map(
-              (item) => `
-            <div class="option-card ${gp.retentionSystem === item.id ? "selected" : ""}" data-growth-retention="${item.id}">
-              <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
+                <div class="option-title">${r.label}</div>
+                <div class="option-sub">${r.sub}</div>
               </div>
               <div class="option-check">✓</div>
             </div>
@@ -3777,80 +4148,107 @@
             .join("")}
         </div>
       `;
-    } else if (state.growthStep === 5) {
-      const curHourChoices = [
-        { val: 5, label: "Under 6 hours/week", sub: "Working in small pockets of time around kids or a day job" },
-        { val: 10, label: "6 to 12 hours/week", sub: "Part-time mornings, nap blocks, or weekend sessions" },
-        { val: 15, label: "12 to 20 hours/week", sub: "Steady part-time schedule across school or daycare hours" },
-        { val: 25, label: "20 to 30 hours/week", sub: "Big weekly commitment, starting to feel stretched" },
-        { val: 35, label: "30 to 40+ hours/week", sub: "Full-time hours; working evenings and weekends to keep up" }
-      ];
-      const maxHourChoices = [
-        { val: 6, label: "Max 5 to 8 hours/week", sub: "Keep the business simple inside small weekly pockets" },
-        { val: 12, label: "Max 10 to 15 hours/week", sub: "Ideal school-hours or part-time family schedule" },
-        { val: 20, label: "Max 15 to 20 hours/week", sub: "Focused part-time schedule with afternoons and weekends off" },
-        { val: 28, label: "Max 25 to 30 hours/week", sub: "Dedicated weekday schedule while keeping family evenings free" }
-      ];
+    } else if (s === 4 && sub === 2) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">04</span>
+          <div>
+            <h2 class="step-title">What Client Retention or <em>Follow-Up System Do You Have</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              How do you stay in touch with past buyers or follow up with leads who did not buy right away?
+            </p>
+          </div>
+        </div>
+
+        <div class="options-grid">
+          ${(window.GROWTH_RETENTION_SYSTEMS || [])
+            .map(
+              (ret) => `
+            <div class="option-card ${gp.retentionSystem === ret.id ? "selected" : ""}" data-growth-retention="${ret.id}">
+              <div class="option-content">
+                <div class="option-title">${ret.label}</div>
+                <div class="option-sub">${ret.sub}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      `;
+    } else if (s === 5 && sub === 1) {
+      const curHours = Number(gp.currentHours) || 15;
+      const maxHours = Number(gp.maxDesiredHours) || 15;
+
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">05</span>
           <div>
-            <h2 class="step-title">Protect Your <em>Time, Energy & Family Life</em></h2>
+            <h2 class="step-title">Weekly Hours Worked vs <em>Target Hours</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Our goal is to help you earn more without giving up your evenings and weekends. Tell us how many hours you work now compared to your ideal weekly limit.
+              Let us diagnose your capacity and time freedom.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart5A">
-          Part A: Roughly how many hours per week are you currently working in your business?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${curHourChoices
-            .map(
-              (opt) => `
-            <div class="option-card ${gp.currentHours !== null && gp.currentHours !== undefined && Number(gp.currentHours) === opt.val ? "selected" : ""}" data-growth-curhours="${opt.val}">
-              <div class="option-content">
-                <div class="option-title">${opt.label}</div>
-                <div class="option-sub">${opt.sub}</div>
-              </div>
-              <div class="option-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
+        <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
+          <h3 class="sub-section-heading" style="margin-bottom: 10px;">Part A: Roughly how many hours per week do you work right now?</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;">
+            ${[
+              { val: 8, label: "Under 10 hrs" },
+              { val: 15, label: "10 to 20 hrs" },
+              { val: 25, label: "20 to 30 hrs" },
+              { val: 35, label: "30 to 40+ hrs" }
+            ]
+              .map(
+                (btn) => `
+              <button type="button" class="quick-chip-btn ${curHours === btn.val ? "active" : ""}" data-growth-curhours="${btn.val}" style="padding: 10px 18px; font-size: 0.9rem;">
+                ${btn.label}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+
+          <h3 class="sub-section-heading" style="margin-bottom: 10px;">Part B: What is your ideal maximum weekly hours ceiling?</h3>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            ${[
+              { val: 8, label: "5 to 10 hrs" },
+              { val: 12, label: "10 to 15 hrs" },
+              { val: 18, label: "15 to 20 hrs" },
+              { val: 25, label: "20 to 30 hrs" }
+            ]
+              .map(
+                (btn) => `
+              <button type="button" class="quick-chip-btn ${maxHours === btn.val ? "active" : ""}" data-growth-maxhours="${btn.val}" style="padding: 10px 18px; font-size: 0.9rem;">
+                ${btn.label}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+      `;
+    } else if (s === 5 && sub === 2) {
+      stepContent = `
+        <div class="step-header-row">
+          <span class="step-num-editorial">05</span>
+          <div>
+            <h2 class="step-title">What Part of Running Your Business <em>Drains the Most Energy</em>?</h2>
+            <p class="step-desc" style="margin-bottom: 0;">
+              Identifying this unlocks immediate delegation, templates, or automation wins.
+            </p>
+          </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart5B">
-          Part B: What is the MAXIMUM hours per week you want to work going forward?
-        </h3>
-        <div class="options-grid" style="margin-bottom: 24px;">
-          ${maxHourChoices
-            .map(
-              (opt) => `
-            <div class="option-card ${gp.maxDesiredHours !== null && gp.maxDesiredHours !== undefined && Number(gp.maxDesiredHours) === opt.val ? "selected" : ""}" data-growth-maxhours="${opt.val}">
-              <div class="option-content">
-                <div class="option-title">${opt.label}</div>
-                <div class="option-sub">${opt.sub}</div>
-              </div>
-              <div class="option-check">✓</div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-
-        <h3 class="sub-section-heading" id="growthPart5C">
-          Part C: What takes up the most time or energy in your business right now?
-        </h3>
         <div class="options-grid">
           ${(window.GROWTH_DELIVERY_DRAINS || [])
             .map(
-              (item) => `
-            <div class="option-card ${gp.deliveryDrain === item.id ? "selected" : ""}" data-growth-drain="${item.id}">
+              (d) => `
+            <div class="option-card ${gp.deliveryDrain === d.id ? "selected" : ""}" data-growth-drain="${d.id}">
               <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
+                <div class="option-title">${d.label}</div>
+                <div class="option-sub">${d.sub}</div>
               </div>
               <div class="option-check">✓</div>
             </div>
@@ -3859,57 +4257,27 @@
             .join("")}
         </div>
       `;
-    } else if (state.growthStep === 6) {
-      const budgetTiers = [
-        {
-          val: 0,
-          label: `${fmtMoney(0)} (Free Methods Only)`,
-          sub: "Grow using better packages, past-customer check-ins, and local partners without spending money"
-        },
-        {
-          val: 300,
-          label: `Up to ${fmtMoney(scaleAmt(300))}/mo (Simple Tools & Samples)`,
-          sub: "Cover basic booking or email tools, templates, or sample boxes for local partners"
-        },
-        {
-          val: 1000,
-          label: `${fmtMoney(scaleAmt(300))} to ${fmtMoney(scaleAmt(1000))}/mo (Starter Ads & Extra Help)`,
-          sub: "Budget for starter social/Google ads, helpful software, or part-time prep and admin help"
-        },
-        {
-          val: 3000,
-          label: `${fmtMoney(scaleAmt(1000))} to ${fmtMoney(scaleAmt(3000))}/mo (Steady Ads & Part-Time Help)`,
-          sub: "Ready to run regular Facebook/Instagram/Google ads, hire part-time help, or buy supplies in bulk"
-        },
-        {
-          val: 5000,
-          label: `${fmtMoney(scaleAmt(3000))} to ${fmtMoney(scaleAmt(5000))}+/mo (Full Ad Campaigns & Team)`,
-          sub: "Established budget to scale paid ads, upgrade equipment and inventory, or grow a team"
-        }
-      ];
-
+    } else if (s === 6) {
       stepContent = `
         <div class="step-header-row">
           <span class="step-num-editorial">06</span>
           <div>
-            <h2 class="step-title">What is your <em>#1 Goal</em> for the next 30 to 90 days?</h2>
+            <h2 class="step-title">Primary 30-Day Growth Priority & <em>Budget</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Tell us what result would make the biggest difference for you and your family right now.
+              Choose your single highest-leverage focus for the next 30 days and what budget you can allocate.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart6A">
-          Part A: Choose your #1 growth goal
-        </h3>
+        <h3 class="sub-section-heading">Part A: What is your primary 90-day goal?</h3>
         <div class="options-grid" style="margin-bottom: 24px;">
           ${(window.GROWTH_PRIMARY_GOALS || [])
             .map(
-              (item) => `
-            <div class="option-card ${gp.primaryGoal === item.id ? "selected" : ""}" data-growth-goal="${item.id}">
+              (g) => `
+            <div class="option-card ${gp.primaryGoal === g.id ? "selected" : ""}" data-growth-goal="${g.id}">
               <div class="option-content">
-                <div class="option-title">${item.label}</div>
-                <div class="option-sub">${item.sub}</div>
+                <div class="option-title">${g.label}</div>
+                <div class="option-sub">${g.sub}</div>
               </div>
               <div class="option-check">✓</div>
             </div>
@@ -3918,16 +4286,19 @@
             .join("")}
         </div>
 
-        <h3 class="sub-section-heading" id="growthPart6B">
-          Part B: Available monthly budget for tools, marketing, or extra help
-        </h3>
+        <h3 class="sub-section-heading">Part B: Available 30-day growth budget (tools, advertising or support):</h3>
         <div class="options-grid" style="margin-bottom: 24px;">
-          ${budgetTiers
+          ${[
+            { val: 0, label: "$0 Lean (Organic & Sweat Equity)", sub: "Optimize current assets, follow-ups, and organic outreach" },
+            { val: 200, label: "$100 to $300/mo (Starter Tools)", sub: "Email software, scheduling tools, or simple automation" },
+            { val: 1000, label: "$500 to $1,500/mo (Coaching or Ads)", sub: "Targeted advertising, expert strategy, or specialized templates" },
+            { val: 3000, label: "$2,000+/mo (Full Scale)", sub: "Virtual assistants, paid campaigns, and done-for-you support" }
+          ]
             .map(
               (b) => `
-            <div class="option-card ${gp.growthBudget === b.val ? "selected" : ""}" data-growth-budget="${b.val}">
+            <div class="option-card ${gp.growthBudget !== null && gp.growthBudget !== undefined && Number(gp.growthBudget) === b.val ? "selected" : ""}" data-growth-budget="${b.val}">
               <div class="option-content">
-                <div class="option-title">${b.label}</div>
+                <div class="option-title">${formatStoryWithUserCurrency(b.label)}</div>
                 <div class="option-sub">${b.sub}</div>
               </div>
               <div class="option-check">✓</div>
@@ -3937,62 +4308,59 @@
             .join("")}
         </div>
 
-        <h3 class="sub-section-heading">
-          Part C (Optional): Briefly describe what you sell or your biggest challenge
-        </h3>
-        <input
-          type="text"
-          id="growthCustomNoteInput"
-          class="form-input"
-          placeholder="e.g., Custom party styling & balloons in Atlanta, want more weekday business clients..."
-          value="${(gp.customNote || "").replace(/"/g, "&quot;")}"
-          style="width: 100%;"
-        />
+        <h3 class="sub-section-heading">Part C: Any specific hurdle or note you want addressed? (Optional):</h3>
+        <div style="margin-bottom: 8px;">
+          <input
+            type="text"
+            id="growthCustomNoteInput"
+            class="form-input"
+            placeholder="e.g., Struggling to find time for social media, high no-show rate on sales calls..."
+            value="${(gp.customNote || "").replace(/"/g, "&quot;")}"
+          />
+        </div>
       `;
     }
+
+    const isLastGrowthQuestion = s === 6;
 
     return `
       <div class="quiz-shell">
         <div class="progress-header">
           <div class="progress-meta">
-            <span>SECTION ${state.growthStep} OF ${state.totalQuizSteps}</span>
-            <span>Goal: ${fmtMoney(gp.targetRevenue || scaleAmt(6000))}/mo • ${pct}% Complete</span>
+            <span>GROWTH SECTION ${s} OF ${state.totalQuizSteps} (PART ${sub} OF ${maxSub})</span>
+            <span>${pct}% Complete</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill" style="width: ${pct}%"></div>
           </div>
         </div>
 
-        <div class="quiz-body">
+        <div class="quiz-body typeform-card">
+          <div class="typeform-nav-bar">
+            <button type="button" class="btn-typeform-back" id="btnGrowthPrev">
+              ${s === 1 && sub === 1 ? "← Back to Tools Home" : "← Back"}
+            </button>
+            <span class="typeform-step-badge">Question ${s}.${sub} of ${maxSub}</span>
+          </div>
+
           ${stepContent}
 
           ${
             state.validationError
-              ? `
-            <div class="step-validation-banner" id="growthStepValidationBanner" role="alert">
-              <strong>Quick Check Before Continuing:</strong> ${state.validationError}
-            </div>
-          `
-              : ""
+              ? `<div class="step-validation-banner" id="stepValidationBanner" role="alert">
+                  <strong>Quick Check Before Continuing:</strong> ${state.validationError}
+                </div>`
+              : ``
           }
 
           <div class="quiz-footer">
             <div style="display: flex; align-items: center; gap: 10px;">
-              ${
-                state.growthStep > 1
-                  ? `<button type="button" class="btn-secondary" id="btnGrowthPrev">Back</button>`
-                  : ``
-              }
               <button type="button" class="btn-ghost-sm" id="btnResetGrowthInline" style="font-size: 0.82rem; color: var(--ink-muted);">
                 Start Over
               </button>
             </div>
             <button type="button" class="btn-primary" id="btnGrowthNext">
-              ${
-                state.growthStep === state.totalQuizSteps
-                  ? "See My Growth Plan & Top 3 Priorities"
-                  : "Continue"
-              }
+              ${isLastGrowthQuestion ? "See My 30-Day Growth Diagnostic & Priorities" : "Continue →"}
             </button>
           </div>
         </div>
@@ -4001,339 +4369,379 @@
   }
 
   function bindGrowthQuizEvents() {
+    const s = state.growthStep;
+    const sub = state.growthSubStep || 1;
     const gp = state.growthProfile;
 
-    document.querySelectorAll("[data-switch-mode]").forEach((btn) => {
-      btn.onclick = () => switchToolMode(btn.getAttribute("data-switch-mode"));
-    });
-
-    document.querySelectorAll("[data-growth-currency]").forEach((btn) => {
+    // Currency Switcher
+    document.querySelectorAll("[data-currency]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        const newCode = btn.getAttribute("data-growth-currency");
-        if (!newCode || newCode === gp.currency) return;
-        const oldCur = window.VaultEngine.getCurrencyObj(gp.currency);
-        const newCur = window.VaultEngine.getCurrencyObj(newCode);
-        const usdTarget = (Number(gp.targetRevenue) || oldCur.defaultGoal) / (oldCur.rate || 1);
-        const usdCurrent = (Number(gp.currentRevenue) || 1500) / (oldCur.rate || 1);
-        gp.currency = newCode;
-        state.profile.currency = newCode;
-        gp.targetRevenue = window.VaultEngine.scaleUsdToCurrency(usdTarget, newCode) || newCur.defaultGoal;
-        gp.currentRevenue = window.VaultEngine.scaleUsdToCurrency(usdCurrent, newCode);
-        saveUserProgress();
-        render();
+        const newCode = btn.getAttribute("data-currency");
+        if (newCode && newCode !== state.growthProfile.currency) {
+          state.growthProfile.currency = newCode;
+          saveUserProgress();
+          render();
+        }
       });
     });
 
-    function smoothScrollToGrowthElement(id) {
-      setTimeout(() => {
-        const el = document.getElementById(id);
-        if (el) {
-          const yOffset = -90;
-          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-          window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-        }
-      }, 70);
-    }
-
-    document.querySelectorAll("[data-growth-btype]").forEach((el) => {
-      el.addEventListener("click", () => {
-        const newBType = el.getAttribute("data-growth-btype");
-        if (gp.businessType !== newBType) {
-          gp.businessType = newBType;
+    // Step 1 Sub 1: Business Category (Dropdown & Cards)
+    if (s === 1 && sub === 1) {
+      const bTypeSelect = document.getElementById("growthBTypeSelect");
+      if (bTypeSelect) {
+        bTypeSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          gp.businessType = val;
           gp.subNicheId = "";
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-        smoothScrollToGrowthElement(document.getElementById("growthPart1A2") ? "growthPart1A2" : "growthPart1B");
-      });
-    });
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      }
 
-    const subNicheSelect = document.getElementById("growthSubNicheSelect");
-    if (subNicheSelect) {
-      subNicheSelect.addEventListener("change", (e) => {
-        const selId = e.target.value;
-        gp.subNicheId = selId;
-        const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
-        const match = subNiches.find((sn) => sn.id === selId);
-        if (match) {
-          gp.specificNiche = match.label;
-          const nicheInp = document.getElementById("growthSpecificNicheInput");
-          if (nicheInp) {
-            nicheInp.value = match.label;
-            if (match.placeholder) nicheInp.placeholder = match.placeholder;
+      document.querySelectorAll("[data-growth-btype]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.businessType = el.getAttribute("data-growth-btype");
+          gp.subNicheId = "";
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 1 Sub 2: Specialty & Ideal Client
+    if (s === 1 && sub === 2) {
+      const subNicheSelect = document.getElementById("growthSubNicheSelect");
+      if (subNicheSelect) {
+        subNicheSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          gp.subNicheId = val;
+          const subNiches = (window.GROWTH_SUB_NICHES && gp.businessType && window.GROWTH_SUB_NICHES[gp.businessType]) || [];
+          const match = subNiches.find((sn) => sn.id === val);
+          if (match) {
+            gp.specificNiche = match.label;
+            const input = document.getElementById("growthSpecificNicheInput");
+            if (input) input.value = match.label;
           }
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-        if (!gp.revenueStageId) {
-          smoothScrollToGrowthElement("growthPart1B");
-        }
-      });
-    }
-
-    const specificNicheInp = document.getElementById("growthSpecificNicheInput");
-    if (specificNicheInp) {
-      specificNicheInp.addEventListener("input", (e) => {
-        gp.specificNiche = e.target.value;
-        saveUserProgress();
-      });
-    }
-
-    const targetAudienceInp = document.getElementById("growthTargetAudienceInput");
-    if (targetAudienceInp) {
-      targetAudienceInp.addEventListener("input", (e) => {
-        gp.targetAudience = e.target.value;
-        saveUserProgress();
-      });
-    }
-
-    document.querySelectorAll("[data-growth-revstage]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.revenueStageId = el.getAttribute("data-growth-revstage");
-        gp.currentRevenue = Number(el.getAttribute("data-growth-revval")) || 0;
-        if (gp.targetRevenue <= gp.currentRevenue) {
-          const cur = getCur();
-          gp.targetRevenue = gp.currentRevenue + cur.step * 4;
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-        if (!gp.profitMarginId) {
-          smoothScrollToGrowthElement("growthPart1C");
-        }
-      });
-    });
-
-    document.querySelectorAll("[data-growth-margin]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.profitMarginId = el.getAttribute("data-growth-margin");
-        state.validationError = "";
-        saveUserProgress();
-        render();
-        smoothScrollToGrowthElement("growthPart1D");
-      });
-    });
-
-    function updateGrowthTargetDisplayLive(val) {
-      gp.targetRevenue = val;
-      const disp = document.getElementById("growthTargetDisplay");
-      const gapDisp = document.getElementById("growthGapDisplay");
-      const customInp = document.getElementById("growthCustomTargetInput");
-      const cur = getCur();
-      const gap = Math.max(window.VaultEngine.scaleUsdToCurrency(500, cur.code), val - (Number(gp.currentRevenue) || 0));
-      if (disp) disp.textContent = fmtMoney(val);
-      if (gapDisp) {
-        gapDisp.innerHTML = `+${fmtMoney(gap)}/mo more than your current monthly sales (<strong>${fmtMoney(val * 12)}/year</strong> pace)`;
+          state.validationError = "";
+          saveUserProgress();
+        });
       }
-      if (customInp && document.activeElement !== customInp) {
-        customInp.value = val;
+
+      const specificNicheInp = document.getElementById("growthSpecificNicheInput");
+      if (specificNicheInp) {
+        specificNicheInp.addEventListener("input", (e) => {
+          gp.specificNiche = e.target.value;
+          state.validationError = "";
+          saveUserProgress();
+        });
       }
-      document.querySelectorAll("[data-growth-preset]").forEach((b) => {
-        b.classList.toggle("active", Number(b.getAttribute("data-growth-preset")) === val);
-      });
-      saveUserProgress();
+
+      const targetAudienceInp = document.getElementById("growthTargetAudienceInput");
+      if (targetAudienceInp) {
+        targetAudienceInp.addEventListener("input", (e) => {
+          gp.targetAudience = e.target.value;
+          saveUserProgress();
+        });
+      }
     }
 
-    const slider = document.getElementById("growthTargetSlider");
-    if (slider) {
-      slider.addEventListener("input", (e) => {
-        updateGrowthTargetDisplayLive(Number(e.target.value));
+    // Step 1 Sub 3: Current Monthly Sales
+    if (s === 1 && sub === 3) {
+      document.querySelectorAll("[data-growth-revstage]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.revenueStageId = el.getAttribute("data-growth-revstage");
+          gp.currentRevenue = Number(el.getAttribute("data-growth-revval")) || 0;
+          if (gp.targetRevenue <= gp.currentRevenue) {
+            const cur = getCur();
+            gp.targetRevenue = gp.currentRevenue + cur.step * 4;
+          }
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
       });
     }
 
-    const customTargetInput = document.getElementById("growthCustomTargetInput");
-    if (customTargetInput) {
-      customTargetInput.addEventListener("input", (e) => {
-        const val = Math.max(100, Number(e.target.value) || 0);
-        if (slider) {
-          const cur = getCur();
-          slider.value = Math.min(cur.max, Math.max(cur.min, val));
+    // Step 1 Sub 4: Profit Margin
+    if (s === 1 && sub === 4) {
+      document.querySelectorAll("[data-growth-margin]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.profitMarginId = el.getAttribute("data-growth-margin");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 1 Sub 5: 90-Day Revenue Target
+    if (s === 1 && sub === 5) {
+      function updateGrowthTargetDisplayLive(val) {
+        gp.targetRevenue = val;
+        const disp = document.getElementById("growthTargetDisplay");
+        const gapDisp = document.getElementById("growthGapDisplay");
+        const customInp = document.getElementById("growthCustomTargetInput");
+        const cur = getCur();
+        const gap = Math.max(window.VaultEngine.scaleUsdToCurrency(500, cur.code), val - (Number(gp.currentRevenue) || 0));
+        if (disp) disp.textContent = fmtMoney(val);
+        if (gapDisp) {
+          gapDisp.innerHTML = `+${fmtMoney(gap)}/mo more than your current monthly sales (<strong>${fmtMoney(val * 12)}/year</strong> pace)`;
         }
-        updateGrowthTargetDisplayLive(val);
+        if (customInp && document.activeElement !== customInp) {
+          customInp.value = val;
+        }
+        document.querySelectorAll("[data-growth-preset]").forEach((b) => {
+          b.classList.toggle("active", Number(b.getAttribute("data-growth-preset")) === val);
+        });
+        saveUserProgress();
+      }
+
+      const slider = document.getElementById("growthTargetSlider");
+      if (slider) {
+        slider.addEventListener("input", (e) => {
+          updateGrowthTargetDisplayLive(Number(e.target.value));
+        });
+      }
+
+      const customTargetInput = document.getElementById("growthCustomTargetInput");
+      if (customTargetInput) {
+        customTargetInput.addEventListener("input", (e) => {
+          const val = Math.max(100, Number(e.target.value) || 0);
+          if (slider) {
+            const cur = getCur();
+            slider.value = Math.min(cur.max, Math.max(cur.min, val));
+          }
+          updateGrowthTargetDisplayLive(val);
+        });
+      }
+
+      document.querySelectorAll("[data-growth-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const val = Number(btn.getAttribute("data-growth-preset"));
+          if (slider) slider.value = val;
+          updateGrowthTargetDisplayLive(val);
+        });
       });
     }
 
-    document.querySelectorAll("[data-growth-preset]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        gp.targetRevenue = Number(btn.getAttribute("data-growth-preset"));
-        saveUserProgress();
-        render();
+    // Step 2 Sub 1: Offer Structure
+    if (s === 2 && sub === 1) {
+      document.querySelectorAll("[data-growth-offer]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.offerStructure = el.getAttribute("data-growth-offer");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
       });
-    });
+    }
 
-    document.querySelectorAll("[data-growth-offer]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.offerStructure = el.getAttribute("data-growth-offer");
-        state.validationError = "";
-        saveUserProgress();
-        render();
+    // Step 2 Sub 2: Typical Price Point
+    if (s === 2 && sub === 2) {
+      document.querySelectorAll("[data-growth-pricetier]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.avgPriceTierId = el.getAttribute("data-growth-pricetier");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
       });
-    });
+    }
 
-    document.querySelectorAll("[data-growth-pricetier]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.avgPriceTierId = el.getAttribute("data-growth-pricetier");
-        state.validationError = "";
-        saveUserProgress();
-        render();
+    // Step 2 Sub 3: Pricing Confidence
+    if (s === 2 && sub === 3) {
+      document.querySelectorAll("[data-growth-confidence]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.priceConfidence = el.getAttribute("data-growth-confidence");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
       });
-    });
+    }
 
-    document.querySelectorAll("[data-growth-priceconf]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.priceConfidence = el.getAttribute("data-growth-priceconf");
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-leadsource]").forEach((el) => {
-      el.addEventListener("click", () => {
-        const id = el.getAttribute("data-growth-leadsource");
-        if (!Array.isArray(gp.leadSources)) {
-          gp.leadSources = gp.leadSource ? [gp.leadSource] : [];
-        }
-        if (id === "no-lead-system") {
-          gp.leadSources = gp.leadSources.includes("no-lead-system") ? [] : ["no-lead-system"];
-        } else {
-          gp.leadSources = gp.leadSources.filter((x) => x !== "no-lead-system");
-          if (gp.leadSources.includes(id)) {
-            gp.leadSources = gp.leadSources.filter((x) => x !== id);
+    // Step 3 Sub 1: Lead Sources (Dropdown, Tags & Quick Chips)
+    if (s === 3 && sub === 1) {
+      const leadSelect = document.getElementById("growthLeadSourceSelect");
+      if (leadSelect) {
+        leadSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          if (!Array.isArray(gp.leadSources)) {
+            gp.leadSources = gp.leadSource ? [gp.leadSource] : [];
+          }
+          if (val === "no-lead-system") {
+            gp.leadSources = ["no-lead-system"];
           } else {
-            gp.leadSources.push(id);
+            gp.leadSources = gp.leadSources.filter((x) => x !== "no-lead-system");
+            if (!gp.leadSources.includes(val)) {
+              gp.leadSources.push(val);
+            }
           }
-        }
-        gp.leadSource = gp.leadSources[0] || "";
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
+          gp.leadSource = gp.leadSources[0] || "";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      }
 
-    document.querySelectorAll("[data-growth-conversion]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.conversionIssue = el.getAttribute("data-growth-conversion");
-        state.validationError = "";
-        saveUserProgress();
-        render();
+      document.querySelectorAll("[data-remove-growth-lead]").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const id = btn.getAttribute("data-remove-growth-lead");
+          if (Array.isArray(gp.leadSources)) {
+            gp.leadSources = gp.leadSources.filter((x) => x !== id);
+            gp.leadSource = gp.leadSources[0] || "";
+          }
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
       });
-    });
 
-    document.querySelectorAll("[data-growth-repeat]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.repeatRateId = el.getAttribute("data-growth-repeat");
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-retention]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.retentionSystem = el.getAttribute("data-growth-retention");
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-curhours]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        gp.currentHours = Number(btn.getAttribute("data-growth-curhours"));
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-maxhours]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        gp.maxDesiredHours = Number(btn.getAttribute("data-growth-maxhours"));
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-drain]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.deliveryDrain = el.getAttribute("data-growth-drain");
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-goal]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.primaryGoal = el.getAttribute("data-growth-goal");
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    document.querySelectorAll("[data-growth-budget]").forEach((el) => {
-      el.addEventListener("click", () => {
-        gp.growthBudget = Number(el.getAttribute("data-growth-budget"));
-        state.validationError = "";
-        saveUserProgress();
-        render();
-      });
-    });
-
-    const noteInput = document.getElementById("growthCustomNoteInput");
-    if (noteInput) {
-      noteInput.addEventListener("input", (e) => {
-        gp.customNote = e.target.value;
-        saveUserProgress();
+      document.querySelectorAll("[data-quick-growth-lead]").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          const id = chip.getAttribute("data-quick-growth-lead");
+          if (!Array.isArray(gp.leadSources)) {
+            gp.leadSources = gp.leadSource ? [gp.leadSource] : [];
+          }
+          if (id === "no-lead-system") {
+            gp.leadSources = gp.leadSources.includes("no-lead-system") ? [] : ["no-lead-system"];
+          } else {
+            gp.leadSources = gp.leadSources.filter((x) => x !== "no-lead-system");
+            if (gp.leadSources.includes(id)) {
+              gp.leadSources = gp.leadSources.filter((x) => x !== id);
+            } else {
+              gp.leadSources.push(id);
+            }
+          }
+          gp.leadSource = gp.leadSources[0] || "";
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
       });
     }
 
-    const resetInline = document.getElementById("btnResetGrowthInline");
-    if (resetInline) {
-      resetInline.addEventListener("click", () => resetAssessmentAndStartOver());
+    // Step 3 Sub 2: Conversion Bottleneck (Dropdown & Cards)
+    if (s === 3 && sub === 2) {
+      const convSelect = document.getElementById("growthConversionSelect");
+      if (convSelect) {
+        convSelect.addEventListener("change", (e) => {
+          const val = e.target.value;
+          if (!val) return;
+          gp.conversionIssue = val;
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      }
+
+      document.querySelectorAll("[data-growth-conversion]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.conversionIssue = el.getAttribute("data-growth-conversion");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
     }
 
+    // Step 4 Sub 1: Repeat Rate
+    if (s === 4 && sub === 1) {
+      document.querySelectorAll("[data-growth-repeat]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.repeatRateId = el.getAttribute("data-growth-repeat");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 4 Sub 2: Retention System
+    if (s === 4 && sub === 2) {
+      document.querySelectorAll("[data-growth-retention]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.retentionSystem = el.getAttribute("data-growth-retention");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 5 Sub 1: Hours
+    if (s === 5 && sub === 1) {
+      document.querySelectorAll("[data-growth-curhours]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          gp.currentHours = Number(btn.getAttribute("data-growth-curhours"));
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-growth-maxhours]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          gp.maxDesiredHours = Number(btn.getAttribute("data-growth-maxhours"));
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+    }
+
+    // Step 5 Sub 2: Delivery Drain
+    if (s === 5 && sub === 2) {
+      document.querySelectorAll("[data-growth-drain]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.deliveryDrain = el.getAttribute("data-growth-drain");
+          state.validationError = "";
+          triggerAutoAdvance();
+        });
+      });
+    }
+
+    // Step 6 Sub 1: Growth Goal & Budget
+    if (s === 6) {
+      document.querySelectorAll("[data-growth-goal]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.primaryGoal = el.getAttribute("data-growth-goal");
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
+      document.querySelectorAll("[data-growth-budget]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.growthBudget = Number(el.getAttribute("data-growth-budget"));
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
+      const noteInput = document.getElementById("growthCustomNoteInput");
+      if (noteInput) {
+        noteInput.addEventListener("input", (e) => {
+          gp.customNote = e.target.value;
+          saveUserProgress();
+        });
+      }
+    }
+
+    // Global Growth Navigation
     const prevBtn = document.getElementById("btnGrowthPrev");
     if (prevBtn) {
       prevBtn.addEventListener("click", () => {
-        state.validationError = "";
-        state.growthStep = Math.max(1, state.growthStep - 1);
-        saveUserProgress();
-        render();
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        retreatSubStep();
       });
     }
 
     const nextBtn = document.getElementById("btnGrowthNext");
     if (nextBtn) {
       nextBtn.addEventListener("click", () => {
-        const check = validateGrowthStep();
-        if (!check.ok) {
-          state.validationError = check.message;
-          render();
-          const targetEl = check.scrollSelector
-            ? document.querySelector(check.scrollSelector)
-            : document.getElementById("growthStepValidationBanner");
-          if (targetEl) {
-            targetEl.scrollIntoView({ behavior: "smooth", block: "center" });
-          }
-          return;
-        }
-        state.validationError = "";
-        const completedStep = state.growthStep;
-        if (state.growthStep < state.totalQuizSteps) {
-          maybeShowGrowthStoryPopupThenAdvance(completedStep, state.growthStep + 1);
-        } else {
-          state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
-          state.growthStep = 7;
-          saveUserProgress();
-          render();
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+        advanceSubStep();
       });
+    }
+
+    const resetInline = document.getElementById("btnResetGrowthInline");
+    if (resetInline) {
+      resetInline.addEventListener("click", () => resetAssessmentAndStartOver());
     }
   }
 
