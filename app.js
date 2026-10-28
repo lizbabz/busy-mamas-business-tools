@@ -3027,26 +3027,6 @@
             }
           </div>
 
-          <!-- Switcher pills between the 3 top ideas -->
-          <div class="focused-ideas-tabs" style="display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 6px;">
-            ${state.topMatches
-              .map((item, i) => {
-                const active = i === idx;
-                const shortName = String(item.name || "").split("/")[0].split("(")[0].trim();
-                return `
-                <button
-                  type="button"
-                  class="focused-tab-pill ${active ? "active" : ""}"
-                  data-switch-focused-idea="${i}"
-                  style="white-space: nowrap; font-size: 0.84rem; font-weight: 800; padding: 8px 16px; border-radius: 100px; border: 1.5px solid ${active ? "var(--forest)" : "var(--border)"}; background: ${active ? "var(--forest)" : "#fff"}; color: ${active ? "#fff" : "var(--dark)"}; cursor: pointer;"
-                >
-                  Match #${i + 1}: ${escapeHtml(shortName)}
-                </button>
-              `;
-              })
-              .join("")}
-          </div>
-
           <!-- Focused Single Idea Card -->
           ${renderSingleIdeaCard(focusedIdea, focusedPlaybook, idx)}
 
@@ -3412,14 +3392,6 @@
         state.selectedIdeaIdx = idx;
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
-      });
-    });
-
-    document.querySelectorAll("[data-switch-focused-idea]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const idx = Number(btn.getAttribute("data-switch-focused-idea"));
-        state.selectedIdeaIdx = idx;
-        render();
       });
     });
 
