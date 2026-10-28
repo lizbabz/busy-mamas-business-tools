@@ -95,6 +95,7 @@
     growthActiveTabs: { 0: "math", 1: "math", 2: "math" },
     selectedGrowthPriorityIdx: null,
     showGrowthPlanView: false,
+    homeMobileTab: "fit",
     completedTasks: [],
     topMatches: [],
     playbooks: [],
@@ -219,6 +220,8 @@
     const hasGrowthProgress = state.growthStep > 1 && state.growthStep <= 6;
     const isGrowthComplete = state.growthStep >= 8 && Boolean(state.growthAnalysis);
 
+    const activeMobileTab = state.homeMobileTab || "fit";
+
     return `
       <div class="home-screen-shell">
         <section class="home-hero">
@@ -226,44 +229,56 @@
           <div class="hero-ambient-orb orb-2"></div>
           <div class="home-hero-inner">
             <div class="home-badge-kicker">
-              <span>Busy Mamas Network · Free Business Tools</span>
+              <span>2 Free Assessment Tools for Mamas</span>
             </div>
             <h1 class="home-hero-title">
               Business Clarity Built for the
               <em>Realities of Motherhood</em>
             </h1>
             <p class="home-hero-subtitle">
-              Building a business as a mother requires a different playbook. You need real income without sacrificing nap times, family dinners, or your peace of mind. Choose the assessment that matches your season right now:
+              Whether you are trying to find the perfect business idea or trying to grow your existing business, our assessment tools give you honest numbers, realistic time limits, and a practical roadmap built around family hours.
             </p>
           </div>
         </section>
 
-        <div class="home-tools-grid">
+        <!-- MOBILE SEGMENTED SWITCHER BAR -->
+        <div class="home-mobile-toggle" role="tablist" aria-label="Assessment Tool Selector">
+          <button type="button" class="home-toggle-btn tab-fit ${activeMobileTab !== 'growth' ? 'active' : ''}" data-home-tab="fit">
+            <span class="home-toggle-tag">Stage 1</span>
+            <span class="home-toggle-label">Starting or Pivoting</span>
+          </button>
+          <button type="button" class="home-toggle-btn tab-growth ${activeMobileTab === 'growth' ? 'active' : ''}" data-home-tab="growth">
+            <span class="home-toggle-tag">Stage 2</span>
+            <span class="home-toggle-label">Already in Business</span>
+          </button>
+        </div>
+
+        <div class="home-tools-grid ${activeMobileTab === 'growth' ? 'mobile-view-growth' : 'mobile-view-fit'}">
           <!-- TOOL 1: BUSINESS FIT -->
           <div class="home-tool-card fit-card" id="homeCardFit">
             <div class="home-tool-top">
               <div class="home-tool-badges">
-                <span class="home-tag-pill tag-pink">Starting or Pivoting</span>
-                <span class="home-time-pill">~4 min assessment</span>
+                <span class="home-tag-pill tag-pink">Stage 1: Starting or Pivoting</span>
+                <span class="home-time-pill">~4 min</span>
               </div>
               <h2 class="home-tool-title">Business Fit Assessment</h2>
               <p class="home-tool-hook">
-                Find the right business model for your exact professional background, schedule rhythm, and monthly income target.
+                Find the right business model for your skills, schedule, and monthly income target.
               </p>
             </div>
 
             <div class="home-tool-features">
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>3 Curated Business Matches:</strong> Filtered from 200+ mom-tested business models to match your available weekly hours.</span>
+                <span><strong>3 Curated Matches:</strong> Filtered from 200+ mom-tested models for your hours</span>
               </div>
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>Clear Revenue Math:</strong> Exact pricing tiers, client capacity, and realistic timelines to hit your income goal.</span>
+                <span><strong>Clear Revenue Math:</strong> Exact pricing tiers & client capacity for your hours</span>
               </div>
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>7-Day Validation Sprint:</strong> A step-by-step test you can run from your phone without spending money on websites or ads.</span>
+                <span><strong>7-Day Validation Sprint:</strong> Simple action test you can run from your phone</span>
               </div>
             </div>
 
@@ -287,6 +302,9 @@
                       Start Business Fit Assessment →
                     </button>`
               }
+              <div class="home-card-switch-prompt">
+                Already running a business? <a href="#" data-switch-tab="growth">Switch to Business Growth Assessment &rarr;</a>
+              </div>
             </div>
           </div>
 
@@ -294,27 +312,27 @@
           <div class="home-tool-card growth-card" id="homeCardGrowth">
             <div class="home-tool-top">
               <div class="home-tool-badges">
-                <span class="home-tag-pill tag-forest">Already in Business</span>
-                <span class="home-time-pill">~3 min diagnostic</span>
+                <span class="home-tag-pill tag-forest">Stage 2: Already in Business</span>
+                <span class="home-time-pill">~3 min</span>
               </div>
               <h2 class="home-tool-title">Business Growth Assessment</h2>
               <p class="home-tool-hook">
-                Diagnose what is capping your sales, unlock your revenue bottleneck, and earn more without working more hours.
+                Diagnose what is capping your sales and unlock revenue inside your current weekly hours.
               </p>
             </div>
 
             <div class="home-tool-features">
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>Primary Bottleneck Diagnosis:</strong> Pinpoints whether your offer, lead generation, sales conversion, or delivery is holding you back.</span>
+                <span><strong>Bottleneck Diagnosis:</strong> Pinpoint why sales or delivery are feeling heavy</span>
               </div>
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>Profit &amp; Capacity Check:</strong> Pricing reality check and fulfillment protection tailored specifically to your business type.</span>
+                <span><strong>Pricing & Margin Reality Check:</strong> Tailored to your specific business type</span>
               </div>
               <div class="home-feature-item">
                 <span class="home-feature-icon">✓</span>
-                <span><strong>Prioritized 30-Day Plan:</strong> 3 high-leverage action items to unlock higher revenue inside your current weekly hours.</span>
+                <span><strong>Prioritized 30-Day Plan:</strong> 3 focused action items to increase take-home pay</span>
               </div>
             </div>
 
@@ -338,6 +356,9 @@
                       Start Business Growth Assessment →
                     </button>`
               }
+              <div class="home-card-switch-prompt">
+                Need to find a business idea first? <a href="#" data-switch-tab="fit">Switch to Business Fit Assessment &rarr;</a>
+              </div>
             </div>
           </div>
         </div>
@@ -364,6 +385,21 @@
   }
 
   function bindHomeScreenEvents() {
+    document.querySelectorAll("[data-home-tab]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.homeMobileTab = btn.getAttribute("data-home-tab");
+        render();
+      });
+    });
+
+    document.querySelectorAll("[data-switch-tab]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        state.homeMobileTab = btn.getAttribute("data-switch-tab");
+        render();
+      });
+    });
+
     document.querySelectorAll("[data-action='start-fit'], [data-action='resume-fit']").forEach((btn) => {
       btn.addEventListener("click", () => {
         navigateToAssessment("fit");
