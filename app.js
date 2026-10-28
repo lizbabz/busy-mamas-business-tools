@@ -3381,10 +3381,10 @@
               </p>
 
               <!-- Specialty Dropdown -->
-              <label for="growthSubNicheSelect" style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+              <label for="growthSubNicheSelect" style="display: block; font-size: 0.84rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 7px;">
                 Choose specialty or main service:
               </label>
-              <select id="growthSubNicheSelect" class="growth-subniche-select">
+              <select id="growthSubNicheSelect" class="growth-subniche-select" style="margin-bottom: 18px;">
                 <option value="">-- Choose your closest specialty --</option>
                 ${subNiches.map(sn => `
                   <option value="${sn.id}" ${gp.subNicheId === sn.id ? 'selected' : ''}>
@@ -3395,28 +3395,6 @@
                   Other / Custom Specialty (type below)
                 </option>
               </select>
-
-              <!-- Quick-Tap Specialty Chips (Top 5) -->
-              <div style="font-size: 0.78rem; font-weight: 700; color: var(--ink-light); margin-bottom: 6px;">
-                Or quick-select popular specialties:
-              </div>
-              <div class="subniche-chip-grid">
-                ${subNiches.slice(0, 5).map(sn => {
-                  const isSelected = gp.subNicheId === sn.id;
-                  return `
-                    <button
-                      type="button"
-                      class="subniche-chip-btn ${isSelected ? 'active' : ''}"
-                      data-growth-subniche="${sn.id}"
-                      data-growth-subniche-label="${escapeHtml(sn.label)}"
-                      data-growth-subniche-placeholder="${escapeHtml(sn.placeholder || '')}"
-                    >
-                      <span>${sn.label}</span>
-                      ${isSelected ? '<span style="font-size: 0.72rem;">✓</span>' : ''}
-                    </button>
-                  `;
-                }).join('')}
-              </div>
 
               <!-- Full-Width Stacked Custom Prompts -->
               <div class="growth-niche-inputs-grid">
@@ -4094,27 +4072,6 @@
         }
       });
     }
-
-    document.querySelectorAll("[data-growth-subniche]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const selId = btn.getAttribute("data-growth-subniche");
-        gp.subNicheId = selId;
-        const label = btn.getAttribute("data-growth-subniche-label") || "";
-        const placeholder = btn.getAttribute("data-growth-subniche-placeholder") || "";
-        gp.specificNiche = label;
-        const nicheInp = document.getElementById("growthSpecificNicheInput");
-        if (nicheInp) {
-          nicheInp.value = label;
-          if (placeholder) nicheInp.placeholder = placeholder;
-        }
-        state.validationError = "";
-        saveUserProgress();
-        render();
-        if (!gp.revenueStageId) {
-          smoothScrollToGrowthElement("growthPart1B");
-        }
-      });
-    });
 
     const specificNicheInp = document.getElementById("growthSpecificNicheInput");
     if (specificNicheInp) {
