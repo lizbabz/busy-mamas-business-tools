@@ -102,6 +102,7 @@
     selectedIdeaIdx: null,
     allRankedMatches: [],
     dismissedIdeaIds: new Set(),
+    slotSwapCounts: { 0: 0, 1: 0, 2: 0 },
     activeTabs: { 0: "overview", 1: "overview", 2: "overview", 3: "overview", 4: "overview" },
     validationError: "",
     limitNotice: "",
@@ -378,6 +379,7 @@
         state.runnerUpMatches = [];
         state.runnerUpPlaybooks = [];
         state.dismissedIdeaIds = new Set();
+        state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
         saveUserProgress();
         navigateToAssessment("fit");
       });
@@ -433,6 +435,7 @@
     state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
     state.dismissedIdeaIds = new Set();
+    state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
     try {
       localStorage.removeItem(STORAGE_PROGRESS_KEY);
     } catch (_) {}
@@ -1134,6 +1137,7 @@
       window.VaultEngine.buildPlaybook(idea, state.profile, idx)
     );
     state.dismissedIdeaIds = new Set();
+    state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
     state.runnerUpMatches = [];
     state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
@@ -2885,6 +2889,8 @@
               const avgRev = fmtMoney(
                 window.VaultEngine.scaleUsdToCurrency(Number(idea.avgUnitRevenue) || 250, cur.code)
               );
+              const swapsUsed = (state.slotSwapCounts && state.slotSwapCounts[idx]) || 0;
+              const isCapped = swapsUsed >= 2;
               const compactRankLabels = [
                 idea.isCustomSynthesized ? "Bespoke Custom" : "#1 Best Overall",
                 "#2 Runner-Up Fit",
@@ -2937,9 +2943,22 @@
                   <button type="button" class="btn-primary comparison-jump-btn" data-focus-idea="${idx}" style="width: 100%; margin-bottom: 8px; font-weight: 800; font-size: 0.92rem; padding: 11px;">
                     View Full Plan & Math &rarr;
                   </button>
-                  <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="width: 100%; font-size: 0.8rem; color: var(--ink-muted); text-align: center;">
-                    Not for me? Swap this idea
-                  </button>
+                  ${
+                    isCapped
+                      ? `
+                    <button type="button" class="btn-ghost-sm swap-idea-btn disabled" disabled style="width: 100%; font-size: 0.78rem; color: var(--ink-muted); text-align: center; opacity: 0.65; cursor: not-allowed; background: rgba(0,0,0,0.03); border: 1px dashed var(--border); border-radius: 8px; padding: 7px 10px;">
+                      All top matches shown for this slot
+                    </button>
+                    <div style="font-size: 0.76rem; color: var(--ink-muted); text-align: center; margin-top: 6px; line-height: 1.35;">
+                      Looking for something different? <a href="#" data-action="adjust-answers" style="color: var(--forest); font-weight: 700; text-decoration: underline;">Adjust your quiz answers</a>
+                    </div>
+                  `
+                      : `
+                    <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="width: 100%; font-size: 0.8rem; color: var(--ink-muted); text-align: center;">
+                      Not for me? Swap this idea
+                    </button>
+                  `
+                  }
                 </div>
               </div>
             `;
@@ -2974,6 +2993,8 @@
       const idx = state.selectedIdeaIdx;
       const focusedIdea = state.topMatches[idx];
       const focusedPlaybook = state.playbooks[idx];
+      const focusedSwaps = (state.slotSwapCounts && state.slotSwapCounts[idx]) || 0;
+      const isFocusedCapped = focusedSwaps >= 2;
 
       matchSectionHtml = `
         <!-- FOCUSED IDEA VIEW (MOBILE-FIRST) -->
@@ -2986,9 +3007,24 @@
             <div style="font-size: 0.86rem; font-weight: 800; color: var(--forest);">
               Viewing Match #${idx + 1} of 3
             </div>
-            <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="font-size: 0.84rem;">
-              Not for me? Swap this idea
-            </button>
+            ${
+              isFocusedCapped
+                ? `
+              <div style="text-align: right;">
+                <button type="button" class="btn-ghost-sm swap-idea-btn disabled" disabled style="font-size: 0.8rem; opacity: 0.65; cursor: not-allowed; background: rgba(0,0,0,0.03); border: 1px dashed var(--border); border-radius: 8px; padding: 6px 12px;">
+                  All top matches shown for this slot
+                </button>
+                <div style="font-size: 0.76rem; color: var(--ink-muted); margin-top: 4px;">
+                  Looking for something different? <a href="#" data-action="adjust-answers" style="color: var(--forest); font-weight: 700; text-decoration: underline;">Adjust your quiz answers</a>
+                </div>
+              </div>
+            `
+                : `
+              <button type="button" class="btn-ghost-sm swap-idea-btn" data-swap-idea="${idx}" style="font-size: 0.84rem;">
+                Not for me? Swap this idea
+              </button>
+            `
+            }
           </div>
 
           <!-- Switcher pills between the 3 top ideas -->
@@ -3403,6 +3439,9 @@
         const slotIdx = Number(btn.getAttribute("data-swap-idea"));
         if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
 
+        state.slotSwapCounts = state.slotSwapCounts || { 0: 0, 1: 0, 2: 0 };
+        if ((state.slotSwapCounts[slotIdx] || 0) >= 2) return;
+
         state.dismissedIdeaIds = state.dismissedIdeaIds || new Set();
         const currentIdea = state.topMatches[slotIdx];
         if (currentIdea && currentIdea.id) {
@@ -3424,8 +3463,21 @@
         if (candidate) {
           state.topMatches[slotIdx] = candidate;
           state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(candidate, state.profile, slotIdx);
+          state.slotSwapCounts[slotIdx] = (state.slotSwapCounts[slotIdx] || 0) + 1;
           render();
         }
+      });
+    });
+
+    document.querySelectorAll("[data-action='adjust-answers']").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        state.step = 1;
+        state.subStep = 1;
+        state.shownStories = {};
+        saveUserProgress();
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
       });
     });
 
