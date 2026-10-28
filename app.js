@@ -3134,8 +3134,8 @@
       <div class="consulting-showcase" id="blueprintDeliverySection">
         <div class="consulting-grid">
           <div>
-            <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--dark); font-weight: 800;">
-              YOUR ACTION BLUEPRINT IS IN YOUR INBOX
+            <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--forest-dark); font-weight: 800; padding: 10px 22px; font-size: 0.8rem; letter-spacing: 0.07em; line-height: 1.35; margin-bottom: 14px;">
+              Your Action Blueprint Is in Your Inbox
             </div>
             <h2 style="font-size: clamp(1.75rem, 3.4vw, 2.35rem); font-weight: 900; color: #fff; margin-bottom: 12px;">
               Take Your First Small Step This Week
@@ -3146,16 +3146,22 @@
 
             <ul class="consulting-benefits">
               <li>
-                <span style="color: var(--mint); font-weight: 900;">1</span>
-                <span><strong>Test Before Spending:</strong> Run the 7-day validation test above to talk to 3 to 5 real potential buyers before spending money on branding or websites.</span>
+                <span class="consulting-step-badge">1</span>
+                <div>
+                  <strong>Test Before Spending:</strong> Run the 7-day validation test above to talk to 3 to 5 real potential buyers before spending money on branding or websites.
+                </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">2</span>
-                <span><strong>Protect Your Family Hours:</strong> Cap your initial weekly build to your ~${state.profile.hoursPerWeek} hrs/week target so motherhood remains your top priority.</span>
+                <span class="consulting-step-badge">2</span>
+                <div>
+                  <strong>Protect Your Family Hours:</strong> Cap your initial weekly build to your ~${state.profile.hoursPerWeek} hrs/week target so motherhood remains your top priority.
+                </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">3</span>
-                <span><strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyin will share tactical guidance on pricing, packaging, and client acquisition.</span>
+                <span class="consulting-step-badge">3</span>
+                <div>
+                  <strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyin will share tactical guidance on pricing, packaging, and client acquisition.
+                </div>
               </li>
             </ul>
           </div>
@@ -3189,16 +3195,16 @@
         </div>
       </div>
 
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px;">
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-          <button type="button" class="btn-secondary" id="btnStartFreshQuiz">
+      <div class="results-bottom-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 28px; width: 100%;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="btn-secondary results-action-btn" id="btnStartFreshQuiz" style="flex: 1; min-width: 140px; text-align: center; font-weight: 700; padding: 12px 18px;">
             Start Over
           </button>
-          <button type="button" class="btn-secondary" id="btnRetakeQuiz">
+          <button type="button" class="btn-secondary results-action-btn" id="btnRetakeQuiz" style="flex: 1; min-width: 180px; text-align: center; font-weight: 700; padding: 12px 18px;">
             Edit My Current Answers
           </button>
         </div>
-        <button type="button" class="btn-secondary" onclick="window.print()">
+        <button type="button" class="btn-secondary results-action-btn" onclick="window.print()" style="width: 100%; text-align: center; font-weight: 700; padding: 12px 18px;">
           Print / Save Action Plan as PDF
         </button>
       </div>
@@ -5137,8 +5143,8 @@
       <div class="consulting-showcase" id="growthIntensiveSection">
         <div class="consulting-grid">
           <div>
-            <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--dark); font-weight: 800;">
-              OPTIONAL 1-ON-1 INTENSIVE · FOR ESTABLISHED FOUNDERS
+            <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--forest-dark); font-weight: 800; padding: 10px 22px; font-size: 0.8rem; letter-spacing: 0.07em; line-height: 1.35; margin-bottom: 14px;">
+              Optional 1-on-1 Intensive · For Established Founders
             </div>
             <h2 style="font-size: clamp(1.75rem, 3.4vw, 2.35rem); font-weight: 900; color: #fff; margin-bottom: 12px;">
               Would You Like 1-on-1 Strategic Guidance With Oyin to Map Out Your Next 90 Days?
@@ -5149,19 +5155,19 @@
 
             <ul class="consulting-benefits">
               <li>
-                <span style="color: var(--mint); font-weight: 900;">01</span>
+                <span class="consulting-step-badge">1</span>
                 <div>
                   <strong>Private 90-Minute Strategic Diagnostic:</strong> Deep dive into your revenue leaks, offer pricing, and schedule boundaries tailored to your family life.
                 </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">02</span>
+                <span class="consulting-step-badge">2</span>
                 <div>
                   <strong>Written 90-Day Priority Roadmap:</strong> A clear, prioritized action roadmap built around your exact target income and ~${m.maxDesiredHours} hrs/week schedule cap.
                 </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">03</span>
+                <span class="consulting-step-badge">3</span>
                 <div>
                   <strong>Direct Eyes on Your #1 Bottleneck:</strong> Honest, experienced feedback on what to streamline, what to delegate, and how to scale without working longer nights.
                 </div>
@@ -5197,16 +5203,16 @@
         </div>
       </div>
 
-      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; margin-top: 28px;">
-        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-          <button type="button" class="btn-secondary" id="btnStartFreshGrowthQuiz">
+      <div class="results-bottom-actions" style="display: flex; flex-direction: column; gap: 10px; margin-top: 28px; width: 100%;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" class="btn-secondary results-action-btn" id="btnStartFreshGrowthQuiz" style="flex: 1; min-width: 140px; text-align: center; font-weight: 700; padding: 12px 18px;">
             Start Over
           </button>
-          <button type="button" class="btn-secondary" id="btnRetakeGrowthQuiz">
+          <button type="button" class="btn-secondary results-action-btn" id="btnRetakeGrowthQuiz" style="flex: 1; min-width: 180px; text-align: center; font-weight: 700; padding: 12px 18px;">
             Edit My Current Answers
           </button>
         </div>
-        <button type="button" class="btn-secondary" onclick="window.print()">
+        <button type="button" class="btn-secondary results-action-btn" onclick="window.print()" style="width: 100%; text-align: center; font-weight: 700; padding: 12px 18px;">
           Print / Save Growth Plan as PDF
         </button>
       </div>
