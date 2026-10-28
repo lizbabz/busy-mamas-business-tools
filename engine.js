@@ -21,6 +21,256 @@ window.VaultEngine = {
   },
 
   /**
+   * Intuitively synthesize a custom-tailored business profile on the fly
+   * when an unusual specialty is provided in profile.customNote, OR
+   * as a creative hybrid crossover for general skills and hobbies.
+   */
+  synthesizeBespokeIdea(profile, existingIdeas) {
+    const rawNote = String(profile.customNote || "").trim();
+    const hasCustomNote = rawNote.length >= 3;
+
+    const skills = Array.isArray(profile.skills) ? profile.skills.filter((s) => s !== "unsure") : [];
+    const activities = Array.isArray(profile.enjoyedActivities) ? profile.enjoyedActivities : [];
+    const backgrounds = Array.isArray(profile.backgrounds) ? profile.backgrounds : [];
+    const dealbreakers = Array.isArray(profile.dealbreakers) ? profile.dealbreakers : [];
+    const workStyle = profile.workStyle || "any";
+    const weeklyHours = Number(profile.hoursPerWeek) || 8;
+    const curCode = profile.currency || "USD";
+    const cur = this.getCurrencyObj(curCode);
+    const incomeGoal = Number(profile.incomeGoal) || cur.defaultGoal || 5000;
+    const fmt = (val) => this.formatMoney(val, curCode);
+
+    // If no note and no skills or activities chosen, skip synthesis
+    if (!hasCustomNote && skills.length === 0 && activities.length === 0) {
+      return null;
+    }
+
+    let name = "";
+    let category = "";
+    let businessModel = "service";
+    let targetAudience = "";
+    let description = "";
+    let requirements = [];
+    let tradeoffs = [];
+    let quickTestStrategy = "";
+    let first30DaysFocus = "";
+    let avgUnitRevenue = 1000;
+    let unitLabel = "client packages or retainers";
+    let incomeModel = "";
+    let cleanSkill = "";
+    let cleanAct = "";
+
+    const isBehindScenes = workStyle === "behind-the-scenes" || dealbreakers.includes("no-live-calls");
+
+    if (hasCustomNote) {
+      const cleaned = rawNote.replace(/[^\w\s/&-]/g, " ").replace(/\s+/g, " ").trim();
+      const lower = cleaned.toLowerCase();
+
+      if (
+        lower.includes("bain") ||
+        lower.includes("consulting") ||
+        lower.includes("corporate") ||
+        lower.includes("strategy") ||
+        lower.includes("management")
+      ) {
+        name = "B2B Strategic Advisory & Fractional Executive Operations";
+        category = "Specialized Corporate & Strategic Advisory";
+        businessModel = "service";
+        avgUnitRevenue = Math.max(1500, Math.round(incomeGoal / 2));
+        unitLabel = "advisory retainers or strategic sprints";
+        targetAudience = "Growing B2B companies, boutique agencies, and founder-led businesses seeking fractional executive strategy";
+        description = `Package your management and advisory background in ${cleaned} into high-ticket fractional advisory retainers and strategic sprint reviews. Instead of trading hours for dollars, you serve 2 to 4 clients on fixed monthly retainers with protected communication boundaries.`;
+        requirements = [
+          "A clean 1-page executive advisory menu with fixed monthly retainer pricing",
+          "Standard consulting agreement with clear communication boundaries (scheduled calls only, no unlimited messaging)",
+          "Direct outreach pipeline targeting former colleagues, LinkedIn decision-makers, or private client referrals"
+        ];
+        tradeoffs = [
+          "Pros: Exceptional income ceiling where just 2 or 3 clients hit your goal within your weekly hours.",
+          "Tradeoff: B2B sales cycles require proactive relationship-building and executive positioning rather than consumer social media."
+        ];
+        quickTestStrategy = "Draft a simple 3-bullet private message offering a 45-minute Growth and Operations Diagnostic to 5 trusted former colleagues or founder contacts.";
+        first30DaysFocus = "Finalize your core diagnostic framework, outreach to 15 warm network contacts, and sign your first advisory retainer client.";
+      } else if (
+        lower.includes("sleep") ||
+        lower.includes("pediatric") ||
+        lower.includes("baby") ||
+        lower.includes("infant") ||
+        lower.includes("toddler")
+      ) {
+        name = "Boutique Pediatric Sleep & Family Routine Consulting";
+        category = "Parenting & Pediatric Wellness Advisory";
+        businessModel = isBehindScenes ? "digital-product" : "service";
+        avgUnitRevenue = 650;
+        unitLabel = "family sleep packages or digital guides";
+        targetAudience = "Exhausted working moms, parents of babies and toddlers (0-3), and families seeking gentle, structured sleep rhythms";
+        description = `Help exhausted parents get their evenings and sleep back through structured, compassionate sleep and nap coaching. By offering 2-week private message support packages alongside a signature digital guide, you generate premium income while working in short pockets during your own kids' naps.`;
+        requirements = [
+          "A clear 2-week family intake assessment and customized sleep plan template",
+          "Defined support hours (e.g., daily 20-minute voice memo support window via Voxer or WhatsApp)",
+          "Partnership or referral relationships with local doulas, pediatricians, or mom groups"
+        ];
+        tradeoffs = [
+          "Pros: Emotional, urgent demand with high word-of-mouth referral rates from relieved parents.",
+          "Tradeoff: Parents in crisis want rapid answers; you must set clear boundaries on message response windows."
+        ];
+        quickTestStrategy = "Post an educational sleep tip in a local mom group or community board and offer 3 complimentary 20-minute Sleep Strategy Audits to generate reviews.";
+        first30DaysFocus = "Package your core 2-week plan, run 3 pilot families at an introductory rate, and collect compelling before/after parent testimonials.";
+      } else if (
+        lower.includes("equine") ||
+        lower.includes("horse") ||
+        lower.includes("animal") ||
+        lower.includes("pet")
+      ) {
+        name = "Equine-Assisted Coaching & Experiential Therapy Practice";
+        category = "Specialized Wellness & Experiential Advisory";
+        businessModel = "service";
+        avgUnitRevenue = 1200;
+        unitLabel = "multi-session private packages or group intensives";
+        targetAudience = "Individuals navigating burnout, neurodivergent youth seeking emotional regulation, or corporate groups booking restorative offsites";
+        description = `Translate your passion and expertise in ${cleaned} into transformative private experiential sessions and weekend cohort intensives. By packaging sessions into structured 4-week packages instead of one-off hourly lessons, you maximize your revenue per hour on the ground.`;
+        requirements = [
+          "Stable or facility partnership agreement with comprehensive liability insurance",
+          "Defined experiential framework and safety intake questionnaire for new clients",
+          "Referral partnerships with local holistic therapists, wellness centers, or schools"
+        ];
+        tradeoffs = [
+          "Pros: Deeply fulfilling, hands-on experiential work with high perceived value and strong retention.",
+          "Tradeoff: In-person delivery requires dedicated travel/arena blocks on weekends or scheduled half-days."
+        ];
+        quickTestStrategy = "Connect with 3 local mental health therapists or wellness practitioners and offer 2 guest experiential passes in exchange for professional referrals.";
+        first30DaysFocus = "Finalize arena booking slots, create a 1-page program overview, and enroll your first 2 private package clients.";
+      } else if (
+        lower.includes("research") ||
+        lower.includes("science") ||
+        lower.includes("stem") ||
+        lower.includes("curriculum")
+      ) {
+        name = "Bespoke STEM Curriculum & Science Program Development";
+        category = "Specialized Education & Curriculum Licensing";
+        businessModel = isBehindScenes ? "digital-product" : "service";
+        avgUnitRevenue = 1500;
+        unitLabel = "school or co-op licenses and curriculum packages";
+        targetAudience = "Homeschool co-ops, private micro-schools, STEM summer academies, and educational enrichment centers";
+        description = `Package your scientific background and research experience into ready-to-teach, hands-on STEM curriculum packages, lab kits, or institutional curriculum licenses that schools and educational programs gladly buy.`;
+        requirements = [
+          "A modular 4 to 8-week lesson curriculum with student activity sheets and teacher guides",
+          "Digital delivery platform or simple cloud drive portal for institutional buyers",
+          "Direct outreach to directors of micro-schools, homeschool co-ops, and enrichment programs"
+        ];
+        tradeoffs = [
+          "Pros: Highly scalable licensing model that can be created once and sold repeatedly to multiple institutions.",
+          "Tradeoff: Educational buying cycles often peak in spring and late summer for upcoming academic terms."
+        ];
+        quickTestStrategy = "Reach out to 3 local micro-schools or homeschool directors and ask if they need a turnkey hands-on STEM unit for their upcoming session.";
+        first30DaysFocus = "Draft your pilot 4-week module, pilot it with 1 program or co-op, and secure your first institutional license.";
+      } else {
+        const titleWords = cleaned
+          .split(/\s+/)
+          .map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+          .join(" ");
+        const isB2B =
+          lower.includes("b2b") ||
+          lower.includes("tech") ||
+          lower.includes("compliance") ||
+          lower.includes("legal") ||
+          lower.includes("finance");
+
+        name = isB2B
+          ? `Specialized ${titleWords} Advisory & Implementation Partner`
+          : `Boutique ${titleWords} & Client Transformation Practice`;
+        category = isB2B ? "Specialized B2B Advisory & Solutions" : "Specialized Advisory & Tailored Services";
+        businessModel = isBehindScenes ? "digital-product" : "service";
+        avgUnitRevenue = Math.max(600, Math.round(incomeGoal / 4));
+        unitLabel = "client packages or monthly retainers";
+        targetAudience = isB2B
+          ? "Specialized businesses, organizations, and industry leaders requiring expert support"
+          : "Discerning private clients, families, or professionals seeking tailored guidance";
+        description = `Turn your distinct expertise in ${cleaned} into a high-value boutique service or advisory practice. Tailored to operate inside your ~${weeklyHours} hrs/week limit, you bypass generic mass-market pricing by offering structured, premium solutions.`;
+        requirements = [
+          "A defined 3-step client framework or signature service package",
+          "Standard client agreement and simple online booking / payment link",
+          "Focused outreach to your existing industry network or niche referral channels"
+        ];
+        tradeoffs = [
+          "Pros: Zero competition from generic freelancers because of your exact background; premium pricing power.",
+          "Tradeoff: Requires clearly educating buyers on the tangible financial or personal outcome of your work."
+        ];
+        quickTestStrategy = "Draft a short introductory overview of your signature package and reach out to 5 warm contacts or past collaborators to gauge interest.";
+        first30DaysFocus = "Finalize your package pricing, set up your simple client intake process, and book your first 2 paying clients.";
+      }
+    } else {
+      // 2. CREATIVE HYBRID SYNTHESIS (General Specialties, Crossover Skills + Hobbies)
+      const primarySkillId = skills[0] || "coaching_consulting";
+      const primaryActivityId = activities[0] || "act-crafting-decor";
+
+      const skillObj = (window.SKILL_CATEGORIES || []).find((s) => s.id === primarySkillId) || { label: "Consulting & Strategy" };
+      const actObj = (window.ENJOYED_ACTIVITIES || []).find((a) => a.id === primaryActivityId) || { label: "Creative Projects" };
+
+      cleanSkill = (skillObj.label || "").split(",")[0].split("&")[0].trim();
+      cleanAct = (actObj.label || "").split(",")[0].split("&")[0].trim();
+
+      name = `Boutique ${cleanSkill} for ${cleanAct} & Lifestyle Brands`;
+      category = "Creative Crossover & Niche Advisory";
+      businessModel = isBehindScenes ? "digital-product" : "service";
+      avgUnitRevenue = Math.max(650, Math.round(incomeGoal / 4));
+      unitLabel = "monthly client packages or project sprints";
+      targetAudience = `Entrepreneurs, boutique brands, and independent makers in the ${cleanAct.toLowerCase()} space who need professional ${cleanSkill.toLowerCase()}`;
+      description = `A creative sweet-spot business combining your professional strength in ${cleanSkill} with your real-life passion for ${cleanAct}. By specializing in this specific niche, you become the obvious go-to partner for clients who share your values.`;
+      requirements = [
+        "Portfolio of 2 to 3 sample projects or case studies showing your style and outcomes",
+        "Defined package structure (e.g., standard monthly retainer or 2-week implementation sprint)",
+        `Direct outreach to 10 niche brands, creators, or businesses in the ${cleanAct.toLowerCase()} community`
+      ];
+      tradeoffs = [
+        "Pros: Deeply enjoyable work where your natural hobbies enhance your professional credibility and enjoyment.",
+        "Tradeoff: Requires establishing authority within a specific niche rather than casting a wide, generic net."
+      ];
+      quickTestStrategy = `Find 3 boutique businesses or accounts in the ${cleanAct.toLowerCase()} world and send a personalized message with 1 free value insight.`;
+      first30DaysFocus = "Create 2 sample deliverables, contact 15 target niche clients, and close your first paid project.";
+    }
+
+    incomeModel = `Fixed Client Packages & Retainers (${fmt(avgUnitRevenue)} to ${fmt(Math.round(avgUnitRevenue * 1.8))} per client)`;
+
+    return {
+      id: "bespoke-tailored-match",
+      isCustomSynthesized: true,
+      name,
+      category,
+      businessModel,
+      skills: skills.length > 0 ? skills : ["coaching_consulting"],
+      minHoursPerWeek: Math.max(4, Math.min(weeklyHours, 8)),
+      optimalHoursPerWeek: Math.max(weeklyHours, 12),
+      easeOf5k: 5,
+      maxMonthlyIncomePotential: Math.max(25000, incomeGoal * 2.5),
+      workStyle: workStyle === "any" ? "both" : workStyle,
+      startupCost: Math.min(Number(profile.budget) || 250, 250),
+      incomeModel,
+      avgUnitRevenue,
+      unitLabel,
+      hoursPerUnitPerWeek: Math.max(1.5, Math.round((weeklyHours / 4) * 10) / 10),
+      description,
+      targetAudience,
+      requirements,
+      tradeoffs,
+      quickTestStrategy,
+      first30DaysFocus,
+      aiWhyFits: hasCustomNote
+        ? `Directly customized to your exact background in "${rawNote}", calibrated to deliver your ${fmt(incomeGoal)} income goal inside your ~${weeklyHours} hrs/week schedule.`
+        : `Creative crossover match that marries your core skill (${cleanSkill || "expertise"}) with what you genuinely enjoy doing (${cleanAct || "creative interests"}).`,
+      rawScore: 140,
+      matchScore: 98,
+      matchReasons: [
+        hasCustomNote
+          ? `Bespoke business model built directly around your "${rawNote}" background`
+          : `Combines your core skill strengths with the personal interests you enjoy most`,
+        `Structured to hit your ${fmt(incomeGoal)} target inside your ~${weeklyHours} hrs/week capacity`,
+        `High perceived value that protects your boundaries as a busy mother`
+      ]
+    };
+  },
+
+  /**
    * Score and rank all vault ideas for a user's assessment profile
    */
   rankIdeas(ideas, profile) {
@@ -71,7 +321,18 @@ window.VaultEngine = {
     const hasSpecificDomainSelections =
       directSkillSet.size > 0 || bgSkillSet.size > 0 || activitySkillSet.size > 0;
 
-    const scored = ideas.map((idea) => {
+    const bespoke = this.synthesizeBespokeIdea(profile, ideas);
+    const candidateIdeas = bespoke ? [bespoke, ...ideas] : [...ideas];
+
+    const scored = candidateIdeas.map((idea) => {
+      if (idea.isCustomSynthesized) {
+        return {
+          ...idea,
+          rawScore: 140,
+          matchScore: 98,
+          matchReasons: idea.matchReasons || []
+        };
+      }
       let score = 0;
       const reasons = [];
       const ideaSkills = Array.isArray(idea.skills) ? idea.skills : [];
@@ -884,7 +1145,9 @@ window.VaultEngine = {
     return {
       rank: rankIndex + 1,
       badgeText:
-        rankIndex === 0
+        idea.isCustomSynthesized
+          ? "Bespoke Custom Match"
+          : rankIndex === 0
           ? "#1 Best Overall Fit"
           : rankIndex === 1
           ? "#2 Runner-Up Fit"

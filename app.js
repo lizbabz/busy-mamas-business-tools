@@ -2887,7 +2887,7 @@
                 window.VaultEngine.scaleUsdToCurrency(Number(idea.avgUnitRevenue) || 250, cur.code)
               );
               const compactRankLabels = [
-                "#1 Best Overall",
+                idea.isCustomSynthesized ? "Bespoke Custom" : "#1 Best Overall",
                 "#2 Runner-Up Fit",
                 "#3 Scalable Fit"
               ];
@@ -2905,7 +2905,7 @@
               <div class="comparison-col ${idx === 0 ? "rank-1" : ""}">
                 <div class="comparison-col-header">
                   <div class="comparison-col-top">
-                    <span class="comparison-rank-tag">${compactRankLabels[idx] || `#${idx + 1} Match`}</span>
+                    <span class="comparison-rank-tag" style="${idea.isCustomSynthesized ? 'background: var(--mint); color: var(--forest-dark); border-color: var(--mint); font-weight: 800;' : ''}">${compactRankLabels[idx] || `#${idx + 1} Match`}</span>
                     <span class="comparison-score-tag">${idea.matchScore || 95}% Fit</span>
                   </div>
                   <div class="comparison-idea-name" title="${(idea.name || "").replace(/"/g, "&quot;")}">${cleanShortName || idea.name}</div>
@@ -3417,7 +3417,7 @@
       <div class="idea-result-card ${idx === 0 ? "rank-1" : ""}" id="idea-card-${idx}">
         <div class="idea-card-top">
           <div class="idea-rank-row">
-            <span class="rank-pill">${playbook.badgeText}</span>
+            <span class="rank-pill" style="${idea.isCustomSynthesized ? 'background: var(--mint); color: var(--forest-dark); border-color: var(--mint); font-weight: 800;' : ''}">${playbook.badgeText}</span>
             <span class="match-score-pill">${idea.matchScore}% Profile & Goal Match</span>
           </div>
           <h3 class="idea-title">${idea.name}</h3>
