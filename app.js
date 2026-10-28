@@ -3123,22 +3123,6 @@
     } else {
       matchSectionHtml = `
         ${renderTop3ComparisonBar()}
-
-        <!-- Interactive Explorer Guidance Strip -->
-        <div style="background: rgba(45, 90, 39, 0.06); border: 1.5px solid var(--mint); border-radius: 16px; padding: 18px 22px; margin-bottom: 28px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
-          <div style="flex: 1; min-width: 260px;">
-            <div style="font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--forest); margin-bottom: 3px;">
-              Interactive Blueprint Explorer
-            </div>
-            <p style="font-size: 0.92rem; color: var(--ink); margin-bottom: 0; line-height: 1.5;">
-              Click <strong>"View Full Plan & Math →"</strong> on any idea above to open its deep-dive action blueprint without scrolling fatigue. If an idea does not fit you, click <strong>"Not for me? Swap this idea"</strong> to see an instant alternative.
-            </p>
-          </div>
-          <button type="button" class="btn-secondary share-mom-btn" id="btnShareMomOverview" style="white-space: nowrap; font-size: 0.9rem; font-weight: 800; padding: 10px 18px;">
-            Share With a Fellow Mom
-          </button>
-        </div>
-
         ${renderRunnerUpSection(calendlyHref)}
       `;
     }
