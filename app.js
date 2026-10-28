@@ -833,6 +833,18 @@
               state.growthProfile.specificNiche = "";
             }
           }
+          if (
+            (!state.growthProfile.currentRevenue || Number(state.growthProfile.currentRevenue) === 0) &&
+            state.growthProfile.revenueStageId &&
+            state.growthProfile.revenueStageId !== "pre-revenue" &&
+            window.GROWTH_REVENUE_STAGES
+          ) {
+            const stg = window.GROWTH_REVENUE_STAGES.find((s) => s.id === state.growthProfile.revenueStageId);
+            if (stg && stg.valUsd) {
+              const curCode = state.growthProfile.currency || "USD";
+              state.growthProfile.currentRevenue = window.VaultEngine.scaleUsdToCurrency(stg.valUsd, curCode);
+            }
+          }
         }
         if (saved.growthStep && saved.growthStep >= 1 && saved.growthStep <= 8) {
           state.growthStep = saved.growthStep;
@@ -3755,17 +3767,20 @@
 
         <div class="options-grid">
           ${(window.GROWTH_REVENUE_STAGES || [])
-            .map(
-              (stg) => `
-            <div class="option-card ${gp.revenueStageId === stg.id ? "selected" : ""}" data-growth-revstage="${stg.id}" data-growth-revval="${stg.val}">
+            .map((stg) => {
+              const scaledVal = window.VaultEngine
+                ? window.VaultEngine.scaleUsdToCurrency(stg.valUsd !== undefined ? stg.valUsd : (stg.val || 0), cur.code)
+                : (stg.valUsd !== undefined ? stg.valUsd : (stg.val || 0));
+              return `
+            <div class="option-card ${gp.revenueStageId === stg.id ? "selected" : ""}" data-growth-revstage="${stg.id}" data-growth-revval="${scaledVal}">
               <div class="option-content">
                 <div class="option-title">${formatStoryWithUserCurrency(stg.label)}</div>
                 <div class="option-sub">${formatStoryWithUserCurrency(stg.sub)}</div>
               </div>
               <div class="option-check">✓</div>
             </div>
-          `
-            )
+          `;
+            })
             .join("")}
         </div>
       `;
@@ -4282,6 +4297,12 @@
         const newCode = btn.getAttribute("data-currency");
         if (newCode && newCode !== state.growthProfile.currency) {
           state.growthProfile.currency = newCode;
+          if (gp.revenueStageId && window.GROWTH_REVENUE_STAGES && window.VaultEngine) {
+            const stg = window.GROWTH_REVENUE_STAGES.find((s) => s.id === gp.revenueStageId);
+            if (stg && stg.valUsd !== undefined) {
+              gp.currentRevenue = window.VaultEngine.scaleUsdToCurrency(stg.valUsd, newCode);
+            }
+          }
           saveUserProgress();
           render();
         }
@@ -4338,10 +4359,17 @@
     if (s === 1 && sub === 3) {
       document.querySelectorAll("[data-growth-revstage]").forEach((el) => {
         el.addEventListener("click", () => {
-          gp.revenueStageId = el.getAttribute("data-growth-revstage");
-          gp.currentRevenue = Number(el.getAttribute("data-growth-revval")) || 0;
+          const stageId = el.getAttribute("data-growth-revstage");
+          gp.revenueStageId = stageId;
+          const stages = window.GROWTH_REVENUE_STAGES || [];
+          const stageObj = stages.find((st) => st.id === stageId);
+          const cur = getCur();
+          if (stageObj && stageObj.valUsd !== undefined && window.VaultEngine) {
+            gp.currentRevenue = window.VaultEngine.scaleUsdToCurrency(stageObj.valUsd, cur.code);
+          } else {
+            gp.currentRevenue = Number(el.getAttribute("data-growth-revval")) || 0;
+          }
           if (gp.targetRevenue <= gp.currentRevenue) {
-            const cur = getCur();
             gp.targetRevenue = gp.currentRevenue + cur.step * 4;
           }
           state.validationError = "";
@@ -4586,7 +4614,7 @@
   }
 
   function renderGrowthEmailGate() {
-    if (!state.growthAnalysis && window.GrowthEngine) {
+    if (window.GrowthEngine) {
       state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
     }
     const analysis = state.growthAnalysis || {};
@@ -4936,7 +4964,7 @@
   }
 
   function renderGrowthResultsDashboard() {
-    if (!state.growthAnalysis && window.GrowthEngine) {
+    if (window.GrowthEngine) {
       state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
     }
     const analysis = state.growthAnalysis;

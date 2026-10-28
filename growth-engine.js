@@ -509,7 +509,14 @@ window.GrowthEngine = {
     const cur = this.getCurrencyObj(curCode);
     const fmt = (val) => this.formatMoney(val, curCode);
 
-    const currentRev = Math.max(0, Number(gp.currentRevenue) || 0);
+    let currentRev = Number(gp.currentRevenue);
+    if ((!currentRev || currentRev <= 0) && gp.revenueStageId && gp.revenueStageId !== "pre-revenue" && window.GROWTH_REVENUE_STAGES) {
+      const stageObj = window.GROWTH_REVENUE_STAGES.find((s) => s.id === gp.revenueStageId);
+      if (stageObj && stageObj.valUsd !== undefined) {
+        currentRev = this.scaleUsdToCurrency(stageObj.valUsd, curCode);
+      }
+    }
+    currentRev = Math.max(0, Number(currentRev) || 0);
     const targetRev = Math.max(currentRev + 500, Number(gp.targetRevenue) || 5000);
     const revenueGap = Math.max(500, targetRev - currentRev);
 
