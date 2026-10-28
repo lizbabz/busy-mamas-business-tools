@@ -1628,18 +1628,6 @@
     } else if (s === 3 && sub === 1) {
       const selectedBgs = state.profile.backgrounds || [];
       const allBgs = window.PROFESSIONAL_BACKGROUNDS || [];
-      const popularBgIds = [
-        "bg-stay-at-home-mom",
-        "bg-corporate",
-        "bg-education",
-        "bg-healthcare",
-        "bg-marketing",
-        "bg-admin",
-        "bg-finance",
-        "bg-sales",
-        "bg-creative"
-      ];
-      const popularBgs = allBgs.filter((b) => popularBgIds.includes(b.id));
 
       stepContent = `
         <div class="step-header-row">
@@ -1647,16 +1635,16 @@
           <div>
             <h2 class="step-title">Select Your <em>Background & Past Experience</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Select work, education, or homemaker backgrounds from the dropdown below or tap the quick buttons. You can select multiple.
+              Select work, education, or homemaker backgrounds from the dropdown below. You can select multiple.
             </p>
           </div>
         </div>
 
         <div class="multi-select-dropdown-box">
-          <label for="fitBgSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-            Add Background Area (Dropdown):
+          <label for="fitBgSelect" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Choose background to add:
           </label>
-          <select id="fitBgSelect" class="form-input" style="cursor: pointer;">
+          <select id="fitBgSelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 12px 14px;">
             <option value="">+ Choose a background to add...</option>
             ${allBgs
               .map((b) => {
@@ -1669,7 +1657,7 @@
           <div class="multi-select-tags-wrap" id="fitBgTagsWrap">
             ${
               selectedBgs.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No backgrounds selected yet. Choose from the dropdown or quick buttons below.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No backgrounds selected yet. Select from the dropdown above.</span>`
                 : selectedBgs
                     .map((id) => {
                       const item = allBgs.find((b) => b.id === id);
@@ -1683,22 +1671,6 @@
                     })
                     .join("")
             }
-          </div>
-
-          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
-            Quick Select Common Backgrounds:
-          </div>
-          <div class="quick-chips-wrap">
-            ${popularBgs
-              .map((b) => {
-                const isSel = selectedBgs.includes(b.id);
-                return `
-                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-bg="${b.id}">
-                    ${isSel ? "✓" : "+"} ${b.label || b.title}
-                  </button>
-                `;
-              })
-              .join("")}
           </div>
         </div>
       `;
@@ -1750,15 +1722,15 @@
 
         <div class="multi-select-dropdown-box">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label for="fitSkillSelect" style="font-size: 0.86rem; font-weight: 800; color: var(--forest-dark);">
-              Add Skill Area (Dropdown):
+            <label for="fitSkillSelect" style="font-size: 0.92rem; font-weight: 800; color: var(--forest-dark);">
+              Choose core skill to add:
             </label>
             <span class="selection-counter-pill ${activeSkillCount >= 4 ? "max-reached" : ""}">
               ${isUnsure ? "Starter Mode" : `${activeSkillCount} of 4 selected`}
             </span>
           </div>
 
-          <select id="fitSkillSelect" class="form-input" style="cursor: pointer;">
+          <select id="fitSkillSelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 12px 14px;">
             <option value="">+ Choose a skill to add (up to 4)...</option>
             ${allSkills
               .map((cat) => {
@@ -1766,12 +1738,13 @@
                 return `<option value="${cat.id}">${isSel ? "✓ " : ""}${cat.label || cat.title}</option>`;
               })
               .join("")}
+            <option value="unsure" ${isUnsure ? "selected" : ""}>Not Sure Yet (Starter Ideas)</option>
           </select>
 
           <div class="multi-select-tags-wrap" id="fitSkillTagsWrap">
             ${
               selected.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No skills selected yet. Select from the dropdown or tap the quick buttons below.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No skills selected yet. Select from the dropdown above.</span>`
                 : selected
                     .map((id) => {
                       if (id === "unsure") {
@@ -1793,25 +1766,6 @@
                     })
                     .join("")
             }
-          </div>
-
-          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
-            Quick Select Skills:
-          </div>
-          <div class="quick-chips-wrap">
-            ${allSkills
-              .map((cat) => {
-                const isSel = selected.includes(cat.id);
-                return `
-                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-skill="${cat.id}">
-                    ${isSel ? "✓" : "+"} ${cat.label || cat.title}
-                  </button>
-                `;
-              })
-              .join("")}
-            <button type="button" class="quick-chip-btn ${isUnsure ? "active" : ""}" data-quick-skill="unsure" style="border-color: var(--hot-pink);">
-              ${isUnsure ? "✓" : "+"} Not Sure Yet (Starter Ideas)
-            </button>
           </div>
         </div>
       `;
@@ -1861,15 +1815,15 @@
 
         <div class="multi-select-dropdown-box">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <label for="fitHobbySelect" style="font-size: 0.86rem; font-weight: 800; color: var(--forest-dark);">
-              Add Hobby or Activity (Dropdown):
+            <label for="fitHobbySelect" style="font-size: 0.92rem; font-weight: 800; color: var(--forest-dark);">
+              Choose hobby or activity to add:
             </label>
             <span class="selection-counter-pill ${selectedActivities.length >= 3 ? "max-reached" : ""}">
               ${selectedActivities.length} of 3 selected
             </span>
           </div>
 
-          <select id="fitHobbySelect" class="form-input" style="cursor: pointer;">
+          <select id="fitHobbySelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 12px 14px;">
             <option value="">+ Choose a hobby to add (up to 3)...</option>
             ${allActs
               .map((act) => {
@@ -1882,7 +1836,7 @@
           <div class="multi-select-tags-wrap" id="fitHobbyTagsWrap">
             ${
               selectedActivities.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No hobbies selected yet. Select from the dropdown or quick buttons below.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No hobbies selected yet. Select from the dropdown above.</span>`
                 : selectedActivities
                     .map((id) => {
                       const item = allActs.find((act) => act.id === id);
@@ -1896,22 +1850,6 @@
                     })
                     .join("")
             }
-          </div>
-
-          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
-            Quick Select Hobbies:
-          </div>
-          <div class="quick-chips-wrap">
-            ${allActs
-              .map((act) => {
-                const isSel = selectedActivities.includes(act.id);
-                return `
-                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-hobby="${act.id}">
-                    ${isSel ? "✓" : "+"} ${act.label || act.title}
-                  </button>
-                `;
-              })
-              .join("")}
           </div>
         </div>
       `;
@@ -1931,10 +1869,10 @@
         </div>
 
         <div class="multi-select-dropdown-box">
-          <label for="fitLifeSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-            Add Lived Experience (Dropdown):
+          <label for="fitLifeSelect" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Choose lived chapter to add:
           </label>
-          <select id="fitLifeSelect" class="form-input" style="cursor: pointer;">
+          <select id="fitLifeSelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 12px 14px;">
             <option value="">+ Choose a lived chapter to add...</option>
             ${allLife
               .map((lex) => {
@@ -1947,7 +1885,7 @@
           <div class="multi-select-tags-wrap" id="fitLifeTagsWrap">
             ${
               selectedLife.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lived experiences selected yet. Select from the dropdown or quick buttons below.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lived experiences selected yet. Select from the dropdown above.</span>`
                 : selectedLife
                     .map((id) => {
                       const item = allLife.find((lex) => lex.id === id);
@@ -1961,22 +1899,6 @@
                     })
                     .join("")
             }
-          </div>
-
-          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
-            Quick Select Lived Chapters:
-          </div>
-          <div class="quick-chips-wrap">
-            ${allLife
-              .map((lex) => {
-                const isSel = selectedLife.includes(lex.id);
-                return `
-                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-life="${lex.id}">
-                    ${isSel ? "✓" : "+"} ${lex.label || lex.title}
-                  </button>
-                `;
-              })
-              .join("")}
           </div>
         </div>
       `;
@@ -2359,6 +2281,14 @@
         skillSelect.addEventListener("change", (e) => {
           const val = e.target.value;
           if (!val) return;
+          if (val === "unsure") {
+            state.profile.skills = ["unsure"];
+            state.limitNotice = "";
+            state.validationError = "";
+            saveUserProgress();
+            render();
+            return;
+          }
           const current = state.profile.skills || [];
           const filtered = current.filter((x) => x !== "unsure");
           if (filtered.includes(val)) {
@@ -4039,59 +3969,26 @@
           <div>
             <h2 class="step-title">Where Do Your Leads & Clients <em>Currently Come From</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Select your primary client acquisition channels from the dropdown or quick buttons below. You can select multiple.
+              Select all client acquisition channels you currently use (tap to select all that apply).
             </p>
           </div>
         </div>
 
-        <div class="multi-select-dropdown-box">
-          <label for="growthLeadSourceSelect" style="display: block; font-size: 0.86rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-            Add Client Acquisition Channel (Dropdown):
-          </label>
-          <select id="growthLeadSourceSelect" class="form-input" style="cursor: pointer;">
-            <option value="">+ Choose a channel to add...</option>
-            ${allSources
-              .map((src) => {
-                const isSel = selectedSources.includes(src.id);
-                return `<option value="${src.id}">${isSel ? "✓ " : ""}${src.label}</option>`;
-              })
-              .join("")}
-          </select>
-
-          <div class="multi-select-tags-wrap" id="growthLeadTagsWrap">
-            ${
-              selectedSources.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lead channels selected yet. Choose from the dropdown or quick buttons below.</span>`
-                : selectedSources
-                    .map((id) => {
-                      const item = allSources.find((s) => s.id === id);
-                      const name = item ? item.label : id;
-                      return `
-                        <span class="multi-select-tag">
-                          ${name}
-                          <button type="button" class="tag-remove-btn" data-remove-growth-lead="${id}" aria-label="Remove ${name}">×</button>
-                        </span>
-                      `;
-                    })
-                    .join("")
-            }
-          </div>
-
-          <div style="font-size: 0.8rem; font-weight: 700; color: var(--ink-muted); margin-bottom: 6px;">
-            Quick Select Channels:
-          </div>
-          <div class="quick-chips-wrap">
-            ${allSources
-              .map((src) => {
-                const isSel = selectedSources.includes(src.id);
-                return `
-                  <button type="button" class="quick-chip-btn ${isSel ? "active" : ""}" data-quick-growth-lead="${src.id}">
-                    ${isSel ? "✓" : "+"} ${src.label}
-                  </button>
-                `;
-              })
-              .join("")}
-          </div>
+        <div class="options-grid">
+          ${allSources
+            .map((src) => {
+              const isSel = selectedSources.includes(src.id);
+              return `
+              <div class="option-card ${isSel ? "selected" : ""}" data-growth-leadsource="${src.id}">
+                <div class="option-content">
+                  <div class="option-title">${src.label}</div>
+                  <div class="option-sub">${src.sub}</div>
+                </div>
+                <div class="option-check">✓</div>
+              </div>
+            `;
+            })
+            .join("")}
         </div>
       `;
     } else if (s === 3 && sub === 2) {
@@ -4101,21 +3998,25 @@
           <div>
             <h2 class="step-title">Where Do Potential Clients <em>Drop Off Most Often</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Select your biggest sales or conversion hurdle from the dropdown below.
+              Select your primary sales or conversion bottleneck below.
             </p>
           </div>
         </div>
 
-        <div class="multi-select-dropdown-box" style="margin-bottom: 24px;">
-          <label for="growthConversionSelect" style="display: block; font-size: 0.95rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 10px;">
-            Choose Primary Sales Bottleneck:
-          </label>
-          <select id="growthConversionSelect" class="form-input" style="cursor: pointer; font-size: 1rem; padding: 12px 14px;">
-            <option value="">Select your primary sales bottleneck...</option>
-            ${(window.GROWTH_CONVERSION_ISSUES || [])
-              .map((iss) => `<option value="${iss.id}" ${gp.conversionIssue === iss.id ? "selected" : ""}>${iss.label}</option>`)
-              .join("")}
-          </select>
+        <div class="options-grid">
+          ${(window.GROWTH_CONVERSION_ISSUES || [])
+            .map(
+              (iss) => `
+            <div class="option-card ${gp.conversionIssue === iss.id ? "selected" : ""}" data-growth-conversion="${iss.id}">
+              <div class="option-content">
+                <div class="option-title">${iss.label}</div>
+                <div class="option-sub">${iss.sub}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
         </div>
       `;
     } else if (s === 4 && sub === 1) {
@@ -4543,48 +4444,11 @@
       });
     }
 
-    // Step 3 Sub 1: Lead Sources (Dropdown, Tags & Quick Chips)
+    // Step 3 Sub 1: Lead Sources (Cards Toggle)
     if (s === 3 && sub === 1) {
-      const leadSelect = document.getElementById("growthLeadSourceSelect");
-      if (leadSelect) {
-        leadSelect.addEventListener("change", (e) => {
-          const val = e.target.value;
-          if (!val) return;
-          if (!Array.isArray(gp.leadSources)) {
-            gp.leadSources = gp.leadSource ? [gp.leadSource] : [];
-          }
-          if (val === "no-lead-system") {
-            gp.leadSources = ["no-lead-system"];
-          } else {
-            gp.leadSources = gp.leadSources.filter((x) => x !== "no-lead-system");
-            if (!gp.leadSources.includes(val)) {
-              gp.leadSources.push(val);
-            }
-          }
-          gp.leadSource = gp.leadSources[0] || "";
-          state.validationError = "";
-          saveUserProgress();
-          render();
-        });
-      }
-
-      document.querySelectorAll("[data-remove-growth-lead]").forEach((btn) => {
-        btn.addEventListener("click", (e) => {
-          e.stopPropagation();
-          const id = btn.getAttribute("data-remove-growth-lead");
-          if (Array.isArray(gp.leadSources)) {
-            gp.leadSources = gp.leadSources.filter((x) => x !== id);
-            gp.leadSource = gp.leadSources[0] || "";
-          }
-          state.validationError = "";
-          saveUserProgress();
-          render();
-        });
-      });
-
-      document.querySelectorAll("[data-quick-growth-lead]").forEach((chip) => {
-        chip.addEventListener("click", () => {
-          const id = chip.getAttribute("data-quick-growth-lead");
+      document.querySelectorAll("[data-growth-leadsource]").forEach((el) => {
+        el.addEventListener("click", () => {
+          const id = el.getAttribute("data-growth-leadsource");
           if (!Array.isArray(gp.leadSources)) {
             gp.leadSources = gp.leadSource ? [gp.leadSource] : [];
           }
@@ -4606,18 +4470,15 @@
       });
     }
 
-    // Step 3 Sub 2: Conversion Bottleneck (Dropdown Only)
+    // Step 3 Sub 2: Conversion Bottleneck (Cards Auto-Advance)
     if (s === 3 && sub === 2) {
-      const convSelect = document.getElementById("growthConversionSelect");
-      if (convSelect) {
-        convSelect.addEventListener("change", (e) => {
-          const val = e.target.value;
-          if (!val) return;
-          gp.conversionIssue = val;
+      document.querySelectorAll("[data-growth-conversion]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.conversionIssue = el.getAttribute("data-growth-conversion");
           state.validationError = "";
           triggerAutoAdvance();
         });
-      }
+      });
     }
 
     // Step 4 Sub 1: Repeat Rate
