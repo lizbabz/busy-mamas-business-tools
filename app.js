@@ -37,6 +37,10 @@
     return {
       currency: currencyCode,
       businessType: "",
+      subNicheId: "",
+      specificNiche: "",
+      targetAudience: "",
+      primaryOffer: "",
       revenueStageId: "",
       currentRevenue: 2000,
       targetRevenue: 6000,
@@ -336,6 +340,10 @@
           message: "Please select what type of business you run in Part A before continuing.",
           scrollSelector: "#growthPart1A"
         };
+      }
+      if (!gp.specificNiche && gp.subNicheId && window.GROWTH_SUB_NICHES && window.GROWTH_SUB_NICHES[gp.businessType]) {
+        const found = window.GROWTH_SUB_NICHES[gp.businessType].find(sn => sn.id === gp.subNicheId);
+        if (found) gp.specificNiche = found.label;
       }
       if (!gp.revenueStageId) {
         return {
@@ -2904,6 +2912,75 @@
             .join("")}
         </div>
 
+        ${gp.businessType && window.GROWTH_SUB_NICHES && window.GROWTH_SUB_NICHES[gp.businessType] ? `
+          <div class="growth-niche-customizer" id="growthPart1A2" style="background: #fff; border: 2px solid var(--forest); border-radius: 20px; padding: 24px 22px; margin-bottom: 28px; box-shadow: var(--shadow-sm);">
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 6px; flex-wrap: wrap;">
+              <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--hot-pink);">
+                Part A-2 • Your Specific Niche & Ideal Customer
+              </span>
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--forest); background: var(--mint-soft); padding: 3px 10px; border-radius: 100px;">
+                Personalized 30-Day Plan
+              </span>
+            </div>
+            <h4 style="font-size: 1.15rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+              What is your specific specialty, niche, or main service?
+            </h4>
+            <p style="font-size: 0.92rem; color: var(--ink-muted); margin-bottom: 14px; line-height: 1.5;">
+              Click your closest specialty below, or type your niche in your own words so your 30-day priorities and outreach messages are 100% custom to what you do.
+            </p>
+
+            <!-- Specialty Chips -->
+            <div class="subniche-chip-grid" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;">
+              ${(window.GROWTH_SUB_NICHES[gp.businessType] || []).map(sn => {
+                const isSelected = gp.subNicheId === sn.id;
+                return `
+                  <button
+                    type="button"
+                    class="subniche-chip-btn ${isSelected ? 'active' : ''}"
+                    data-growth-subniche="${sn.id}"
+                    data-growth-subniche-label="${escapeHtml(sn.label)}"
+                    data-growth-subniche-placeholder="${escapeHtml(sn.placeholder || '')}"
+                    style="display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid ${isSelected ? 'var(--forest)' : 'var(--border)'}; background: ${isSelected ? 'var(--forest)' : '#fff'}; color: ${isSelected ? '#fff' : 'var(--dark)'}; padding: 7px 14px; border-radius: 100px; font-size: 0.84rem; font-weight: 700; cursor: pointer; transition: all 0.15s ease;"
+                  >
+                    <span>${sn.label}</span>
+                    ${isSelected ? '<span style="font-size: 0.75rem;">✓</span>' : ''}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Custom Niche & Audience Inputs -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;" class="growth-niche-inputs-grid">
+              <div>
+                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
+                  What specifically do you sell or offer?
+                </label>
+                <input
+                  type="text"
+                  id="growthSpecificNicheInput"
+                  class="form-input"
+                  style="width: 100%; font-size: 0.9rem; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border); box-sizing: border-box;"
+                  placeholder="${escapeHtml((window.GROWTH_SUB_NICHES[gp.businessType]?.[0]?.placeholder) || 'e.g., Pediatric sleep consulting for babies 0 to 24 months')}"
+                  value="${escapeHtml(gp.specificNiche || '')}"
+                />
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.82rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 5px;">
+                  Who is your primary ideal customer / client?
+                </label>
+                <input
+                  type="text"
+                  id="growthTargetAudienceInput"
+                  class="form-input"
+                  style="width: 100%; font-size: 0.9rem; padding: 11px 13px; border-radius: 10px; border: 1.5px solid var(--border); box-sizing: border-box;"
+                  placeholder="e.g., Exhausted working moms of babies 0-2, wedding couples, small businesses"
+                  value="${escapeHtml(gp.targetAudience || '')}"
+                />
+              </div>
+            </div>
+          </div>
+        ` : ''}
+
         ${
           showEarlyBridge
             ? `
@@ -3484,12 +3561,49 @@
 
     document.querySelectorAll("[data-growth-btype]").forEach((el) => {
       el.addEventListener("click", () => {
-        gp.businessType = el.getAttribute("data-growth-btype");
+        const newBType = el.getAttribute("data-growth-btype");
+        if (gp.businessType !== newBType) {
+          gp.businessType = newBType;
+          gp.subNicheId = "";
+        }
         state.validationError = "";
         saveUserProgress();
         render();
       });
     });
+
+    document.querySelectorAll("[data-growth-subniche]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        gp.subNicheId = btn.getAttribute("data-growth-subniche");
+        const label = btn.getAttribute("data-growth-subniche-label") || "";
+        const nicheInp = document.getElementById("growthSpecificNicheInput");
+        if (nicheInp && (!gp.specificNiche || gp.specificNiche.trim().length === 0)) {
+          nicheInp.value = label;
+          gp.specificNiche = label;
+        } else if (!gp.specificNiche) {
+          gp.specificNiche = label;
+        }
+        state.validationError = "";
+        saveUserProgress();
+        render();
+      });
+    });
+
+    const specificNicheInp = document.getElementById("growthSpecificNicheInput");
+    if (specificNicheInp) {
+      specificNicheInp.addEventListener("input", (e) => {
+        gp.specificNiche = e.target.value;
+        saveUserProgress();
+      });
+    }
+
+    const targetAudienceInp = document.getElementById("growthTargetAudienceInput");
+    if (targetAudienceInp) {
+      targetAudienceInp.addEventListener("input", (e) => {
+        gp.targetAudience = e.target.value;
+        saveUserProgress();
+      });
+    }
 
     document.querySelectorAll("[data-growth-revstage]").forEach((el) => {
       el.addEventListener("click", () => {
@@ -3870,6 +3984,10 @@
         }
 
         const analysis = state.growthAnalysis;
+        const nicheDesc = gp.specificNiche || gp.businessType || "Business";
+        const audienceDesc = gp.targetAudience ? ` | Client: ${gp.targetAudience}` : "";
+        const growthSkillsSummary = `Growth: ${nicheDesc} (${gp.currentRevenue || 0}/mo)${audienceDesc}`;
+
         const leadRecord = {
           timestamp: new Date().toISOString(),
           firstName: gp.firstName,
@@ -3879,7 +3997,7 @@
           timeline: "30-Day Growth Plan",
           hoursPerWeek: gp.maxDesiredHours,
           budget: gp.growthBudget,
-          skills: `Growth: ${gp.businessType} (Current: ${gp.currentRevenue}/mo)`,
+          skills: growthSkillsSummary,
           workStyle: gp.offerStructure,
           checkInCadence: gp.checkInCadence,
           topIdea1: `[Bottleneck] ${analysis.primaryBottleneck?.title || ""}`,
@@ -3899,7 +4017,7 @@
           timeline: "30-Day Growth Plan",
           hours_per_week: String(gp.maxDesiredHours || ""),
           startup_budget: String(gp.growthBudget || 0),
-          skills: `Growth: ${gp.businessType || "Business"} (${gp.currentRevenue || 0}/mo)`,
+          skills: growthSkillsSummary,
           check_in_emails: gp.checkInCadence || "weekly",
           top_idea_1: leadRecord.topIdea1,
           top_idea_2: leadRecord.topIdea2,
@@ -4119,7 +4237,8 @@
         </p>
 
         <div class="results-summary-badges">
-          <span class="summary-badge">${bTypeObj.label}</span>
+          <span class="summary-badge">${escapeHtml(gp.specificNiche || bTypeObj.label)}</span>
+          ${gp.targetAudience ? `<span class="summary-badge">Audience: ${escapeHtml(gp.targetAudience)}</span>` : ""}
           <span class="summary-badge">Now: ${fmtMoney(m.currentRev)}/mo (~${m.marginPct}% Kept)</span>
           <span class="summary-badge">Goal: +${fmtMoney(m.revenueGap)}/mo More</span>
           <span class="summary-badge">Schedule Limit: ${m.maxDesiredHours} hrs/wk</span>

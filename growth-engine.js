@@ -9,78 +9,156 @@
 
 window.GROWTH_BUSINESS_TYPES = [
   {
-    id: "product-food-maker",
-    group: "maker",
-    label: "Food, Baking & Catering",
-    sub: "Home bakery, custom cakes, catering, charcuterie, meal prep, private chef, or packaged food and spice brand"
-  },
-  {
-    id: "handmade-crafts-decor",
-    group: "maker",
-    label: "Handmade, Crafts & Custom Goods",
-    sub: "Candles, home decor, custom gift boxes, stationery, party favors, sewing, or handmade products"
-  },
-  {
-    id: "local-events-beauty",
-    group: "local",
-    label: "Events, Styling, Entertainment & Rentals",
-    sub: "Event planner, balloon or floral stylist, luxury picnics, photo booth and party rentals, MC/DJ, or mobile bar"
-  },
-  {
-    id: "beauty-wellness-personal",
-    group: "local",
-    label: "Beauty, Hair, Lashes & Wellness",
-    sub: "Makeup artist, hair or braiding studio, lash/brow artist, nail tech, skincare/esthetician, or fitness/pilates"
-  },
-  {
-    id: "home-family-local",
-    group: "local",
-    label: "Home, Organizing, Childcare & Local Services",
-    sub: "Home organizer, interior styling/staging, cleaning or laundry service, childcare/tutoring, senior or pet care"
-  },
-  {
-    id: "creative-photo-media",
-    group: "service",
-    label: "Photography, Design, Video & Creative Work",
-    sub: "Family/event/brand photographer, videographer, content creator, graphic/web designer, or video/podcast editor"
-  },
-  {
-    id: "client-service-b2b",
-    group: "service",
-    label: "Marketing, Ads, Social Media & Virtual Assistant",
-    sub: "Social media manager, Facebook/Instagram/Google ads, email or copywriter, virtual assistant, or online manager"
-  },
-  {
-    id: "finance-legal-realestate",
+    id: "maternal-family-health",
     group: "advisory",
-    label: "Bookkeeping, Finance, Real Estate & Notary",
-    sub: "Bookkeeper, tax prep, financial/insurance advisor, realtor, mortgage officer, notary signing, or grant writer"
+    label: "Health, Sleep, Postpartum & Family Care",
+    sub: "Pediatric sleep consultant, postpartum doula, lactation consultant, nurse advocate, or birth coach"
   },
   {
     id: "coaching-advisory",
     group: "advisory",
-    label: "Coaching, Consulting, Education & Healthcare",
-    sub: "Business/career/life coach, sleep/lactation/postpartum consultant, nurse advocate, HR/recruiting, or trainer"
+    label: "Coaching, Mentorship & Personal Growth",
+    sub: "Life coach, mindset & motherhood coach, career coach, business coach, relationship or wellness coach"
   },
   {
-    id: "digital-ecommerce",
-    group: "digital",
-    label: "Online Shop, Boutique, Amazon & Digital Products",
-    sub: "Shopify/online boutique, Etsy printables/templates, Amazon KDP/FBA, online courses, or retail product brand"
-  },
-  {
-    id: "b2b-contracting-property",
+    id: "client-service-b2b",
     group: "service",
-    label: "Property Management, Contracting & Business Supply",
-    sub: "Airbnb co-hosting, property management, government contracting, commercial vendor, courier, or print-on-demand"
+    label: "Virtual Assistant & Digital Agency",
+    sub: "Virtual assistant, social media manager, copywriter, paid ads, online business manager (OBM), or video editor"
+  },
+  {
+    id: "finance-legal-realestate",
+    group: "advisory",
+    label: "Bookkeeping, Tax & Financial Advisory",
+    sub: "Bookkeeper, tax prep, financial coach, realtor, mortgage officer, loan signing/notary, or grant writer"
+  },
+  {
+    id: "digital-products-downloads",
+    group: "digital",
+    label: "Digital Downloads, Printables & Courses",
+    sub: "Etsy printables/templates, digital planners, workbooks, recorded masterclasses, or memberships"
+  },
+  {
+    id: "physical-ecommerce-boutique",
+    group: "maker",
+    label: "Physical E-Commerce, Boutique & Retail",
+    sub: "Shopify boutique, handmade products, apparel, jewelry, curated retail, or Amazon FBA"
+  },
+  {
+    id: "product-food-maker",
+    group: "maker",
+    label: "Food, Baking, Catering & Meal Prep",
+    sub: "Home bakery, custom cakes, private chef, meal delivery, charcuterie, or packaged food/spices"
+  },
+  {
+    id: "local-events-styling",
+    group: "local",
+    label: "Events, Styling, Decor & Photography",
+    sub: "Event planner, luxury picnic or balloon stylist, family/event photographer, videographer, or party rentals"
+  },
+  {
+    id: "beauty-wellness-personal",
+    group: "local",
+    label: "Beauty, Hair, Lashes & Wellness Studio",
+    sub: "Hair stylist/braider, lash/brow artist, makeup, esthetician/skincare, or pilates/fitness trainer"
+  },
+  {
+    id: "home-family-local",
+    group: "local",
+    label: "Home Organizing, Cleaning & In-Person Care",
+    sub: "Professional home organizer, residential/Airbnb cleaning, interior staging, or boutique childcare"
   },
   {
     id: "unsure-model",
     group: "unsure",
-    label: "Other / Still Figuring Out My Business",
-    sub: "My business mixes a few different things, or I am still figuring out the best way to set it up"
+    label: "Other / Blended Business Model",
+    sub: "My business mixes multiple models, or I am still figuring out the best way to structure it"
   }
 ];
+
+window.GROWTH_SUB_NICHES = {
+  "maternal-family-health": [
+    { id: "pediatric-sleep", label: "Pediatric / Infant Sleep Consultant", placeholder: "e.g., 2-week virtual sleep training & routine packages for babies 4 to 24 months" },
+    { id: "postpartum-doula", label: "Postpartum Doula & Newborn Care Specialist", placeholder: "e.g., In-home day or overnight newborn care and mama recovery packages" },
+    { id: "lactation-feeding", label: "Lactation / Breastfeeding Consultant", placeholder: "e.g., 1-on-1 latch & feeding support consultations for new mothers" },
+    { id: "nurse-clinical-advocate", label: "Nurse Advocate & Clinical Health Consultant", placeholder: "e.g., Healthcare navigation and care plans for elderly parents or chronic illness" },
+    { id: "birth-doula-prep", label: "Birth Doula & Childbirth Educator", placeholder: "e.g., Prenatal education, labor support, and birth prep packages" },
+    { id: "other-maternal-health", label: "Other Maternal / Pediatric Specialty", placeholder: "e.g., Pediatric OT, pelvic floor recovery, speech therapy" }
+  ],
+  "coaching-advisory": [
+    { id: "life-mindset-motherhood", label: "Life, Mindset & Motherhood Coach", placeholder: "e.g., Mindset and boundary coaching for overwhelmed working mothers" },
+    { id: "career-executive", label: "Career Transition & Executive Coach", placeholder: "e.g., Resume, salary negotiation, and leadership coaching for corporate women" },
+    { id: "business-strategy", label: "Business, Sales & Launch Strategy Coach", placeholder: "e.g., Helping service providers package their offers and book clients" },
+    { id: "health-wellness-nutrition", label: "Nutrition, Hormone & Weight Wellness Coach", placeholder: "e.g., Postpartum weight loss and hormone balancing meal plans" },
+    { id: "relationship-marriage", label: "Marriage, Relationship & Family Coach", placeholder: "e.g., Communication and intimacy coaching for married couples" },
+    { id: "other-coaching", label: "Other Specialized Coaching", placeholder: "e.g., Faith-based coaching, creative coaching" }
+  ],
+  "client-service-b2b": [
+    { id: "virtual-assistant", label: "General Virtual Assistant (Admin & Inbox)", placeholder: "e.g., 20 hr/month retainer managing client inboxes, calendars, and customer service" },
+    { id: "social-media-manager", label: "Social Media Manager & Content Creator", placeholder: "e.g., Instagram management, reels editing, and monthly content batching" },
+    { id: "copywriter-email", label: "Copywriter & Email Marketing Strategist", placeholder: "e.g., Weekly sales newsletters, welcome sequences, and launch copy" },
+    { id: "paid-ads-manager", label: "Meta, Google or TikTok Ads Specialist", placeholder: "e.g., Running paid ad campaigns for e-commerce shops or local clinics" },
+    { id: "obm-systems", label: "Online Business Manager (OBM) & Tech Setup", placeholder: "e.g., Setting up Dubsado, ClickUp, Notion, and automated workflows" },
+    { id: "podcast-video-editor", label: "Podcast & Short-Form Video Editor", placeholder: "e.g., Editing 4 episodes a month plus 12 short reels/TikToks" },
+    { id: "other-agency", label: "Other Digital Agency Service", placeholder: "e.g., SEO specialist, web maintenance, graphic designer" }
+  ],
+  "finance-legal-realestate": [
+    { id: "bookkeeper-cleanups", label: "Bookkeeper (Monthly Retainers & Cleanups)", placeholder: "e.g., Monthly bookkeeping and year-end tax prep for service businesses" },
+    { id: "tax-preparation", label: "Tax Preparer & Tax Strategy", placeholder: "e.g., Individual and small business tax returns" },
+    { id: "financial-coach", label: "Personal Finance & Budget Coach", placeholder: "e.g., Debt-payoff plans, cash-flow budgeting, and savings roadmaps" },
+    { id: "realtor-mortgage", label: "Realtor or Mortgage Broker", placeholder: "e.g., Helping first-time homebuyers and relocators find homes" },
+    { id: "mobile-notary", label: "Mobile Notary & Loan Signing Agent", placeholder: "e.g., Loan signings, hospital notaries, and power of attorney docs" },
+    { id: "grant-writer", label: "Grant Writer & Nonprofit Consultant", placeholder: "e.g., Grant research, proposal writing, and donor strategy" },
+    { id: "other-finance", label: "Other Financial / Professional Service", placeholder: "e.g., Insurance broker, credit repair, legal docs" }
+  ],
+  "digital-products-downloads": [
+    { id: "etsy-printables", label: "Etsy Digital Downloads & Printables", placeholder: "e.g., Budget planners, chore charts, and party invitations" },
+    { id: "canva-templates", label: "Canva Templates for Small Businesses", placeholder: "e.g., Social media bundles, slide decks, and ebook templates" },
+    { id: "online-course-masterclass", label: "Digital Course, Masterclass or Workshop", placeholder: "e.g., 4-module video course teaching mothers how to meal plan" },
+    { id: "monthly-membership", label: "Digital Monthly Membership or Subscription", placeholder: "e.g., $27/mo community membership with weekly resources and calls" },
+    { id: "other-digital", label: "Other Digital Product Brand", placeholder: "e.g., Notion dashboards, digital sewing patterns, lightroom presets" }
+  ],
+  "physical-ecommerce-boutique": [
+    { id: "shopify-apparel-boutique", label: "Women's or Kids' Clothing Boutique", placeholder: "e.g., Curated comfortable loungewear and modest dresses" },
+    { id: "jewelry-accessories", label: "Handmade Jewelry & Hair Accessories", placeholder: "e.g., Polymer clay earrings, gold-filled necklaces, silk scrunchies" },
+    { id: "candles-home-fragrance", label: "Hand-Poured Candles & Scents", placeholder: "e.g., Non-toxic coconut soy wax candles and linen sprays" },
+    { id: "amazon-fba-kdp", label: "Amazon FBA Store or KDP Journals", placeholder: "e.g., Daily prayer journals and planners sold on Amazon" },
+    { id: "other-physical-ecommerce", label: "Other Physical Product / Retail Brand", placeholder: "e.g., Custom gift boxes, baby blankets, organic skincare" }
+  ],
+  "product-food-maker": [
+    { id: "custom-cakes-bakery", label: "Custom Cakes, Cupcakes & Celebrations", placeholder: "e.g., Luxury tiered birthday cakes, vintage buttercream cakes, cupcakes" },
+    { id: "meal-prep-delivery", label: "Weekly Healthy Meal Prep Delivery", placeholder: "e.g., 5-meal weekly healthy family dinners delivered on Sundays" },
+    { id: "catering-grazing", label: "Charcuterie, Graze Tables & Small Catering", placeholder: "e.g., Luxury charcuterie boards and bridal shower catering" },
+    { id: "packaged-spices-sauces", label: "Packaged Sauces, Seasonings, Snacks & Baked Mixes", placeholder: "e.g., All-natural West African spice blends and pepper sauces" },
+    { id: "other-food", label: "Other Specialty Food or Drink Business", placeholder: "e.g., Artisanal sourdough, cold-pressed juices, cookies" }
+  ],
+  "local-events-styling": [
+    { id: "balloon-luxury-picnics", label: "Balloon Styling, Backdrops & Luxury Picnics", placeholder: "e.g., Custom balloon arches and luxury picnic setups for birthdays" },
+    { id: "event-coordinator", label: "Event Planner & Day-Of Wedding Coordinator", placeholder: "e.g., Full wedding planning and day-of coordination packages" },
+    { id: "family-event-photographer", label: "Family, Maternity & Milestone Photographer", placeholder: "e.g., 60-minute golden hour family and newborn photo sessions" },
+    { id: "party-rentals", label: "Party Rentals (Bounce Houses, Photo Booths, Soft Play)", placeholder: "e.g., Modern white bounce houses and toddler soft play setups" },
+    { id: "other-events", label: "Other Event or Creative Service", placeholder: "e.g., Florist, DJ/MC, videographer, event calligraphy" }
+  ],
+  "beauty-wellness-personal": [
+    { id: "hair-braiding-studio", label: "Hair Stylist, Braider or Natural Hair Suite", placeholder: "e.g., Knotless braids, silk presses, and healthy hair treatments" },
+    { id: "lash-brow-makeup", label: "Lash Extensions, Brow Artist or Bridal Makeup", placeholder: "e.g., Volume lash sets, brow lamination, and bridal glam" },
+    { id: "esthetician-skincare", label: "Esthetician & Facial Studio", placeholder: "e.g., Custom facials, chemical peels, and acne treatment plans" },
+    { id: "pilates-fitness-trainer", label: "Pilates, Yoga or Personal Fitness Trainer", placeholder: "e.g., Private in-home postpartum core rehab and pilates sessions" },
+    { id: "other-beauty", label: "Other Beauty or Wellness Studio", placeholder: "e.g., Nail tech, spray tan artist, massage therapist" }
+  ],
+  "home-family-local": [
+    { id: "home-organizer", label: "Professional Home Organizer", placeholder: "e.g., Pantry, closet, and playroom decluttering and organizing packages" },
+    { id: "cleaning-turnover", label: "Residential or Airbnb Turnover Cleaning", placeholder: "e.g., Bi-weekly recurring home cleans and short-term rental turnovers" },
+    { id: "boutique-childcare", label: "Licensed Day Home or Nanny Placement", placeholder: "e.g., High-quality infant and toddler home childcare spots" },
+    { id: "interior-staging", label: "Home Staging & Interior Decorating", placeholder: "e.g., Vacant home staging for realtors and room refresh packages" },
+    { id: "other-home-service", label: "Other Local Residential Service", placeholder: "e.g., Pet care, mobile auto detailing, laundry service" }
+  ],
+  "unsure-model": [
+    { id: "hybrid-product-service", label: "Hybrid (Mix of Services and Products)", placeholder: "e.g., Selling in-person services plus digital resources or products" },
+    { id: "pivoting-streamlining", label: "Pivoting / Simplifying an Existing Business", placeholder: "e.g., Transitioning away from burnout work to a simpler offer" },
+    { id: "testing-new-direction", label: "Testing New Offers & Inquiries", placeholder: "e.g., Exploring what past clients are most willing to buy" }
+  ]
+};
 
 window.GROWTH_REVENUE_STAGES = [
   {
@@ -623,15 +701,21 @@ window.GrowthEngine = {
   buildThreePriorities(gp, ctx) {
     const { fmt, targetRev, revenueGap, maxDesiredHours, currentAvgOrder } = ctx;
     const bType = gp.businessType || "client-service-b2b";
-    const isMaker = bType === "product-food-maker" || bType === "handmade-crafts-decor";
+    const isMaternalHealth = bType === "maternal-family-health";
+    const isMaker = bType === "product-food-maker" || bType === "physical-ecommerce-boutique" || bType === "handmade-crafts-decor";
     const isLocal =
+      bType === "local-events-styling" ||
       bType === "local-events-beauty" ||
       bType === "beauty-wellness-personal" ||
       bType === "home-family-local";
-    const isDigital = bType === "digital-ecommerce";
+    const isDigital = bType === "digital-products-downloads" || bType === "digital-ecommerce";
+
+    const customNicheTitle = gp.specificNiche ? gp.specificNiche.trim() : "";
 
     // Calculate realistic target package prices based on business type
-    const upgradedPackagePrice = isMaker
+    const upgradedPackagePrice = isMaternalHealth
+      ? Math.max(this.scaleUsdToCurrency(950, gp.currency), Math.round(currentAvgOrder * 1.8))
+      : isMaker
       ? Math.max(this.scaleUsdToCurrency(120, gp.currency), Math.round(currentAvgOrder * 2.2))
       : isDigital
       ? Math.max(this.scaleUsdToCurrency(47, gp.currency), Math.round(currentAvgOrder * 1.8))
@@ -639,7 +723,9 @@ window.GrowthEngine = {
       ? Math.max(this.scaleUsdToCurrency(650, gp.currency), Math.round(currentAvgOrder * 1.6))
       : Math.max(this.scaleUsdToCurrency(1250, gp.currency), Math.round(currentAvgOrder * 1.6));
 
-    const b2bOrRetainerPrice = isMaker
+    const b2bOrRetainerPrice = isMaternalHealth
+      ? Math.max(this.scaleUsdToCurrency(450, gp.currency), Math.round(upgradedPackagePrice * 0.45))
+      : isMaker
       ? Math.max(this.scaleUsdToCurrency(450, gp.currency), upgradedPackagePrice * 3)
       : isDigital
       ? Math.max(this.scaleUsdToCurrency(97, gp.currency), upgradedPackagePrice * 2)
@@ -650,13 +736,52 @@ window.GrowthEngine = {
 
     // PRIORITY 1: OFFER, PACKAGING & PRICING LEVER (Tailored by Business Model)
     let p1 = {};
-    if (isMaker) {
+    if (isMaternalHealth) {
+      const nicheDisplay = customNicheTitle || "Specialized Care";
+      p1 = {
+        rank: 1,
+        badge: "Priority #1 • Fixed Transformation Intensive",
+        impactScore: "98% Impact",
+        shortLabel: "2-Week Intensive + Follow-Up Plan",
+        title: `Stop Selling Ad-Hoc Calls: Package Your ${nicheDisplay} Into a Fixed 2-Week Transformation Intensive`,
+        category: "Packages & Pricing",
+        timeToImplement: "Days 1 to 7",
+        shortHoursSaved: "4 to 6 hrs/week",
+        shortBenefit: "Predictable pay per family",
+        estHoursSaved: "Saves 4 to 6 hrs/wk on unstructured messaging",
+        revenueImpact: `Brings in ${fmt(revenueGap)}/mo with just ${unitsNeededUpgraded} intensive client(s) at ${fmt(upgradedPackagePrice)}`,
+        whyItMatters: `In specialized family care, sleep consulting, and maternal health, selling single ad-hoc calls leaves parents with unfinished results and leaves you answering messages at all hours. Packaging your care into a flat-price 2-Week Intensive (${fmt(upgradedPackagePrice)}) with defined text/call boundaries, plus an optional monthly check-in plan (${fmt(b2bOrRetainerPrice)}/mo), gives families complete relief while keeping your work strictly inside ${maxDesiredHours} hours a week.`,
+        mathOptionA: {
+          title: "Option A: Flat-Price 2-Week Transformation Intensive",
+          formula: `${unitsNeededUpgraded} intensive client(s)/mo x ${fmt(upgradedPackagePrice)} = ${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
+          sub: "Families get complete hands-on transformation and know their exact investment upfront."
+        },
+        mathOptionB: {
+          title: "Option B: Ongoing Monthly Follow-Up Support",
+          formula: `${unitsNeededB2B} monthly support client(s) x ${fmt(b2bOrRetainerPrice)}/mo = ${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
+          sub: "Steady recurring income from happy past clients who want ongoing peace of mind."
+        },
+        requirements: [
+          `Define your 2-Week Intensive (${fmt(upgradedPackagePrice)}) with an intake audit, 1 kickoff call, and 14 days of structured weekday text support`,
+          "Set strict communication boundaries (e.g. voice/text notes answered between 9am and 3pm on weekdays, no late-night emergency pings)",
+          "Provide a clear off-boarding checklist with an option to extend for monthly check-ins"
+        ],
+        tradeoffs: [
+          "What gets easier: You work with just 2 to 4 families at a time at higher rates instead of chasing 20 different low-ticket inquiries.",
+          "What to keep in mind: You must protect your personal phone number by using a dedicated business line or WhatsApp Business."
+        ],
+        scriptTitle: "Copy-Paste Intensive Offer Message for Past Inquiries",
+        scriptText: `Hi [Name]! I was thinking about you and wanted to check in on how [sleep / your routine with baby] has been going lately. I am opening up 3 spots for our new 2-Week [Transformation Intensive] (${fmt(upgradedPackagePrice)}) next week, which includes our full customized plan plus daily weekday support to walk you through it step-by-step. Since we have spoken before, I would love to reserve one for your family if you are ready for more restful nights. Would you like me to send over the 1-page overview?`
+      };
+    } else if (isMaker) {
       p1 = {
         rank: 1,
         badge: "Priority #1 • Better Packages & Pricing",
         impactScore: "98% Impact",
         shortLabel: "Prepaid Bundles & Group Gift Orders",
-        title: "Stop Taking Tiny Custom Orders: Switch to Prepaid Bundles & Local Business Gift Orders",
+        title: customNicheTitle
+          ? `Stop Taking Tiny Custom Orders: Offer Prepaid ${customNicheTitle} Bundles & Business Gift Orders`
+          : "Stop Taking Tiny Custom Orders: Switch to Prepaid Bundles & Local Business Gift Orders",
         category: "Packages & Pricing",
         timeToImplement: "Days 1 to 7",
         shortHoursSaved: "4 to 6 hrs/week",
@@ -666,12 +791,12 @@ window.GrowthEngine = {
         whyItMatters: `In food, baking, and handmade businesses, small single-item custom orders quietly eat up all your time for very little profit. Setting a minimum bundle price (${fmt(upgradedPackagePrice)}) and offering a 'Client Thank-You Gift Bundle' (${fmt(b2bOrRetainerPrice)} for 8 to 12 gift boxes) for local realtors and offices lets you make everything in one batch and earn 3x more for your time.`,
         mathOptionA: {
           title: "Option A: Prepaid Weekly or Bi-Weekly Bundle Drops",
-          formula: `${unitsNeededUpgraded} bundle orders/mo x ${fmt(upgradedPackagePrice)} = +${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
+          formula: `${unitsNeededUpgraded} bundle orders/mo x ${fmt(upgradedPackagePrice)} = ${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
           sub: "Customers pay 100% upfront before you buy supplies, so nothing goes to waste."
         },
         mathOptionB: {
           title: "Option B: Local Business, Realtor & Event Gift Orders",
-          formula: `${unitsNeededB2B} group orders/mo x ${fmt(b2bOrRetainerPrice)} = +${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
+          formula: `${unitsNeededB2B} group orders/mo x ${fmt(b2bOrRetainerPrice)} = ${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
           sub: `Just ${unitsNeededB2B} local realtors, offices, or event hosts ordering each month reaches your goal.`
         },
         requirements: [
@@ -692,7 +817,9 @@ window.GrowthEngine = {
         badge: "Priority #1 • Better Packages & Pricing",
         impactScore: "98% Impact",
         shortLabel: "Simple 3-Option Package Menu",
-        title: "Stop Pricing Every Job From Scratch: Create a 3-Option Package Menu With a 50% Deposit",
+        title: customNicheTitle
+          ? `Stop Pricing Every Job From Scratch: Create a 3-Option Package Menu for Your ${customNicheTitle}`
+          : "Stop Pricing Every Job From Scratch: Create a 3-Option Package Menu With a 50% Deposit",
         category: "Packages & Pricing",
         timeToImplement: "Days 1 to 7",
         shortHoursSaved: "3 to 5 hrs/week",
@@ -702,12 +829,12 @@ window.GrowthEngine = {
         whyItMatters: `In events, beauty, and home services, packing up, driving, and setting up take time no matter how small the job is. Taking tiny bookings uses up your best weekend or weekday hours for too little pay. Showing customers a simple 3-Option Package Menu (where your middle 'Most Popular' package is ${fmt(upgradedPackagePrice)} and your 'Full Service' package is ${fmt(b2bOrRetainerPrice)}) helps customers pick a bigger package right away.`,
         mathOptionA: {
           title: "Option A: 'Most Popular' Middle Package Bookings",
-          formula: `${unitsNeededUpgraded} bookings/mo x ${fmt(upgradedPackagePrice)} = +${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
+          formula: `${unitsNeededUpgraded} bookings/mo x ${fmt(upgradedPackagePrice)} = ${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
           sub: `Fits inside your ${maxDesiredHours} hrs/week limit by earning more from every appointment or event.`
         },
         mathOptionB: {
           title: "Option B: Full-Service / VIP / Corporate Bookings",
-          formula: `${unitsNeededB2B} VIP bookings/mo x ${fmt(b2bOrRetainerPrice)} = +${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
+          formula: `${unitsNeededB2B} VIP bookings/mo x ${fmt(b2bOrRetainerPrice)} = ${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
           sub: "Fewer weekend or daytime bookings needed to reach your monthly income goal."
         },
         requirements: [
@@ -728,7 +855,9 @@ window.GrowthEngine = {
         badge: "Priority #1 • Better Packages & Pricing",
         impactScore: "98% Impact",
         shortLabel: "Best-Seller Bundles & Checkout Add-Ons",
-        title: "Group Single Items Into a Best-Seller Bundle + Simple Checkout Add-On",
+        title: customNicheTitle
+          ? `Group Single Downloads Into a ${customNicheTitle} Bundle + Simple Checkout Add-On`
+          : "Group Single Items Into a Best-Seller Bundle + Simple Checkout Add-On",
         category: "Packages & Pricing",
         timeToImplement: "Days 1 to 7",
         shortHoursSaved: "0 extra hrs/order",
@@ -738,12 +867,12 @@ window.GrowthEngine = {
         whyItMatters: `Selling a single $10 to $20 item means you have to find hundreds of buyers every month just to reach ${fmt(targetRev)}/mo. Grouping 5 to 10 matching items, templates, or products into a ${fmt(upgradedPackagePrice)} 'Complete Bundle' (plus a ${fmt(b2bOrRetainerPrice)} All-In-One VIP Pack) doubles or triples what you earn from the exact same shoppers.`,
         mathOptionA: {
           title: "Option A: Complete Best-Seller Bundle",
-          formula: `${unitsNeededUpgraded} bundle sales/mo x ${fmt(upgradedPackagePrice)} = +${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
+          formula: `${unitsNeededUpgraded} bundle sales/mo x ${fmt(upgradedPackagePrice)} = ${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
           sub: "Shoppers get everything they need in one click, and you earn much more per sale."
         },
         mathOptionB: {
           title: "Option B: All-In-One VIP Pack or Full Collection",
-          formula: `${unitsNeededB2B} VIP pack sales/mo x ${fmt(b2bOrRetainerPrice)} = +${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
+          formula: `${unitsNeededB2B} VIP pack sales/mo x ${fmt(b2bOrRetainerPrice)} = ${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
           sub: "Gives your biggest fans an easy way to buy your whole collection at once."
         },
         requirements: [
@@ -769,7 +898,9 @@ window.GrowthEngine = {
         badge: "Priority #1 • Better Packages & Pricing",
         impactScore: "98% Impact",
         shortLabel: "Starter Package + Monthly Plan",
-        title: "Stop Charging by the Hour: Offer a Fixed Starter Package That Leads Into a Monthly Plan",
+        title: customNicheTitle
+          ? `Stop Charging by the Hour: Package Your ${customNicheTitle} Into a Fixed Starter Package + Monthly Plan`
+          : "Stop Charging by the Hour: Offer a Fixed Starter Package That Leads Into a Monthly Plan",
         category: "Packages & Pricing",
         timeToImplement: "Days 1 to 7",
         shortHoursSaved: "4 to 6 hrs/week",
@@ -779,12 +910,12 @@ window.GrowthEngine = {
         whyItMatters: `Charging by the hour or writing a brand-new custom quote for every client caps your income and punishes you for working fast. Instead, package what you do into a flat-price '2-Week Starter Package' (${fmt(upgradedPackagePrice)}) that naturally leads into a ${fmt(b2bOrRetainerPrice)}/mo ongoing monthly plan. That way, you only need ${clientRangeText} active clients to add +${fmt(revenueGap)}/mo inside ${maxDesiredHours} hours a week.`,
         mathOptionA: {
           title: "Option A: Flat-Price 2-Week Starter Package",
-          formula: `${unitsNeededUpgraded} starter packages/mo x ${fmt(upgradedPackagePrice)} = +${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
+          formula: `${unitsNeededUpgraded} starter packages/mo x ${fmt(upgradedPackagePrice)} = ${fmt(unitsNeededUpgraded * upgradedPackagePrice)}/mo`,
           sub: "Easy for new clients to say yes to because they know the exact price and result upfront."
         },
         mathOptionB: {
           title: "Option B: Ongoing Monthly Client Plan",
-          formula: `${unitsNeededB2B} monthly clients x ${fmt(b2bOrRetainerPrice)}/mo = +${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
+          formula: `${unitsNeededB2B} monthly clients x ${fmt(b2bOrRetainerPrice)}/mo = ${fmt(unitsNeededB2B * b2bOrRetainerPrice)}/mo`,
           sub: `Steady monthly income that fits neatly inside your ${maxDesiredHours} hrs/week schedule.`
         },
         requirements: [
@@ -825,7 +956,7 @@ window.GrowthEngine = {
           : "Instead of riding the busy-one-month, slow-the-next-month rollercoaster, checking in with past customers once a month and having 5 referral partners sends you steady buyers even during busy family weeks.",
       mathOptionA: {
         title: "Path A: Friendly Check-In With Past Buyers & Inquiries",
-        formula: `Message 15 past buyers/inquiries -> Book ${repeatTargetCount} orders at ${fmt(upgradedPackagePrice)} = +${fmt(repeatTargetCount * upgradedPackagePrice)}`,
+        formula: `Message 15 past buyers/inquiries -> Book ${repeatTargetCount} orders at ${fmt(upgradedPackagePrice)} = ${fmt(repeatTargetCount * upgradedPackagePrice)} in sales`,
         sub: "The fastest sales in your business because these people already know and like your work."
       },
       mathOptionB: {
@@ -893,7 +1024,7 @@ window.GrowthEngine = {
     const p2 = priorities[1];
 
     return {
-      headline: `Your Simple 30-Day Plan to Add +${fmt(revenueGap)}/mo (Inside ${maxDesiredHours} Hrs/Week)`,
+      headline: `Your Simple 30-Day Plan to Add ${fmt(revenueGap)}/mo (Inside ${maxDesiredHours} Hrs/Week)`,
       weeks: [
         {
           week: "Week 1 (Days 1 to 7)",
