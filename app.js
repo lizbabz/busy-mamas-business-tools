@@ -2890,7 +2890,7 @@
                 window.VaultEngine.scaleUsdToCurrency(Number(idea.avgUnitRevenue) || 250, cur.code)
               );
               const swapsUsed = (state.slotSwapCounts && state.slotSwapCounts[idx]) || 0;
-              const isCapped = swapsUsed >= 2;
+              const isCapped = swapsUsed >= 1;
               const compactRankLabels = [
                 idea.isCustomSynthesized ? "Bespoke Custom" : "#1 Best Overall",
                 "#2 Runner-Up Fit",
@@ -2994,7 +2994,7 @@
       const focusedIdea = state.topMatches[idx];
       const focusedPlaybook = state.playbooks[idx];
       const focusedSwaps = (state.slotSwapCounts && state.slotSwapCounts[idx]) || 0;
-      const isFocusedCapped = focusedSwaps >= 2;
+      const isFocusedCapped = focusedSwaps >= 1;
 
       matchSectionHtml = `
         <!-- FOCUSED IDEA VIEW (MOBILE-FIRST) -->
@@ -3440,7 +3440,7 @@
         if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
 
         state.slotSwapCounts = state.slotSwapCounts || { 0: 0, 1: 0, 2: 0 };
-        if ((state.slotSwapCounts[slotIdx] || 0) >= 2) return;
+        if ((state.slotSwapCounts[slotIdx] || 0) >= 1) return;
 
         state.dismissedIdeaIds = state.dismissedIdeaIds || new Set();
         const currentIdea = state.topMatches[slotIdx];
