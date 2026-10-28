@@ -5189,62 +5189,53 @@
         </div>
       </div>
 
-      <!-- 6. P31 BUSINESS GROWTH SUITE (DIAGNOSTIC, COHORT & ADVISORY) -->
-      <div class="consulting-showcase" id="p31SuiteSection">
+      <!-- 6. BLUEPRINT CONFIRMATION & ACTION STEPS -->
+      <div class="consulting-showcase" id="growthBlueprintDeliverySection">
         <div class="consulting-grid">
           <div>
             <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--dark); font-weight: 800;">
-              THE P31 BUSINESS GROWTH SUITE · FOR ESTABLISHED FOUNDERS
+              YOUR 30-DAY GROWTH PLAN IS IN YOUR INBOX
             </div>
             <h2 style="font-size: clamp(1.75rem, 3.4vw, 2.35rem); font-weight: 900; color: #fff; margin-bottom: 12px;">
-              Three Pathways With Clear Boundaries & Natural Progression
+              Take Your First Small Step This Week
             </h2>
             <p style="color: rgba(255,255,255,0.88); font-size: 1rem; line-height: 1.6;">
-              When your business is generating revenue but hitting capacity, pricing, or operational ceilings, generic business advice does not work. The P31 suite provides focused strategic interventions designed for established women business owners:
+              We have sent a copy of your 30-day action plan, bottleneck diagnosis, and capacity math directly to your email. You do not have to fix everything at once. Follow this simple sequence:
             </p>
 
             <ul class="consulting-benefits">
               <li>
-                <span style="color: var(--mint); font-weight: 900;">01</span>
-                <div>
-                  <strong>P31 Business Growth Intensive (Private Diagnostic):</strong> A focused 90-minute private diagnostic session with Oyin, financial snapshot review, and written 90-day priority execution roadmap.
-                </div>
+                <span style="color: var(--mint); font-weight: 900;">1</span>
+                <span><strong>Focus on Week 1 Only:</strong> Work through your first 7 days to address ${pb.title.split("(")[0].trim()} without feeling overwhelmed.</span>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">02</span>
-                <div>
-                  <strong>P31 Growth Circle (8-Week Cohort):</strong> Facilitated growth cohort for 8 to 10 established women founders with weekly sessions, business diagnostics, peer accountability, and guided implementation.
-                </div>
+                <span style="color: var(--mint); font-weight: 900;">2</span>
+                <span><strong>Protect Your Schedule Cap:</strong> Cap your weekly delivery and operations to your ~${m.maxDesiredHours} hrs/week limit so you increase profit without sacrificing family time.</span>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">03</span>
-                <div>
-                  <strong>P31 Strategic Growth Partnership (Dedicated Advisory):</strong> High-touch private advisory for founders navigating major growth decisions, with two monthly advisory sessions and KPI reviews.
-                </div>
+                <span style="color: var(--mint); font-weight: 900;">3</span>
+                <span><strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyin will share tactical guidance on packaging, pricing lift, and steady lead generation.</span>
               </li>
             </ul>
           </div>
 
           <div class="consulting-cta-box">
             <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blush); margin-bottom: 6px;">
-              Diagnostic Entry Point
+              Confirmation Sent
             </div>
-            <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 6px;">
-              P31 Growth Intensive
+            <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 10px;">
+              Results Delivered
             </h3>
-            <div style="font-size: 1.05rem; font-weight: 800; color: var(--mint); margin-bottom: 12px;">
-              Private Diagnostic & 90-Day Roadmap
-            </div>
-            <p style="font-size: 0.88rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
-              Ready for a focused strategic intervention on your pricing, capacity, and 90-day priorities? Full program details and intake criteria have been sent to your email.
+            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
+              Check your inbox for your complete growth plan. If you have any questions about your action steps or numbers, you can reply directly to that email.
             </p>
 
             <a
-              href="mailto:hello@busymamasnetwork.com?subject=P31%20Business%20Growth%20Intensive%20Inquiry"
+              href="mailto:hello@busymamasnetwork.com?subject=Question%20about%20my%20Business%20Growth%20Plan"
               class="btn-pink"
-              style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px;"
+              style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px; font-weight: 800;"
             >
-              Inquire About the P31 Intensive
+              Have a Question? Email Oyin
             </a>
             <p style="font-size: 0.8rem; color: rgba(255,255,255,0.72); margin: 0;">
               Inquiries reviewed within 1 business day.
