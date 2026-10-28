@@ -101,9 +101,8 @@
     expandedRunnerUps: {},
     selectedIdeaIdx: null,
     allRankedMatches: [],
-    dismissedIdeaIds: new Set(),
-    slotSwapCounts: { 0: 0, 1: 0, 2: 0 },
-    slotSwapHistory: { 0: [], 1: [], 2: [] },
+    slotPairs: null,
+    slotHasSwapped: { 0: false, 1: false, 2: false },
     activeTabs: { 0: "overview", 1: "overview", 2: "overview", 3: "overview", 4: "overview" },
     validationError: "",
     limitNotice: "",
@@ -379,9 +378,8 @@
         state.playbooks = [];
         state.runnerUpMatches = [];
         state.runnerUpPlaybooks = [];
-        state.dismissedIdeaIds = new Set();
-        state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
-        state.slotSwapHistory = { 0: [], 1: [], 2: [] };
+        state.slotPairs = null;
+        state.slotHasSwapped = { 0: false, 1: false, 2: false };
         saveUserProgress();
         navigateToAssessment("fit");
       });
@@ -436,9 +434,8 @@
     state.runnerUpMatches = [];
     state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
-    state.dismissedIdeaIds = new Set();
-    state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
-    state.slotSwapHistory = { 0: [], 1: [], 2: [] };
+    state.slotPairs = null;
+    state.slotHasSwapped = { 0: false, 1: false, 2: false };
     try {
       localStorage.removeItem(STORAGE_PROGRESS_KEY);
     } catch (_) {}
@@ -1139,13 +1136,12 @@
     state.playbooks = state.topMatches.map((idea, idx) =>
       window.VaultEngine.buildPlaybook(idea, state.profile, idx)
     );
-    state.dismissedIdeaIds = new Set();
-    state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
-    state.slotSwapHistory = {
-      0: state.topMatches[0] ? [state.topMatches[0]] : [],
-      1: state.topMatches[1] ? [state.topMatches[1]] : [],
-      2: state.topMatches[2] ? [state.topMatches[2]] : []
+    state.slotPairs = {
+      0: { primary: ranked[0], alternative: ranked[3] || ranked[0] },
+      1: { primary: ranked[1], alternative: ranked[4] || ranked[1] },
+      2: { primary: ranked[2], alternative: ranked[5] || ranked[2] }
     };
+    state.slotHasSwapped = { 0: false, 1: false, 2: false };
     state.runnerUpMatches = [];
     state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
@@ -2897,10 +2893,10 @@
               const avgRev = fmtMoney(
                 window.VaultEngine.scaleUsdToCurrency(Number(idea.avgUnitRevenue) || 250, cur.code)
               );
-              const history = (state.slotSwapHistory && state.slotSwapHistory[idx]) || [];
-              const hasSwapped = history.length > 1;
-              const isShowingAlt = hasSwapped && history[1] && history[1].id === idea.id;
-              const otherIdea = hasSwapped ? (isShowingAlt ? history[0] : history[1]) : null;
+              const pair = state.slotPairs && state.slotPairs[idx];
+              const hasSwapped = Boolean(state.slotHasSwapped && state.slotHasSwapped[idx]);
+              const isShowingAlt = Boolean(pair && pair.alternative && idea.id === pair.alternative.id);
+              const otherIdea = pair ? (isShowingAlt ? pair.primary : pair.alternative) : null;
               const otherShortName = otherIdea
                 ? String(otherIdea.name || "").replace(/\s*\([^)]*\)\s*/g, " ").split("/")[0].split("&")[0].trim()
                 : "";
@@ -3020,10 +3016,10 @@
       const idx = state.selectedIdeaIdx;
       const focusedIdea = state.topMatches[idx];
       const focusedPlaybook = state.playbooks[idx];
-      const focusedHistory = (state.slotSwapHistory && state.slotSwapHistory[idx]) || [];
-      const focusedHasSwapped = focusedHistory.length > 1;
-      const focusedIsShowingAlt = focusedHasSwapped && focusedHistory[1] && focusedHistory[1].id === focusedIdea.id;
-      const focusedOtherIdea = focusedHasSwapped ? (focusedIsShowingAlt ? focusedHistory[0] : focusedHistory[1]) : null;
+      const focusedPair = state.slotPairs && state.slotPairs[idx];
+      const focusedHasSwapped = Boolean(state.slotHasSwapped && state.slotHasSwapped[idx]);
+      const focusedIsShowingAlt = Boolean(focusedPair && focusedPair.alternative && focusedIdea.id === focusedPair.alternative.id);
+      const focusedOtherIdea = focusedPair ? (focusedIsShowingAlt ? focusedPair.primary : focusedPair.alternative) : null;
       const focusedOtherShortName = focusedOtherIdea
         ? String(focusedOtherIdea.name || "").replace(/\s*\([^)]*\)\s*/g, " ").split("/")[0].split("&")[0].trim()
         : "";
@@ -3457,40 +3453,16 @@
         const slotIdx = Number(btn.getAttribute("data-swap-idea"));
         if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
 
-        state.slotSwapCounts = state.slotSwapCounts || { 0: 0, 1: 0, 2: 0 };
-        if ((state.slotSwapCounts[slotIdx] || 0) >= 1) return;
+        state.slotHasSwapped = state.slotHasSwapped || { 0: false, 1: false, 2: false };
+        if (state.slotHasSwapped[slotIdx]) return;
 
-        state.dismissedIdeaIds = state.dismissedIdeaIds || new Set();
-        const currentIdea = state.topMatches[slotIdx];
-        if (currentIdea && currentIdea.id) {
-          state.dismissedIdeaIds.add(currentIdea.id);
-        }
+        const pair = state.slotPairs && state.slotPairs[slotIdx];
+        if (!pair || !pair.alternative) return;
 
-        const activeIds = new Set(state.topMatches.map((m) => m.id));
-
-        // 1. Next best ranked match that is not currently visible and has not been dismissed
-        let candidate = (state.allRankedMatches || []).find(
-          (idea) => !activeIds.has(idea.id) && !state.dismissedIdeaIds.has(idea.id)
-        );
-
-        // 2. If the user cycled through all ranked matches, fallback to any match not currently visible
-        if (!candidate) {
-          candidate = (state.allRankedMatches || []).find((idea) => !activeIds.has(idea.id));
-        }
-
-        if (candidate) {
-          state.slotSwapHistory = state.slotSwapHistory || { 0: [], 1: [], 2: [] };
-          const history = state.slotSwapHistory[slotIdx] || [];
-          if (history.length === 0 && currentIdea) {
-            history.push(currentIdea);
-          }
-          history.push(candidate);
-          state.slotSwapHistory[slotIdx] = history;
-          state.topMatches[slotIdx] = candidate;
-          state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(candidate, state.profile, slotIdx);
-          state.slotSwapCounts[slotIdx] = (state.slotSwapCounts[slotIdx] || 0) + 1;
-          render();
-        }
+        state.slotHasSwapped[slotIdx] = true;
+        state.topMatches[slotIdx] = pair.alternative;
+        state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(pair.alternative, state.profile, slotIdx);
+        render();
       });
     });
 
@@ -3499,11 +3471,11 @@
         e.preventDefault();
         const slotIdx = Number(btn.getAttribute("data-toggle-slot-idea"));
         if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
-        const history = (state.slotSwapHistory && state.slotSwapHistory[slotIdx]) || [];
-        if (history.length < 2) return;
+        const pair = state.slotPairs && state.slotPairs[slotIdx];
+        if (!pair || !pair.alternative) return;
 
         const currentIdea = state.topMatches[slotIdx];
-        const nextIdea = (currentIdea && currentIdea.id === history[0].id) ? history[1] : history[0];
+        const nextIdea = (currentIdea && currentIdea.id === pair.primary.id) ? pair.alternative : pair.primary;
 
         state.topMatches[slotIdx] = nextIdea;
         state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(nextIdea, state.profile, slotIdx);
