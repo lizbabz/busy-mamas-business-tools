@@ -5059,30 +5059,21 @@
         </div>
       </div>
 
-      <!-- 2. HONEST MODEL CHECK / BRIDGE TO BUSINESS FIT -->
-      <div class="growth-bridge-nudge-card" style="margin-bottom: 28px; ${analysis.needsBusinessFitBridge ? "border-width: 2.5px;" : ""}">
+      <!-- 2. HONEST MODEL CHECK / BRIDGE TO BUSINESS FIT (ONLY WHEN ANSWERS SHOW FIT/BURNOUT CONCERNS) -->
+      ${
+        analysis.needsBusinessFitBridge
+          ? `
+      <div class="growth-bridge-nudge-card" style="margin-bottom: 28px; border-width: 2.5px;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; width: 100%;">
           <div style="flex: 1; min-width: 260px;">
             <div style="font-size: 0.76rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 4px;">
-              ${
-                analysis.needsBusinessFitBridge
-                  ? "Important Check · Fix This Business or Try a Better-Fitting Idea"
-                  : "Optional Check · Compare Against 200+ Business Ideas"
-              }
+              Important Check · Fix This Business or Try a Better-Fitting Idea
             </div>
             <h4 style="font-size: 1.1rem; margin-bottom: 6px;">
-              ${
-                analysis.needsBusinessFitBridge
-                  ? "Should you fix this business or test an easier, higher-profit idea in Business Fit?"
-                  : "Curious how your current business compares to other flexible ideas for your skills?"
-              }
+              Should you fix this business or test an easier, higher-profit idea in Business Fit?
             </h4>
             <p style="margin-bottom: 0;">
-              ${
-                analysis.needsBusinessFitBridge
-                  ? analysis.bridgeReason
-                  : "If you ever feel like your current business works against your family schedule, you can run your skills and hours through our Business Fit tool right alongside this Growth Plan."
-              }
+              ${analysis.bridgeReason}
             </p>
           </div>
           <button type="button" class="btn-secondary" data-switch-mode="fit" style="white-space: nowrap;">
@@ -5090,6 +5081,9 @@
           </button>
         </div>
       </div>
+      `
+          : ""
+      }
 
       <!-- 3. SIDE-BY-SIDE SNAPSHOT OF YOUR 3 GROWTH PRIORITIES -->
       <div class="comparison-summary-card">
