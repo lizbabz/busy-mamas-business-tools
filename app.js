@@ -93,6 +93,7 @@
     growthProfile: getFreshGrowthProfile("USD"),
     growthAnalysis: null,
     growthActiveTabs: { 0: "math", 1: "math", 2: "math" },
+    selectedGrowthPriorityIdx: null,
     completedTasks: [],
     topMatches: [],
     playbooks: [],
@@ -398,6 +399,7 @@
         state.growthShownStories = {};
         state.growthProfile = getFreshGrowthProfile(keepCurrency);
         state.growthAnalysis = null;
+        state.selectedGrowthPriorityIdx = null;
         saveUserProgress();
         navigateToAssessment("growth");
       });
@@ -415,6 +417,7 @@
       state.limitNotice = "";
       state.growthProfile = getFreshGrowthProfile(keepCurrency);
       state.growthAnalysis = null;
+      state.selectedGrowthPriorityIdx = null;
       saveUserProgress();
       render();
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -4939,6 +4942,11 @@
       ? Math.round((completedGrowthCount / allGrowthTaskIds.length) * 100)
       : 0;
 
+    const isPriorityFocused =
+      state.selectedGrowthPriorityIdx !== null &&
+      state.selectedGrowthPriorityIdx >= 0 &&
+      state.selectedGrowthPriorityIdx < priorities.length;
+
     return `
       <div class="results-header-card">
         <div class="eyebrow-pill" style="background: rgba(255,255,255,0.14); border-color: var(--mint); color: var(--blush);">
@@ -5035,6 +5043,68 @@
           : ""
       }
 
+      ${
+        isPriorityFocused
+          ? `
+      <!-- 3. FOCUSED GROWTH PRIORITY VIEW -->
+      <div class="focused-priority-view" style="margin-bottom: 28px;">
+        <!-- Top Navigation Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1.5px solid var(--border);">
+          <button type="button" class="btn-secondary" id="btnBackToGrowthOverview" style="font-size: 0.88rem; padding: 9px 15px; font-weight: 700;">
+            &larr; Back to All 3 Priorities
+          </button>
+          <div style="font-size: 0.88rem; font-weight: 800; color: var(--forest);">
+            Viewing Priority #${state.selectedGrowthPriorityIdx + 1} of 3: ${escapeHtml(priorities[state.selectedGrowthPriorityIdx].shortLabel || "")}
+          </div>
+          <div style="display: flex; gap: 6px; align-items: center;">
+            <span style="font-size: 0.78rem; color: var(--ink-muted); font-weight: 700;">Switch:</span>
+            ${priorities
+              .map(
+                (p, pIdx) => `
+              <button type="button" data-focus-growth-priority="${pIdx}" style="border: 1.5px solid ${pIdx === state.selectedGrowthPriorityIdx ? "var(--forest)" : "var(--border)"}; background: ${pIdx === state.selectedGrowthPriorityIdx ? "var(--forest)" : "#fff"}; color: ${pIdx === state.selectedGrowthPriorityIdx ? "#fff" : "var(--ink)"}; border-radius: 6px; padding: 5px 11px; font-size: 0.82rem; font-weight: 800; cursor: pointer;">
+                #${pIdx + 1}
+              </button>
+            `
+              )
+              .join("")}
+          </div>
+        </div>
+
+        <!-- Single Detailed Priority Card -->
+        ${renderGrowthPriorityCard(priorities[state.selectedGrowthPriorityIdx], state.selectedGrowthPriorityIdx)}
+
+        <!-- Bottom Return / Navigation Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 24px; padding: 18px 20px; background: #fff; border-radius: 16px; border: 1.5px solid var(--border); box-shadow: var(--shadow-sm);">
+          <button type="button" class="btn-secondary" id="btnBackToGrowthOverviewBottom" style="font-weight: 700;">
+            &larr; Back to All 3 Priorities
+          </button>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button type="button" id="btnGrowthJumpToPlan" style="font-size: 0.84rem; font-weight: 700; color: var(--forest); background: none; border: none; cursor: pointer; text-decoration: underline; padding: 6px 10px;">
+              View 30-Day Action Plan &darr;
+            </button>
+            ${
+              state.selectedGrowthPriorityIdx > 0
+                ? `
+              <button type="button" class="btn-secondary" data-focus-growth-priority="${state.selectedGrowthPriorityIdx - 1}" style="font-size: 0.86rem; padding: 8px 14px; font-weight: 700;">
+                &larr; Priority #${state.selectedGrowthPriorityIdx}
+              </button>
+            `
+                : ""
+            }
+            ${
+              state.selectedGrowthPriorityIdx < priorities.length - 1
+                ? `
+              <button type="button" class="btn-primary" data-focus-growth-priority="${state.selectedGrowthPriorityIdx + 1}" style="background: var(--forest); color: #fff; font-size: 0.86rem; padding: 8px 14px; font-weight: 800;">
+                Next: Priority #${state.selectedGrowthPriorityIdx + 2} &rarr;
+              </button>
+            `
+                : ""
+            }
+          </div>
+        </div>
+      </div>
+      `
+          : `
       <!-- 3. SIDE-BY-SIDE SNAPSHOT OF YOUR 3 GROWTH PRIORITIES -->
       <div class="comparison-summary-card">
         <div class="comparison-header-row">
@@ -5042,7 +5112,7 @@
             <div class="comparison-eyebrow">Your Top 3 Growth Priorities</div>
             <h3 class="comparison-title">What to Focus On First Over the Next 30 Days</h3>
           </div>
-          <span class="comparison-hint">Click any priority below to jump to its numbers & message script</span>
+          <span class="comparison-hint">Click any priority below to view its full plan, numbers, and message script</span>
         </div>
 
         <div class="comparison-grid">
@@ -5075,8 +5145,8 @@
                   </div>
                 </div>
 
-                <button type="button" class="comparison-jump-btn" data-jump-card="growth-priority-card-${idx}">
-                  See Priority #${idx + 1} Plan
+                <button type="button" class="comparison-jump-btn" data-focus-growth-priority="${idx}">
+                  View Priority #${idx + 1} Plan & Script &rarr;
                 </button>
               </div>
             </div>
@@ -5086,11 +5156,8 @@
         </div>
       </div>
 
-      <!-- 4. DETAILED 3 GROWTH PRIORITY CARDS -->
-      ${priorities.map((p, idx) => renderGrowthPriorityCard(p, idx)).join("")}
-
-      <!-- 5. FOCUSED 30-DAY ACTION PLAN (WEEKS 1 TO 4) -->
-      <div class="idea-result-card" style="border: 2.5px solid var(--forest); margin-top: 28px;">
+      <!-- 4. FOCUSED 30-DAY ACTION PLAN (WEEKS 1 TO 4) -->
+      <div class="idea-result-card" id="growth30DayPlanCard" style="border: 2.5px solid var(--forest); margin-top: 28px;">
         <div class="idea-card-top" style="background: linear-gradient(135deg, #E9F5E6 0%, #FEF9F5 100%);">
           <div class="idea-rank-row">
             <span class="rank-pill" style="background: var(--forest); color: #fff;">30-Day Step-by-Step Plan</span>
@@ -5138,6 +5205,8 @@
           </div>
         </div>
       </div>
+      `
+      }
 
       <!-- 6. P31 GROWTH INTENSIVE 1-ON-1 INQUIRY CTA -->
       <div class="consulting-showcase" id="growthIntensiveSection">
@@ -5224,6 +5293,66 @@
       btn.onclick = () => switchToolMode(btn.getAttribute("data-switch-mode"));
     });
 
+    document.querySelectorAll("[data-focus-growth-priority]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const idx = Number(btn.getAttribute("data-focus-growth-priority"));
+        if (!isNaN(idx)) {
+          state.selectedGrowthPriorityIdx = idx;
+          render();
+          const target = document.querySelector(".focused-priority-view") || document.querySelector(".results-header-card");
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }
+      });
+    });
+
+    const backOverviewBtn = document.getElementById("btnBackToGrowthOverview");
+    if (backOverviewBtn) {
+      backOverviewBtn.addEventListener("click", () => {
+        state.selectedGrowthPriorityIdx = null;
+        render();
+        const overviewEl = document.querySelector(".comparison-summary-card") || document.querySelector(".results-header-card");
+        if (overviewEl) {
+          overviewEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+
+    const backOverviewBottomBtn = document.getElementById("btnBackToGrowthOverviewBottom");
+    if (backOverviewBottomBtn) {
+      backOverviewBottomBtn.addEventListener("click", () => {
+        state.selectedGrowthPriorityIdx = null;
+        render();
+        const overviewEl = document.querySelector(".comparison-summary-card") || document.querySelector(".results-header-card");
+        if (overviewEl) {
+          overviewEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      });
+    }
+
+    const jumpToPlanBtn = document.getElementById("btnGrowthJumpToPlan");
+    if (jumpToPlanBtn) {
+      jumpToPlanBtn.addEventListener("click", () => {
+        state.selectedGrowthPriorityIdx = null;
+        render();
+        setTimeout(() => {
+          const planEl = document.getElementById("growth30DayPlanCard");
+          if (planEl) {
+            planEl.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }
+        }, 50);
+      });
+    }
+
     document.querySelectorAll("[data-jump-card]").forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetId = btn.getAttribute("data-jump-card");
@@ -5278,6 +5407,7 @@
       retakeBtn.addEventListener("click", () => {
         state.growthStep = 1;
         state.growthShownStories = {};
+        state.selectedGrowthPriorityIdx = null;
         saveUserProgress();
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
