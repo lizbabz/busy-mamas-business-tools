@@ -229,14 +229,14 @@
           <div class="hero-ambient-orb orb-2"></div>
           <div class="home-hero-inner">
             <div class="home-badge-kicker">
-              <span>Personalized Business Diagnostics for Mamas</span>
+              <span>Tailored Business Assessment Tools</span>
             </div>
             <h1 class="home-hero-title">
               Business Clarity Built for the
               <em>Realities of Motherhood</em>
             </h1>
             <p class="home-hero-subtitle">
-              Whether you are trying to find the perfect business idea or trying to grow your existing business, our assessment tools give you honest numbers, realistic time limits, and a practical roadmap built around family hours.
+              Whether you are trying to find the perfect business idea or trying to grow your existing business, our practical assessment tools give you honest numbers, realistic time limits, and a step-by-step roadmap built around family hours.
             </p>
           </div>
         </section>
