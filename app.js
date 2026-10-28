@@ -5705,10 +5705,74 @@
 
     const urlParams = new URLSearchParams(window.location.search);
     const modeParam = urlParams.get("mode");
+    const emailParam = (urlParams.get("email") || urlParams.get("e") || "").trim().toLowerCase();
+
+    if (emailParam && emailParam.includes("@")) {
+      try {
+        const restoreRes = await fetch(`/api/restore?email=${encodeURIComponent(emailParam)}`);
+        if (restoreRes.ok) {
+          const restoreData = await restoreRes.json();
+          if (restoreData && restoreData.ok && restoreData.subscriber) {
+            const sub = restoreData.subscriber;
+            if (sub.assessmentType === "Business Growth" || modeParam === "growth") {
+              state.mode = "growth";
+              state.view = "assessment";
+              state.growthStep = 7;
+              state.growthProfile.email = sub.email;
+              if (sub.firstName) state.growthProfile.firstName = sub.firstName;
+              if (sub.hoursPerWeek) state.growthProfile.maxDesiredHours = Number(sub.hoursPerWeek) || state.growthProfile.maxDesiredHours;
+              if (sub.currency) state.growthProfile.currency = sub.currency;
+              if (window.GrowthEngine) {
+                state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
+              }
+            } else {
+              state.mode = "fit";
+              state.view = "assessment";
+              state.step = 4;
+              state.profile.email = sub.email;
+              if (sub.firstName) state.profile.firstName = sub.firstName;
+              if (sub.hoursPerWeek) state.profile.hoursPerWeek = Number(sub.hoursPerWeek) || state.profile.hoursPerWeek;
+              if (sub.startupBudget) state.profile.budget = Number(sub.startupBudget) || state.profile.budget;
+              if (sub.currency) state.profile.currency = sub.currency;
+              if (sub.timeline) state.profile.timeline = sub.timeline;
+              if (sub.skills) {
+                const skillArr = sub.skills.split(",").map((s) => s.trim()).filter(Boolean);
+                if (skillArr.length) state.profile.skills = skillArr;
+              }
+              if (state.vaultIdeas && state.vaultIdeas.length && (sub.topIdea1 || sub.topIdea2 || sub.topIdea3)) {
+                const foundMatches = [];
+                [sub.topIdea1, sub.topIdea2, sub.topIdea3].forEach((title) => {
+                  if (!title) return;
+                  const match = state.vaultIdeas.find(
+                    (i) => i.name.toLowerCase() === title.toLowerCase() ||
+                           title.toLowerCase().includes(i.name.toLowerCase()) ||
+                           i.name.toLowerCase().includes(title.toLowerCase())
+                  );
+                  if (match && !foundMatches.some((m) => m.name === match.name)) {
+                    foundMatches.push(match);
+                  }
+                });
+                if (foundMatches.length >= 1) {
+                  state.topMatches = foundMatches;
+                  state.playbooks = state.topMatches.map((idea, idx) =>
+                    window.VaultEngine.buildPlaybook(idea, state.profile, idx)
+                  );
+                } else {
+                  computeRecommendations();
+                }
+              } else {
+                computeRecommendations();
+              }
+            }
+          }
+        }
+      } catch (_) {}
+    }
+
     if (modeParam === "growth" || modeParam === "fit") {
       state.mode = modeParam;
       state.view = "assessment";
-    } else if (urlParams.get("view") === "assessment") {
+    } else if (urlParams.get("view") === "assessment" || state.step === 4 || state.growthStep === 7) {
       state.view = "assessment";
     } else {
       state.view = "home";
