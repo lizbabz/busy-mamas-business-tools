@@ -4975,6 +4975,9 @@
     const priorities = analysis.priorities || [];
     const plan = analysis.thirtyDayPlan;
     const calendlyHref = getPrefilledCalendlyUrl();
+    const intensiveMailtoSubject = `P31 Business Growth Intensive 1-on-1 Inquiry - ${gp.firstName || "Founder"}`;
+    const intensiveMailtoBody = `Hi Oyin,\n\nI just completed the Business Growth Assessment for my business (${gp.specificNiche || "my business"}).\n\nI would like to inquire about booking a private 1-on-1 P31 Business Growth Intensive with you to review my numbers, pricing, and 90-day roadmap.\n\nLooking forward to hearing from you!\n\nBest,\n${gp.firstName || ""}`;
+    const intensiveMailtoHref = `mailto:hello@busymamasnetwork.com?subject=${encodeURIComponent(intensiveMailtoSubject)}&body=${encodeURIComponent(intensiveMailtoBody)}`;
 
     const bTypeObj =
       (window.GROWTH_BUSINESS_TYPES || []).find((b) => b.id === gp.businessType) ||
@@ -5189,56 +5192,65 @@
         </div>
       </div>
 
-      <!-- 6. BLUEPRINT CONFIRMATION & ACTION STEPS -->
-      <div class="consulting-showcase" id="growthBlueprintDeliverySection">
+      <!-- 6. P31 GROWTH INTENSIVE 1-ON-1 INQUIRY CTA -->
+      <div class="consulting-showcase" id="growthIntensiveSection">
         <div class="consulting-grid">
           <div>
             <div class="eyebrow-pill" style="background: var(--mint); border-color: var(--mint); color: var(--dark); font-weight: 800;">
-              YOUR 30-DAY GROWTH PLAN IS IN YOUR INBOX
+              OPTIONAL 1-ON-1 INTENSIVE · FOR ESTABLISHED FOUNDERS
             </div>
             <h2 style="font-size: clamp(1.75rem, 3.4vw, 2.35rem); font-weight: 900; color: #fff; margin-bottom: 12px;">
-              Take Your First Small Step This Week
+              Would You Like 1-on-1 Strategic Guidance With Oyin to Map Out Your Next 90 Days?
             </h2>
             <p style="color: rgba(255,255,255,0.88); font-size: 1rem; line-height: 1.6;">
-              We have sent a copy of your 30-day action plan, bottleneck diagnosis, and capacity math directly to your email. You do not have to fix everything at once. Follow this simple sequence:
+              Your 30-day action plan has been sent to your email, giving you a clear roadmap. But if you want a second pair of experienced eyes on your pricing, capacity limits, and bottlenecks, you do not have to tackle execution alone. In a private P31 Growth Intensive, Oyin will personally review your numbers, profit leaks, and weekly schedule to build a focused execution plan that protects your family hours.
             </p>
 
             <ul class="consulting-benefits">
               <li>
-                <span style="color: var(--mint); font-weight: 900;">1</span>
-                <span><strong>Focus on Week 1 Only:</strong> Work through your first 7 days to address ${pb.title.split("(")[0].trim()} without feeling overwhelmed.</span>
+                <span style="color: var(--mint); font-weight: 900;">01</span>
+                <div>
+                  <strong>Private 90-Minute Strategic Diagnostic:</strong> Deep dive into your revenue leaks, offer pricing, and schedule boundaries tailored to your family life.
+                </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">2</span>
-                <span><strong>Protect Your Schedule Cap:</strong> Cap your weekly delivery and operations to your ~${m.maxDesiredHours} hrs/week limit so you increase profit without sacrificing family time.</span>
+                <span style="color: var(--mint); font-weight: 900;">02</span>
+                <div>
+                  <strong>Written 90-Day Priority Roadmap:</strong> A clear, prioritized action roadmap built around your exact target income and ~${m.maxDesiredHours} hrs/week schedule cap.
+                </div>
               </li>
               <li>
-                <span style="color: var(--mint); font-weight: 900;">3</span>
-                <span><strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyin will share tactical guidance on packaging, pricing lift, and steady lead generation.</span>
+                <span style="color: var(--mint); font-weight: 900;">03</span>
+                <div>
+                  <strong>Direct Eyes on Your #1 Bottleneck:</strong> Honest, experienced feedback on what to streamline, what to delegate, and how to scale without working longer nights.
+                </div>
               </li>
             </ul>
           </div>
 
           <div class="consulting-cta-box">
             <div style="font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blush); margin-bottom: 6px;">
-              Confirmation Sent
+              Private Diagnostic
             </div>
-            <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 10px;">
-              Results Delivered
+            <h3 style="font-size: 1.35rem; font-weight: 900; color: #fff; margin-bottom: 6px;">
+              P31 Growth Intensive
             </h3>
-            <p style="font-size: 0.9rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
-              Check your inbox for your complete growth plan. If you have any questions about your action steps or numbers, you can reply directly to that email.
+            <div style="font-size: 1.05rem; font-weight: 800; color: var(--mint); margin-bottom: 12px;">
+              Private 1-on-1 With Oyin
+            </div>
+            <p style="font-size: 0.88rem; color: rgba(255,255,255,0.84); margin-bottom: 20px; line-height: 1.5;">
+              Ready for focused, private guidance on your pricing, schedule boundaries, and 90-day priorities? Intake is reviewed on an inquiry basis to ensure fit.
             </p>
 
             <a
-              href="mailto:hello@busymamasnetwork.com?subject=Question%20about%20my%20Business%20Growth%20Plan"
+              href="${intensiveMailtoHref}"
               class="btn-pink"
               style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px; font-weight: 800;"
             >
-              Have a Question? Email Oyin
+              Inquire About a 1-on-1 With Oyin
             </a>
             <p style="font-size: 0.8rem; color: rgba(255,255,255,0.72); margin: 0;">
-              Inquiries reviewed within 1 business day.
+              Inquiries reviewed personally within 1 business day.
             </p>
           </div>
         </div>
