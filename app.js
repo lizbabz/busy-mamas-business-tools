@@ -651,6 +651,7 @@
 
   function advanceSubStep() {
     state.validationError = "";
+    state.limitNotice = "";
     if (state.mode === "growth") {
       const v = validateGrowthSubStep();
       if (!v.ok) {
@@ -706,6 +707,7 @@
 
   function retreatSubStep() {
     state.validationError = "";
+    state.limitNotice = "";
     if (state.mode === "growth") {
       if (state.growthSubStep > 1) {
         state.growthSubStep--;
@@ -746,6 +748,8 @@
 
   function triggerAutoAdvance(callback) {
     if (callback) callback();
+    state.validationError = "";
+    state.limitNotice = "";
     saveUserProgress();
     render();
     setTimeout(() => {
@@ -1284,6 +1288,8 @@
 
   // Open the Real Mom Story Pop-Up Modal ONLY twice across the 6 questions (after Section 2 and after Section 5)
   function maybeShowStoryPopupThenAdvance(completedStep, nextStep) {
+    state.validationError = "";
+    state.limitNotice = "";
     const allowedPopupSteps = [2, 5];
     if (!allowedPopupSteps.includes(completedStep) || state.shownStories[completedStep]) {
       state.step = nextStep;
@@ -1333,6 +1339,8 @@
   }
 
   function maybeShowGrowthStoryPopupThenAdvance(completedStep, nextStep) {
+    state.validationError = "";
+    state.limitNotice = "";
     const allowedPopupSteps = [2, 5];
     if (!allowedPopupSteps.includes(completedStep) || state.growthShownStories[completedStep]) {
       state.growthStep = nextStep;
@@ -1385,6 +1393,8 @@
   function closeStoryModalAndAdvance() {
     const modal = document.getElementById("storyPopupModal");
     if (modal) modal.classList.remove("open");
+    state.validationError = "";
+    state.limitNotice = "";
     if (state.pendingNextStep) {
       if (state.mode === "growth") {
         state.growthStep = state.pendingNextStep;
@@ -2030,9 +2040,9 @@
         <div class="step-header-row">
           <span class="step-num-editorial">06</span>
           <div>
-            <h2 class="step-title">Any Hard Dealbreakers or <em>Unique Passions</em>?</h2>
+            <h2 class="step-title">Any Hard Dealbreakers or <em>Unique Career Background</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Filter out anything you refuse to do, and share any specific industry or dream business idea.
+              Filter out anything you refuse to do, and share any specialized career background or professional credentials.
             </p>
           </div>
         </div>
@@ -2055,16 +2065,16 @@
             .join("")}
         </div>
 
-        <h3 class="sub-section-heading">Part B: Your Specific Industry, Background or Passion (Optional):</h3>
+        <h3 class="sub-section-heading">Part B: Your Specific Career Background, Degree or Specialty (Optional):</h3>
         <p style="font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 8px;">
-          Have a unique career, degree, or specialty you love? Type it here (e.g., ex-Bain / management consulting, STEM curriculum & scientific research, admissions consulting, creative writing, knitting) so your matches are tailored to your exact world.
+          Have a unique career, degree, or professional specialty? Type it here (e.g., ex-Bain / management consulting, scientific research & STEM programs, admissions consulting, healthcare compliance) so your matches are tailored to your exact professional world.
         </p>
         <div style="margin-bottom: 8px;">
           <input
             type="text"
             id="customNoteInput"
             class="form-input"
-            placeholder="e.g., Management consulting, scientific research & STEM programs, admissions, novel writing..."
+            placeholder="e.g., Management consulting, scientific research & STEM programs, admissions..."
             value="${(state.profile.customNote || "").replace(/"/g, "&quot;")}"
           />
         </div>
@@ -2108,7 +2118,7 @@
           }
 
           ${
-            state.limitNotice
+            state.limitNotice && s === 5 && (sub === 2 || sub === 3)
               ? `<div class="selection-limit-notice" role="status">${state.limitNotice}</div>`
               : ``
           }
