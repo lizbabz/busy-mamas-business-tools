@@ -103,6 +103,7 @@
     allRankedMatches: [],
     dismissedIdeaIds: new Set(),
     slotSwapCounts: { 0: 0, 1: 0, 2: 0 },
+    slotSwapHistory: { 0: [], 1: [], 2: [] },
     activeTabs: { 0: "overview", 1: "overview", 2: "overview", 3: "overview", 4: "overview" },
     validationError: "",
     limitNotice: "",
@@ -380,6 +381,7 @@
         state.runnerUpPlaybooks = [];
         state.dismissedIdeaIds = new Set();
         state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
+        state.slotSwapHistory = { 0: [], 1: [], 2: [] };
         saveUserProgress();
         navigateToAssessment("fit");
       });
@@ -436,6 +438,7 @@
     state.expandedRunnerUps = {};
     state.dismissedIdeaIds = new Set();
     state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
+    state.slotSwapHistory = { 0: [], 1: [], 2: [] };
     try {
       localStorage.removeItem(STORAGE_PROGRESS_KEY);
     } catch (_) {}
@@ -1138,6 +1141,11 @@
     );
     state.dismissedIdeaIds = new Set();
     state.slotSwapCounts = { 0: 0, 1: 0, 2: 0 };
+    state.slotSwapHistory = {
+      0: state.topMatches[0] ? [state.topMatches[0]] : [],
+      1: state.topMatches[1] ? [state.topMatches[1]] : [],
+      2: state.topMatches[2] ? [state.topMatches[2]] : []
+    };
     state.runnerUpMatches = [];
     state.runnerUpPlaybooks = [];
     state.expandedRunnerUps = {};
@@ -2889,8 +2897,13 @@
               const avgRev = fmtMoney(
                 window.VaultEngine.scaleUsdToCurrency(Number(idea.avgUnitRevenue) || 250, cur.code)
               );
-              const swapsUsed = (state.slotSwapCounts && state.slotSwapCounts[idx]) || 0;
-              const isCapped = swapsUsed >= 1;
+              const history = (state.slotSwapHistory && state.slotSwapHistory[idx]) || [];
+              const hasSwapped = history.length > 1;
+              const isShowingAlt = hasSwapped && history[1] && history[1].id === idea.id;
+              const otherIdea = hasSwapped ? (isShowingAlt ? history[0] : history[1]) : null;
+              const otherShortName = otherIdea
+                ? String(otherIdea.name || "").replace(/\s*\([^)]*\)\s*/g, " ").split("/")[0].split("&")[0].trim()
+                : "";
               const compactRankLabels = [
                 idea.isCustomSynthesized ? "Bespoke Custom" : "#1 Best Overall",
                 "#2 Runner-Up Fit",
@@ -2944,10 +2957,24 @@
                     View Full Plan & Math &rarr;
                   </button>
                   ${
-                    isCapped
-                      ? `
+                    hasSwapped
+                      ? isShowingAlt
+                        ? `
                     <button type="button" class="btn-ghost-sm swap-idea-btn disabled" disabled style="width: 100%; font-size: 0.78rem; color: var(--ink-muted); text-align: center; opacity: 0.65; cursor: not-allowed; background: rgba(0,0,0,0.03); border: 1px dashed var(--border); border-radius: 8px; padding: 7px 10px;">
                       All top matches shown for this slot
+                    </button>
+                    <div style="font-size: 0.78rem; text-align: center; margin-top: 6px; line-height: 1.4;">
+                      <button type="button" data-toggle-slot-idea="${idx}" style="background: none; border: none; padding: 2px 0; font-size: 0.78rem; color: var(--forest); font-weight: 800; cursor: pointer; text-decoration: underline;">
+                        &larr; Switch back to previous match (${escapeHtml(otherShortName)})
+                      </button>
+                    </div>
+                    <div style="font-size: 0.76rem; color: var(--ink-muted); text-align: center; margin-top: 5px; line-height: 1.35;">
+                      Looking for something different? <a href="#" data-action="adjust-answers" style="color: var(--forest); font-weight: 700; text-decoration: underline;">Adjust your quiz answers</a>
+                    </div>
+                  `
+                        : `
+                    <button type="button" class="btn-ghost-sm swap-idea-btn" data-toggle-slot-idea="${idx}" style="width: 100%; font-size: 0.8rem; color: var(--forest); font-weight: 800; text-align: center; border: 1.5px solid var(--forest); background: rgba(45, 90, 39, 0.05); padding: 7px 10px; border-radius: 8px;">
+                      View alternative match (${escapeHtml(otherShortName)}) &rarr;
                     </button>
                     <div style="font-size: 0.76rem; color: var(--ink-muted); text-align: center; margin-top: 6px; line-height: 1.35;">
                       Looking for something different? <a href="#" data-action="adjust-answers" style="color: var(--forest); font-weight: 700; text-decoration: underline;">Adjust your quiz answers</a>
@@ -2993,8 +3020,13 @@
       const idx = state.selectedIdeaIdx;
       const focusedIdea = state.topMatches[idx];
       const focusedPlaybook = state.playbooks[idx];
-      const focusedSwaps = (state.slotSwapCounts && state.slotSwapCounts[idx]) || 0;
-      const isFocusedCapped = focusedSwaps >= 1;
+      const focusedHistory = (state.slotSwapHistory && state.slotSwapHistory[idx]) || [];
+      const focusedHasSwapped = focusedHistory.length > 1;
+      const focusedIsShowingAlt = focusedHasSwapped && focusedHistory[1] && focusedHistory[1].id === focusedIdea.id;
+      const focusedOtherIdea = focusedHasSwapped ? (focusedIsShowingAlt ? focusedHistory[0] : focusedHistory[1]) : null;
+      const focusedOtherShortName = focusedOtherIdea
+        ? String(focusedOtherIdea.name || "").replace(/\s*\([^)]*\)\s*/g, " ").split("/")[0].split("&")[0].trim()
+        : "";
 
       matchSectionHtml = `
         <!-- FOCUSED IDEA VIEW (MOBILE-FIRST) -->
@@ -3008,13 +3040,27 @@
               Viewing Match #${idx + 1} of 3
             </div>
             ${
-              isFocusedCapped
-                ? `
-              <div style="text-align: right;">
+              focusedHasSwapped
+                ? focusedIsShowingAlt
+                  ? `
+              <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
                 <button type="button" class="btn-ghost-sm swap-idea-btn disabled" disabled style="font-size: 0.8rem; opacity: 0.65; cursor: not-allowed; background: rgba(0,0,0,0.03); border: 1px dashed var(--border); border-radius: 8px; padding: 6px 12px;">
                   All top matches shown for this slot
                 </button>
-                <div style="font-size: 0.76rem; color: var(--ink-muted); margin-top: 4px;">
+                <button type="button" data-toggle-slot-idea="${idx}" style="background: none; border: none; padding: 0; font-size: 0.78rem; color: var(--forest); font-weight: 800; cursor: pointer; text-decoration: underline;">
+                  &larr; Switch back to previous match (${escapeHtml(focusedOtherShortName)})
+                </button>
+                <div style="font-size: 0.76rem; color: var(--ink-muted);">
+                  Looking for something different? <a href="#" data-action="adjust-answers" style="color: var(--forest); font-weight: 700; text-decoration: underline;">Adjust your quiz answers</a>
+                </div>
+              </div>
+            `
+                  : `
+              <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 4px;">
+                <button type="button" data-toggle-slot-idea="${idx}" class="btn-ghost-sm swap-idea-btn" style="font-size: 0.82rem; color: var(--forest); font-weight: 800; border: 1.5px solid var(--forest); background: rgba(45, 90, 39, 0.05); padding: 6px 12px; border-radius: 8px;">
+                  View alternative match (${escapeHtml(focusedOtherShortName)}) &rarr;
+                </button>
+                <div style="font-size: 0.76rem; color: var(--ink-muted);">
                   Looking for something different? <a href="#" data-action="adjust-answers" style="color: var(--forest); font-weight: 700; text-decoration: underline;">Adjust your quiz answers</a>
                 </div>
               </div>
@@ -3433,11 +3479,35 @@
         }
 
         if (candidate) {
+          state.slotSwapHistory = state.slotSwapHistory || { 0: [], 1: [], 2: [] };
+          const history = state.slotSwapHistory[slotIdx] || [];
+          if (history.length === 0 && currentIdea) {
+            history.push(currentIdea);
+          }
+          history.push(candidate);
+          state.slotSwapHistory[slotIdx] = history;
           state.topMatches[slotIdx] = candidate;
           state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(candidate, state.profile, slotIdx);
           state.slotSwapCounts[slotIdx] = (state.slotSwapCounts[slotIdx] || 0) + 1;
           render();
         }
+      });
+    });
+
+    document.querySelectorAll("[data-toggle-slot-idea]").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const slotIdx = Number(btn.getAttribute("data-toggle-slot-idea"));
+        if (isNaN(slotIdx) || slotIdx < 0 || slotIdx >= state.topMatches.length) return;
+        const history = (state.slotSwapHistory && state.slotSwapHistory[slotIdx]) || [];
+        if (history.length < 2) return;
+
+        const currentIdea = state.topMatches[slotIdx];
+        const nextIdea = (currentIdea && currentIdea.id === history[0].id) ? history[1] : history[0];
+
+        state.topMatches[slotIdx] = nextIdea;
+        state.playbooks[slotIdx] = window.VaultEngine.buildPlaybook(nextIdea, state.profile, slotIdx);
+        render();
       });
     });
 
