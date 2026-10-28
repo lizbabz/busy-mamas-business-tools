@@ -2136,10 +2136,14 @@
         </div>
 
         <div class="quiz-body typeform-card">
-          <div class="typeform-nav-bar">
-            <button type="button" class="btn-typeform-back" id="btnPrevStep">
-              ${s === 1 && sub === 1 ? "← Back to Tools Home" : "← Back"}
-            </button>
+          <div class="typeform-nav-bar" style="${s === 1 && sub === 1 ? 'justify-content: flex-end;' : ''}">
+            ${
+              s > 1 || sub > 1
+                ? `<button type="button" class="btn-typeform-back" id="btnPrevStep">
+                    ← Back
+                  </button>`
+                : ""
+            }
             <span class="typeform-step-badge">Question ${s}.${sub} of ${maxSub}</span>
           </div>
 
@@ -4314,10 +4318,14 @@
         </div>
 
         <div class="quiz-body typeform-card">
-          <div class="typeform-nav-bar">
-            <button type="button" class="btn-typeform-back" id="btnGrowthPrev">
-              ${s === 1 && sub === 1 ? "← Back to Tools Home" : "← Back"}
-            </button>
+          <div class="typeform-nav-bar" style="${s === 1 && sub === 1 ? 'justify-content: flex-end;' : ''}">
+            ${
+              s > 1 || sub > 1
+                ? `<button type="button" class="btn-typeform-back" id="btnGrowthPrev">
+                    ← Back
+                  </button>`
+                : ""
+            }
             <span class="typeform-step-badge">Question ${s}.${sub} of ${maxSub}</span>
           </div>
 
