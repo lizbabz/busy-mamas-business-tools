@@ -1697,6 +1697,22 @@
                     .join("")
             }
           </div>
+
+          <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(45, 90, 39, 0.12);">
+            <label for="customNoteInput" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
+              Don't see your exact role or have a specialized degree or credential? (Optional):
+            </label>
+            <p style="font-size: 0.85rem; color: var(--ink-muted); margin-bottom: 8px;">
+              Have a unique career, company background, or degree? Type it here (e.g., ex-Bain / management consulting, scientific research & STEM, college admissions, healthcare compliance) so your matches are tailored to your exact world.
+            </p>
+            <input
+              type="text"
+              id="customNoteInput"
+              class="form-input"
+              placeholder="e.g., Management consulting (ex-Bain), scientific research & STEM programs, admissions..."
+              value="${(state.profile.customNote || "").replace(/"/g, "&quot;")}"
+            />
+          </div>
         </div>
       `;
     } else if (s === 3 && sub === 2) {
@@ -2040,15 +2056,14 @@
         <div class="step-header-row">
           <span class="step-num-editorial">06</span>
           <div>
-            <h2 class="step-title">Any Hard Dealbreakers or <em>Unique Career Background</em>?</h2>
+            <h2 class="step-title">Any Hard <em>Dealbreakers</em>? (Optional)</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Filter out anything you refuse to do, and share any specialized career background or professional credentials.
+              Filter out anything you refuse to do so every business match respects your boundaries.
             </p>
           </div>
         </div>
 
-        <h3 class="sub-section-heading">Part A: Hard Dealbreakers (Optional, select anything you want filtered out):</h3>
-        <div class="options-grid options-grid-compact" style="margin-bottom: 24px;">
+        <div class="options-grid options-grid-compact">
           ${(window.HARD_DEALBREAKERS || [])
             .map((db) => {
               const isSel = selectedDealbreakers.includes(db.id);
@@ -2063,20 +2078,6 @@
             `;
             })
             .join("")}
-        </div>
-
-        <h3 class="sub-section-heading">Part B: Your Specific Career Background, Degree or Specialty (Optional):</h3>
-        <p style="font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 8px;">
-          Have a unique career, degree, or professional specialty? Type it here (e.g., ex-Bain / management consulting, scientific research & STEM programs, admissions consulting, healthcare compliance) so your matches are tailored to your exact professional world.
-        </p>
-        <div style="margin-bottom: 8px;">
-          <input
-            type="text"
-            id="customNoteInput"
-            class="form-input"
-            placeholder="e.g., Management consulting, scientific research & STEM programs, admissions..."
-            value="${(state.profile.customNote || "").replace(/"/g, "&quot;")}"
-          />
         </div>
       `;
     }
@@ -2308,6 +2309,14 @@
           render();
         });
       });
+
+      const customNoteEl = document.getElementById("customNoteInput");
+      if (customNoteEl) {
+        customNoteEl.addEventListener("input", (e) => {
+          state.profile.customNote = e.target.value;
+          saveUserProgress();
+        });
+      }
     }
 
     // Step 3 Sub 2: Licensing
@@ -2534,7 +2543,7 @@
       });
     }
 
-    // Step 6 Sub 3: Dealbreakers & Custom Note
+    // Step 6 Sub 3: Hard Dealbreakers
     if (s === 6 && sub === 3) {
       document.querySelectorAll("[data-dealbreaker]").forEach((card) => {
         card.addEventListener("click", () => {
@@ -2549,14 +2558,6 @@
           render();
         });
       });
-
-      const customNoteEl = document.getElementById("customNoteInput");
-      if (customNoteEl) {
-        customNoteEl.addEventListener("input", (e) => {
-          state.profile.customNote = e.target.value;
-          saveUserProgress();
-        });
-      }
     }
 
     // Global Navigation: Back, Continue, Start Over
