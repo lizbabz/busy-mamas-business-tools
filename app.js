@@ -1949,21 +1949,19 @@
             <p style="font-size: 0.84rem; color: var(--ink-muted); margin-bottom: 8px;">
               Have a unique craft, activity, or passion? Type it below and tap + Add (e.g., pottery, sourdough baking, vintage thrifting, dog training, gardening).
             </p>
-            <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="custom-hobby-input-wrap">
               <input
                 type="text"
                 id="customHobbyInput"
-                class="form-input"
-                style="flex: 1;"
-                placeholder="Type your hobby here..."
+                class="form-input custom-hobby-input"
+                placeholder="e.g., Pottery, sourdough, dog training..."
               />
               <button
                 type="button"
                 id="btnAddCustomHobby"
-                class="btn-pink"
-                style="padding: 12px 18px; font-size: 0.86rem; white-space: nowrap; font-weight: 700; flex-shrink: 0;"
+                class="btn-pink custom-hobby-add-btn"
               >
-                + Add
+                + Add Hobby
               </button>
             </div>
           </div>
