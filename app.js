@@ -2170,7 +2170,7 @@
         </div>
 
         <div class="quiz-body typeform-card">
-          <div class="typeform-nav-bar" style="${s === 1 && sub === 1 ? 'justify-content: flex-end;' : ''}">
+          <div class="typeform-nav-bar" style="${s === 1 && sub === 1 ? 'display: none;' : ''}">
             ${
               s > 1 || sub > 1
                 ? `<button type="button" class="btn-typeform-back" id="btnPrevStep">
@@ -2178,7 +2178,6 @@
                   </button>`
                 : ""
             }
-            <span class="typeform-step-badge">Question ${s}.${sub} of ${maxSub}</span>
           </div>
 
           ${stepContent}
@@ -4300,7 +4299,7 @@
         </div>
 
         <div class="quiz-body typeform-card">
-          <div class="typeform-nav-bar" style="${s === 1 && sub === 1 ? 'justify-content: flex-end;' : ''}">
+          <div class="typeform-nav-bar" style="${s === 1 && sub === 1 ? 'display: none;' : ''}">
             ${
               s > 1 || sub > 1
                 ? `<button type="button" class="btn-typeform-back" id="btnGrowthPrev">
@@ -4308,7 +4307,6 @@
                   </button>`
                 : ""
             }
-            <span class="typeform-step-badge">Question ${s}.${sub} of ${maxSub}</span>
           </div>
 
           ${stepContent}
