@@ -934,7 +934,7 @@
         state.profile.skills = (state.profile.skills || []).filter((id) => validSkillIds.has(id)).slice(0, 4);
 
         const validActIds = new Set((window.ENJOYED_ACTIVITIES || []).map((a) => a.id));
-        state.profile.enjoyedActivities = (state.profile.enjoyedActivities || []).filter((id) => validActIds.has(id)).slice(0, 3);
+        state.profile.enjoyedActivities = (state.profile.enjoyedActivities || []).filter((id) => validActIds.has(id) || (typeof id === "string" && id.startsWith("custom:"))).slice(0, 3);
 
         const validLifeIds = new Set((window.LIVED_EXPERIENCES || []).map((l) => l.id));
         state.profile.livedExperiences = (state.profile.livedExperiences || []).filter((id) => validLifeIds.has(id));
@@ -1926,11 +1926,11 @@
           <div class="multi-select-tags-wrap" id="fitHobbyTagsWrap">
             ${
               selectedActivities.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No hobbies selected yet. Select from the dropdown above.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No hobbies selected yet. Select from the dropdown or type your own below.</span>`
                 : selectedActivities
                     .map((id) => {
                       const item = allActs.find((act) => act.id === id);
-                      const name = item ? (item.label || item.title) : id;
+                      const name = item ? (item.label || item.title) : (id.startsWith("custom:") ? id.replace("custom:", "") : id);
                       return `
                         <span class="multi-select-tag">
                           ${name}
@@ -1940,6 +1940,32 @@
                     })
                     .join("")
             }
+          </div>
+
+          <div style="margin-top: 18px; padding-top: 16px; border-top: 1px solid rgba(45, 90, 39, 0.12);">
+            <label for="customHobbyInput" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 4px;">
+              Don't see your hobby on the list? (Optional):
+            </label>
+            <p style="font-size: 0.84rem; color: var(--ink-muted); margin-bottom: 8px;">
+              Have a unique craft, activity, or passion? Type it below and tap + Add (e.g., pottery, sourdough baking, vintage thrifting, dog training, gardening).
+            </p>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input
+                type="text"
+                id="customHobbyInput"
+                class="form-input"
+                style="flex: 1;"
+                placeholder="Type your hobby here..."
+              />
+              <button
+                type="button"
+                id="btnAddCustomHobby"
+                class="btn-pink"
+                style="padding: 12px 18px; font-size: 0.86rem; white-space: nowrap; font-weight: 700; flex-shrink: 0;"
+              >
+                + Add
+              </button>
+            </div>
           </div>
         </div>
       `;
@@ -2502,6 +2528,43 @@
         });
       });
 
+      const btnAddCustom = document.getElementById("btnAddCustomHobby");
+      const customInput = document.getElementById("customHobbyInput");
+
+      const handleAddCustom = () => {
+        if (!customInput) return;
+        const raw = (customInput.value || "").trim();
+        if (!raw || raw.length < 2) return;
+        const current = state.profile.enjoyedActivities || [];
+        const customId = "custom:" + raw;
+        if (current.includes(customId)) {
+          customInput.value = "";
+          return;
+        }
+        if (current.length >= 3) {
+          state.limitNotice = "You can select up to 3 real-life hobbies so your recommendations stay hyper-focused. Tap the (x) on any selected hobby tag to swap it.";
+          render();
+          return;
+        }
+        state.profile.enjoyedActivities = [...current, customId];
+        state.limitNotice = "";
+        state.validationError = "";
+        saveUserProgress();
+        render();
+      };
+
+      if (btnAddCustom) {
+        btnAddCustom.addEventListener("click", handleAddCustom);
+      }
+      if (customInput) {
+        customInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleAddCustom();
+          }
+        });
+      }
+
       document.querySelectorAll("[data-quick-hobby]").forEach((chip) => {
         chip.addEventListener("click", () => {
           const id = chip.getAttribute("data-quick-hobby");
@@ -2792,7 +2855,7 @@
           budget: state.profile.budget,
           skills: (state.profile.skills || []).join(", "),
           skillDirection: state.profile.skillDirection,
-          enjoyedActivities: (state.profile.enjoyedActivities || []).join(", "),
+          enjoyedActivities: (state.profile.enjoyedActivities || []).map((x) => (typeof x === "string" && x.startsWith("custom:") ? x.replace("custom:", "") : x)).join(", "),
           livedExperiences: (state.profile.livedExperiences || []).join(", "),
           dealbreakers: (state.profile.dealbreakers || []).join(", "),
           customNote: state.profile.customNote || "",

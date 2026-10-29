@@ -805,6 +805,56 @@ window.ENJOYED_ACTIVITIES = [
     mappedSkills: ["organization", "tech"],
     models: ["service"],
     keywords: ["project manager", "ai workflow", "operations", "data analytics", "government contract"]
+  },
+  {
+    id: "act-gardening-plants",
+    label: "Gardening, Plants & Cut Flowers",
+    title: "Gardening, Plants & Cut Flowers",
+    sub: "Growing cut flowers, houseplants, herbs, microgreens, vegetable gardening, or botanical styling",
+    desc: "Growing cut flowers, houseplants, herbs, microgreens, vegetable gardening, or botanical styling",
+    mappedSkills: ["crafts", "home_local"],
+    models: ["physical-product", "local-service"],
+    keywords: ["gardening", "plant", "flower", "cut flower", "floral", "nursery", "microgreens", "homestead", "botanical", "herb"]
+  },
+  {
+    id: "act-fitness-wellness",
+    label: "Fitness, Yoga, Pilates & Wellness",
+    title: "Fitness, Yoga, Pilates & Wellness",
+    sub: "Movement, pilates, yoga, weight training, walking routines, nutrition, and postpartum body recovery",
+    desc: "Movement, pilates, yoga, weight training, walking routines, nutrition, and postpartum body recovery",
+    mappedSkills: ["healthcare_care", "coaching_consulting"],
+    models: ["service", "local-service", "digital-product"],
+    keywords: ["fitness", "yoga", "pilates", "trainer", "wellness", "postpartum", "movement", "workout", "nutrition"]
+  },
+  {
+    id: "act-pets-animals",
+    label: "Dogs, Pets & Animal Care",
+    title: "Dogs, Pets & Animal Care",
+    sub: "Spending time with dogs, pet sitting, dog walking, positive pet training, and healthy homemade pet treats",
+    desc: "Spending time with dogs, pet sitting, dog walking, positive pet training, and healthy homemade pet treats",
+    mappedSkills: ["home_local"],
+    models: ["local-service", "physical-product"],
+    keywords: ["pet", "dog", "dog walking", "pet sitting", "dog trainer", "grooming", "pet treats", "puppy"]
+  },
+  {
+    id: "act-thrifting-vintage",
+    label: "Thrifting, Vintage Finds & Reselling",
+    title: "Thrifting, Vintage Finds & Reselling",
+    sub: "Scouring thrift stores, finding vintage gems, furniture flips, curated secondhand fashion, and reselling on Poshmark/Etsy",
+    desc: "Scouring thrift stores, finding vintage gems, furniture flips, curated secondhand fashion, and reselling on Poshmark/Etsy",
+    mappedSkills: ["beauty", "crafts", "marketing"],
+    models: ["physical-product"],
+    keywords: ["thrift", "vintage", "poshmark", "reselling", "furniture flip", "secondhand", "consignment", "reseller"]
+  },
+  {
+    id: "act-music-singing",
+    label: "Music, Singing & Instrument Playing",
+    title: "Music, Singing & Instrument Playing",
+    sub: "Playing piano, guitar, singing, music theory, choir, or teaching children how to play instruments",
+    desc: "Playing piano, guitar, singing, music theory, choir, or teaching children how to play instruments",
+    mappedSkills: ["teaching", "mc_dj"],
+    models: ["service", "local-service", "digital-product"],
+    keywords: ["music", "piano", "guitar", "singing", "voice lessons", "instrument", "vocal", "music teacher", "musician"]
   }
 ];
 

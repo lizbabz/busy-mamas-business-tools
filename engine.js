@@ -396,6 +396,22 @@ window.VaultEngine = {
         }
       });
 
+      // Check custom typed hobbies (e.g. "custom:pottery" or custom text)
+      enjoyedActivities.forEach((actVal) => {
+        const rawCustom = actVal.startsWith("custom:") ? actVal.replace("custom:", "") : (!actVal.startsWith("act-") ? actVal : "");
+        const cleanCustom = rawCustom.trim();
+        if (cleanCustom.length >= 3) {
+          const words = cleanCustom.toLowerCase().split(/\W+/).filter((w) => w.length >= 3);
+          const hasWordMatch = words.some((w) => ideaText.includes(w));
+          if (hasWordMatch) {
+            matchedActivityLabels.push(cleanCustom);
+            domainMatchCount += 2;
+            score += 18;
+            reasons.push(`Directly connects with your passion for ${cleanCustom}`);
+          }
+        }
+      });
+
       const actMultiplier =
         skillDirection === "fresh-pivot" ? 1.7 : skillDirection === "monetize-existing" ? 1.4 : 1.55;
 
