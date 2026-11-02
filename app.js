@@ -5940,24 +5940,72 @@
                 const foundMatches = [];
                 [sub.topIdea1, sub.topIdea2, sub.topIdea3].forEach((title) => {
                   if (!title) return;
-                  const match = state.vaultIdeas.find(
+                  let match = state.vaultIdeas.find(
                     (i) => i.name.toLowerCase() === title.toLowerCase() ||
                            title.toLowerCase().includes(i.name.toLowerCase()) ||
                            i.name.toLowerCase().includes(title.toLowerCase())
                   );
+                  if (!match) {
+                    match = {
+                      id: "bespoke-tailored-" + Math.random().toString(36).slice(2, 7),
+                      isCustomSynthesized: true,
+                      name: title,
+                      category: "Creative Crossover & Niche Advisory",
+                      businessModel: "service",
+                      skills: state.profile.skills || [],
+                      minHoursPerWeek: Math.max(4, Math.min(state.profile.hoursPerWeek || 8, 8)),
+                      optimalHoursPerWeek: Math.max(state.profile.hoursPerWeek || 8, 12),
+                      easeOf5k: 5,
+                      maxMonthlyIncomePotential: Math.max(25000, (state.profile.incomeGoal || 4000) * 2.5),
+                      workStyle: "both",
+                      startupCost: Math.min(Number(state.profile.budget) || 250, 250),
+                      incomeModel: "Client Packages & Retainers",
+                      avgUnitRevenue: Math.max(650, Math.round((state.profile.incomeGoal || 4000) / 4)),
+                      unitLabel: "monthly client packages or project sprints",
+                      hoursPerUnitPerWeek: 2,
+                      description: "A tailored business model combining your core skills with high-demand client services.",
+                      targetAudience: "Boutique brands, creators, and local clients seeking specialized expertise.",
+                      requirements: [
+                        "Defined package structure (monthly retainer or project sprint)",
+                        "Direct outreach to target niche clients",
+                        "Simple 1-link intake and booking system"
+                      ],
+                      tradeoffs: [
+                        "Pros: High hourly leverage and flexible scheduling around family life.",
+                        "Tradeoff: Requires proactive client outreach in your early weeks."
+                      ],
+                      quickTestStrategy: "Reach out to 3 target accounts or warm contacts with a simple value offer.",
+                      first30DaysFocus: "Define your core package, contact 15 target clients, and book your first paid client.",
+                      aiWhyFits: "Tailored match designed around your skills to reach your target income inside your available weekly hours.",
+                      matchScore: 95,
+                      matchReasons: ["High-alignment business model designed for your available hours and target income."]
+                    };
+                  }
                   if (match && !foundMatches.some((m) => m.name === match.name)) {
                     foundMatches.push(match);
                   }
                 });
-                if (foundMatches.length >= 1) {
-                  state.topMatches = foundMatches;
+
+                // Guarantee all 3 top matches are always filled
+                if (foundMatches.length < 3 && window.VaultEngine) {
+                  const ranked = window.VaultEngine.rankIdeas(state.vaultIdeas, state.profile);
+                  for (const idea of ranked) {
+                    if (foundMatches.length >= 3) break;
+                    if (!foundMatches.some((m) => m.name === idea.name)) {
+                      foundMatches.push(idea);
+                    }
+                  }
+                }
+
+                if (foundMatches.length >= 3) {
+                  state.topMatches = foundMatches.slice(0, 3);
                   state.playbooks = state.topMatches.map((idea, idx) =>
                     window.VaultEngine.buildPlaybook(idea, state.profile, idx)
                   );
                   state.slotPairs = {
                     0: { primary: foundMatches[0], alternative: foundMatches[3] || foundMatches[0] },
-                    1: { primary: foundMatches[1] || foundMatches[0], alternative: foundMatches[4] || foundMatches[1] || foundMatches[0] },
-                    2: { primary: foundMatches[2] || foundMatches[0], alternative: foundMatches[5] || foundMatches[2] || foundMatches[0] }
+                    1: { primary: foundMatches[1], alternative: foundMatches[4] || foundMatches[1] },
+                    2: { primary: foundMatches[2], alternative: foundMatches[5] || foundMatches[2] }
                   };
                   state.slotHasSwapped = { 0: false, 1: false, 2: false };
                   state.selectedIdeaIdx = null;
