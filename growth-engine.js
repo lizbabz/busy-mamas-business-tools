@@ -306,33 +306,38 @@ window.GROWTH_AVG_PRICE_TIERS = [
 
 window.GROWTH_LEAD_SOURCES = [
   {
-    id: "word-of-mouth",
-    label: "Word-of-Mouth & Referrals",
-    sub: "Friends, family, and happy customers tell people about me when it comes up"
-  },
-  {
     id: "organic-social",
-    label: "Posting on Instagram, TikTok or Facebook",
-    sub: "Reels, stories, Facebook groups, or everyday social media posts"
+    label: "Organic Social Media (Instagram, TikTok, Facebook)",
+    sub: "Reels, stories, Facebook groups, or everyday posts that I create manually"
   },
   {
-    id: "local-partners",
-    label: "Local Partners, Markets or Shops",
-    sub: "Event venues, realtors, pop-up markets, salons, local stores, or community groups"
+    id: "paid-ads",
+    label: "Paid Ads (Meta / Instagram / Facebook / Google)",
+    sub: "Investing a budget into paid ads to bring in new customer inquiries automatically"
+  },
+  {
+    id: "owned-list",
+    label: "Owned Email List, SMS or VIP Broadcast Group",
+    sub: "Sending regular emails, texts, or broadcast messages directly to an audience I own"
+  },
+  {
+    id: "word-of-mouth",
+    label: "Word-of-Mouth & Client Referrals",
+    sub: "Past buyers and friends tell people about me whenever it happens to come up"
+  },
+  {
+    id: "local-partners-b2b",
+    label: "Local B2B Partners, Venues, or Corporate Clients",
+    sub: "Realtors, event venues, salons, clinics, local offices, or corporate bulk buyers"
   },
   {
     id: "search-marketplaces",
-    label: "Google Search, Etsy, Amazon or Website",
-    sub: "Buyers find my shop, Google listing, or website when searching online"
-  },
-  {
-    id: "search-ads-outreach",
-    label: "Paid Ads (Facebook / Google) or Direct Messages",
-    sub: "Running paid ads or reaching out directly to potential clients and businesses"
+    label: "Google Search, Website, Etsy or Amazon",
+    sub: "Shoppers find my Google listing, website, or marketplace store when searching online"
   },
   {
     id: "no-lead-system",
-    label: "No Steady Way to Get Customers Yet",
+    label: "No Steady Customer System Yet",
     sub: "I honestly do not know where my next 3 paying customers will come from"
   }
 ];
@@ -463,26 +468,26 @@ window.GROWTH_PRIMARY_GOALS = [
 
 window.GROWTH_STORIES = [
   {
-    id: "growth-story-packaging",
+    id: "growth-story-pmu",
     preferredSteps: [2],
-    tag: "Real Growth Story • Better Packages",
-    headline: "How a Home Baker Stopped Doing $35 Single Orders & Added {SYM}3,200/Mo With Gift Bundles",
+    tag: "Real Client Story • Pricing & High-Converting Systems",
+    headline: "How a Permanent Makeup Artist Made Over {SYM}40,000 in 5 Weeks While Working 30% Fewer Hours",
     story:
-      "She was exhausted spending 20 hours a week replying to messages for single custom orders that barely paid {SYM}12/hour after ingredients. Instead of baking more hours, she stopped taking tiny custom orders and created two simple options: a Weekly Friday Treat Box and a {SYM}450 'Client Thank-You Gift Bundle' (10 gift-wrapped boxes per order) for local realtors and offices.",
+    "She was undercharging, giving discounts on every DM request, and swamped with late-night messages. Together with Oyin, she raised her prices, launched structured seasonal promo pricing, set up a booking platform with FAQs to cut DM back-and-forth, ran local Meta ads, and reactivated past clients with incentivized touch-ups and SMS marketing.",
     takeaway:
-      "Just 4 local real estate teams and 2 offices ordering monthly thank-you boxes added {SYM}3,200/mo in steady sales while cutting her message and baking time in half.",
-    metrics: ["Cut Message Time in Half", "No More Tiny Custom Orders", "+{SYM}3,200/mo in Gift Bundles"]
+      "She booked 112 clients (including 30 returning clients), made over {SYM}40,000 in just 5 weeks, and cut her weekly work hours by 30%.",
+    metrics: ["Over {SYM}40k in 5 Weeks", "112 Booked Clients", "30% Fewer Hours"]
   },
   {
-    id: "growth-story-retainer",
-    preferredSteps: [5],
-    tag: "Real Growth Story • Monthly Clients",
-    headline: "How a Service Business Owner Went From Starting at {SYM}0 Every Month to {SYM}6,800/Mo in 12 Hours/Week",
+    id: "growth-story-food-vendor",
+    preferredSteps: [3, 5],
+    tag: "Real Client Story • Packages & Bulk Orders",
+    headline: "How a Food Vendor Tripled Her Revenue & Booked Out Consecutive Weeks Without Showing Her Face",
     story:
-      "Every month felt like a stressful scramble to find 6 to 8 brand-new clients. She changed how she sold her work: every new client started with a flat-price 'Starter Setup' and was then invited onto a {SYM}1,250/mo monthly support plan that she completed during Tuesday and Thursday school hours.",
+      "She had poor city visibility and depended on chaotic WhatsApp groups, spending exhausting hours making one-off custom orders. Oyin helped her bundle her menu into structured packages and execute a high-converting, face-free social media content strategy.",
     takeaway:
-      "By moving just 5 happy past clients onto a monthly plan and using simple checklists, she had {SYM}6,250/mo already booked before the 1st of the month even started.",
-    metrics: ["12 Hrs/Week Schedule", "5 Monthly Clients", "{SYM}6,800/mo Steady Income"]
+      "She booked out consecutive weeks, began receiving bulk corporate orders, and tripled her revenue while freeing up her personal time.",
+    metrics: ["Tripled Monthly Revenue", "Booked Out Consecutive Weeks", "Bulk Corporate Orders"]
   }
 ];
 
@@ -583,12 +588,15 @@ window.GrowthEngine = {
         "You picked 'Not sure yet' on a few questions about your numbers and prices. That is completely normal when you are still building your foundation! Follow the 3 steps below to set clear package prices, or check out Business Fit if you want to explore other business ideas for your skills.";
     }
 
-    // Score the 5 Core Growth Bottlenecks to identify #1 Primary Bottleneck
+    // Score the 5 Core Growth Roadblocks based on the 9-Engine Growth Master Matrix
     const bottlenecks = [
       {
         id: "pricing-packaging",
-        title: "Small Orders & Underpricing Are Eating Up Your Hours",
-        eyebrow: "#1 GROWTH ROADBLOCK • PRICING & PACKAGES",
+        title: "The #1 Thing Slowing Down Your Profit: Small Orders & Underpricing",
+        eyebrow: "YOUR #1 ROADBLOCK • PRICING & PACKAGES",
+        missingEngine: "Growth Engine #1: High-Margin Packaging & Pricing + Engine #8: AOV Expansion",
+        stopDoing: "Stop quoting custom prices on the fly in DMs and stop taking single-item orders that barely cover ingredients or travel.",
+        startDoing: "Package your work into a 3-tier menu with a minimum order size, an upfront 50% deposit, and high-margin checkout add-ons.",
         score:
           (gp.offerStructure === "one-off-custom" || gp.offerStructure === "hourly-single" ? 30 : 0) +
           (gp.priceConfidence === "undercharging" || gp.priceConfidence === "unsure-pricing" ? 28 : 0) +
@@ -600,8 +608,11 @@ window.GrowthEngine = {
       },
       {
         id: "retention-repeat",
-        title: "Starting Over From $0 Every Month (Not Enough Repeat Buyers)",
-        eyebrow: "#1 GROWTH ROADBLOCK • REPEAT CUSTOMERS",
+        title: "The #1 Thing Keeping You on the Monthly Rollercoaster: Starting at $0 Every Month",
+        eyebrow: "YOUR #1 ROADBLOCK • REPEAT BUYERS & RETENTION",
+        missingEngine: "Growth Engine #4: The Owned List (Email & SMS) + Engine #6: Repeat & Retention Retainers",
+        stopDoing: "Stop relying on social media algorithms to reach past buyers and stop treating every sale like a one-off transaction.",
+        startDoing: "Collect client contact details into a VIP broadcast list and launch seasonal drops, refill reminders, or monthly support plans.",
         score:
           (gp.repeatRateId === "start-from-zero" ? 36 : gp.repeatRateId === "occasional-repeat" ? 18 : 0) +
           (gp.retentionSystem === "no-followup" ? 26 : gp.retentionSystem === "manual-checkin" ? 14 : 0) +
@@ -612,21 +623,27 @@ window.GrowthEngine = {
       },
       {
         id: "lead-generation",
-        title: "Waiting on Word-of-Mouth Instead of a Steady Customer Channel",
-        eyebrow: "#1 GROWTH ROADBLOCK • GETTING MORE CUSTOMERS",
+        title: "The #1 Thing Keeping Your Sales Unpredictable: Relying on Passive Word-of-Mouth",
+        eyebrow: "YOUR #1 ROADBLOCK • STEADY CUSTOMERS & PIPELINE",
+        missingEngine: "Growth Engine #3: High-Leverage Social Media + Engine #5: Systematic Referrals & Local Partners",
+        stopDoing: "Stop waiting passively for friends to mention you and stop spending hours creating daily social posts with no direct call-to-action.",
+        startDoing: "Deploy the 3-Post Batch Formula with DM keyword automation, and set up 5 reciprocal local business partnerships.",
         score:
           (leadSources.includes("no-lead-system") || (leadSources.length === 1 && leadSources.includes("word-of-mouth")) ? 34 : 0) +
-          (leadSources.includes("organic-social") && gp.deliveryDrain === "content-treadmill" ? 24 : 0) +
+          ((leadSources.includes("organic-social") || leadSources.includes("posting-social")) && gp.deliveryDrain === "content-treadmill" ? 28 : 0) +
           (gp.conversionIssue === "not-enough-leads" ? 32 : 0) +
           (gp.revenueStageId === "pre-revenue" || gp.revenueStageId === "early-traction" ? 16 : 0) +
           (gp.primaryGoal === "consistent-leads" ? 24 : 0),
-        diagnosisSummary: `When people find you, they love what you do, but right now you are waiting on word-of-mouth or spending hours making social media posts. To add +${fmt(revenueGap)}/mo inside ${maxDesiredHours} hours a week, you do not need viral videos. You just need 1 simple weekly habit of connecting with past buyers and local partners who already have customers ready to buy.`,
+        diagnosisSummary: `When people find you, they love what you do, but right now you are waiting on word-of-mouth or spending hours making social media posts that do not convert. To add +${fmt(revenueGap)}/mo inside ${maxDesiredHours} hours a week, you do not need viral videos. You just need 1 simple weekly habit of connecting with past buyers, running a 3-post conversion batch, and partnering with 5 local businesses who already have your ideal customers.`,
         assumptionsNote: `Assumes roughly 1 out of 5 warm referrals or personal check-ins turns into a booking, meaning you only need a small, steady stream of weekly inquiries to reach ${fmt(targetRev)}/mo.`
       },
       {
         id: "conversion-positioning",
-        title: "Losing Buyers in the Messages Before They Book",
-        eyebrow: "#1 GROWTH ROADBLOCK • TURNING INQUIRIES INTO SALES",
+        title: "The #1 Thing Leaking Bookings in Your Messages: DM Ghosting & Untracked Inquiries",
+        eyebrow: "YOUR #1 ROADBLOCK • TURNING INQUIRIES INTO SALES",
+        missingEngine: "Growth Engine #2: Time-Protection & 1-Link Booking + Engine #3: DM-to-Booking Keyword Funnel",
+        stopDoing: "Stop replying with a plain price in a message and stop answering the same 5 questions individually from scratch.",
+        startDoing: "Send a 1-page visual package menu with FAQs and an instant 50% deposit link so serious buyers lock in on the spot.",
         score:
           (gp.conversionIssue === "dm-ghosting" ? 42 : 0) +
           (gp.priceConfidence === "price-pushback" ? 34 : 0) +
@@ -637,8 +654,11 @@ window.GrowthEngine = {
       },
       {
         id: "capacity-systems",
-        title: "Doing Everything From Scratch Is Maxing Out Your Hours",
-        eyebrow: "#1 GROWTH ROADBLOCK • TIME & WEEKLY ROUTINE",
+        title: "The #1 Thing Draining Your Time & Energy: Doing Everything From Scratch",
+        eyebrow: "YOUR #1 ROADBLOCK • TIME, CAPACITY & FREEDOM",
+        missingEngine: "Growth Engine #2: Set Work Days & Booking Systems + Engine #9: Micro-Team & Delegation",
+        stopDoing: "Stop letting client messages interrupt your family evenings and stop delivering every single order on custom timelines.",
+        startDoing: "Set strict cutoff hours, group prep into 2 dedicated batch days, and use saved message templates or a 5-hr/wk task helper.",
         score:
           (currentHours > maxDesiredHours ? 32 : 0) +
           (gp.deliveryDrain === "manual-fulfillment" || gp.deliveryDrain === "disorganized-systems" || gp.deliveryDrain === "admin-quoting" ? 28 : 0) +
@@ -941,7 +961,7 @@ window.GrowthEngine = {
       };
     }
 
-    // PRIORITY 2: CUSTOMER ACQUISITION & REPEAT REVENUE ENGINE
+    // PRIORITY 2: CUSTOMER ACQUISITION & REPEAT REVENUE ENGINE (Engines #3, #4, #5 & #6)
     const repeatTargetCount = Math.max(2, Math.ceil(unitsNeededUpgraded * 0.5));
     const repeatRangeText =
       repeatTargetCount === unitsNeededUpgraded
@@ -949,79 +969,79 @@ window.GrowthEngine = {
         : `${repeatTargetCount} to ${unitsNeededUpgraded}`;
     const p2 = {
       rank: 2,
-      badge: "Priority #2 • Repeat & Partner Sales",
-      impactScore: "93% Impact",
-      shortLabel: "Past Customer Check-In & Local Partners",
-      title: "Reach Out to Past Buyers With a VIP Offer + Team Up With 5 Local Businesses",
-      category: "Getting Steady Customers",
+      badge: "Priority #2 • Customer Acquisition & Repeat Sales",
+      impactScore: "95% Impact",
+      shortLabel: "Social Sprint, VIP List & Referral Partners",
+      title: "Batch 3 Social Conversion Posts + VIP Broadcast Drop + 5 Local Referral Partners",
+      category: "Steady Customers & Retention",
       timeToImplement: "Days 8 to 18",
       shortHoursSaved: "5+ hrs/week",
-      shortBenefit: "Warm repeat & partner sales",
-      estHoursSaved: "Replaces 5+ hrs/wk of random social posting",
-      revenueImpact: `Brings in ${repeatRangeText} orders/clients without paid ads`,
+      shortBenefit: "Predictable repeat & referral orders",
+      estHoursSaved: "Replaces 5+ hrs/wk of random social posting and message chasing",
+      revenueImpact: `Brings in ${repeatRangeText} orders/clients without burning out`,
       whyItMatters:
         gp.repeatRateId === "start-from-zero" || gp.retentionSystem === "no-followup"
-          ? "Right now, happy past customers who already trust you are not being invited back regularly. Sending a friendly check-in message to past buyers AND teaming up with 5 local or complementary businesses who serve the same customers brings in sales 5 times faster than posting to strangers online."
-          : "Instead of riding the busy-one-month, slow-the-next-month rollercoaster, checking in with past customers once a month and having 5 referral partners sends you steady buyers even during busy family weeks.",
+          ? "Right now, happy past customers who already trust you are not being invited back regularly, and social media posting feels like shouting into an empty room. Setting up a 3-post weekly conversion batch (Proof, Education, Direct Offer), sending a VIP broadcast message to past buyers, and teaming up with 5 local partners who serve the same clients brings in revenue 5x faster than chasing strangers on Instagram."
+          : "Instead of riding the busy-one-month, slow-the-next rollercoaster, using a 3-post social conversion formula, checking in with past buyers via email/SMS once a month, and partnering with 5 local businesses sends you steady buyers even during busy family weeks.",
       mathOptionA: {
-        title: "Path A: Friendly Check-In With Past Buyers & Inquiries",
-        formula: `Message 15 past buyers/inquiries -> Book ${repeatTargetCount} orders at ${fmt(upgradedPackagePrice)} = ${fmt(repeatTargetCount * upgradedPackagePrice)} in sales`,
-        sub: "The fastest sales in your business because these people already know and like your work."
+        title: "Path A: 3-Post Social Batch & VIP Broadcast Drop",
+        formula: `Batch 3 conversion posts + VIP broadcast to 20 past contacts -> ${repeatTargetCount} orders at ${fmt(upgradedPackagePrice)} = ${fmt(repeatTargetCount * upgradedPackagePrice)} in sales`,
+        sub: "Uses proven conversion templates (Proof, Education, Direct Offer) so social media actually drives deposits."
       },
       mathOptionB: {
-        title: "Path B: 5 Referral Partners Who Serve the Same Customers",
-        formula: `5 partners x 1 referral each per month = 5 warm buyers/mo`,
-        sub: "Costs $0 in ads; other business owners love referring you when it helps their own clients."
+        title: "Path B: 5 Reciprocal Referral Partners & B2B Gifting",
+        formula: `5 local partners x 1 warm referral/month = 5 qualified buyers/mo`,
+        sub: "Costs $0 in ads; local realtors, salons, event pros, or clinics love referring businesses that deliver excellence."
       },
       requirements: [
-        "Write down a simple list of every past customer and person who asked about your work in the last 12 months",
-        "Send a warm personal message giving them first dibs or a small bonus on your new package or bundle",
-        "Connect with 5 non-competing businesses whose customers also need what you sell (like realtors, venues, photographers, accountants, salons, or event pros)"
+        "Batch 3 high-converting social media posts in 60 minutes: (1) Proof/Transformation result, (2) Common buyer mistake, (3) Direct offer with a keyword to message",
+        "Compile a simple list of past buyers and inquiries into an owned VIP broadcast list (email, SMS, or WhatsApp VIP group) for seasonal drops and priority booking windows",
+        "Connect with 5 non-competing local businesses who serve your ideal buyers to exchange referrals or supply client gift bundles"
       ],
       tradeoffs: [
-        "What gets easier: Warm referrals and past buyers say yes much faster and rarely argue about price.",
-        "What to keep in mind: Takes sending 10 to 15 friendly personal messages over a few days instead of waiting for people to message you first."
+        "What gets easier: You stop wondering what to post every day and stop starting every month at $0.",
+        "What to keep in mind: Takes 60 to 90 minutes once a week to batch your content and send your VIP check-in."
       ],
-      scriptTitle: "Copy-Paste Friendly Check-In Message for Past Buyers",
-      scriptText: `Hi [Name]! I loved working with you on [Past Order/Project] and wanted to give you first dibs before I post this publicly: I am opening [3 spots / a small batch] for our new [Package / Seasonal Bundle] this month. Since you are a past client, I am including [Free Bonus / Priority Spot] if you book by Thursday. Would you like me to save one for you?`
+      scriptTitle: "Copy-Paste VIP Broadcast & Social Offer Script",
+      scriptText: `Hi [Name]! I loved working with you on [Past Order/Project] and wanted to give you first access before I post this publicly: I am opening [3 spots / a small batch] for our new [Package / Seasonal Bundle] this month. Since you are on our VIP list, I am including [Free Bonus / Priority Scheduling] if you book by Thursday. You can see the options and claim yours here: [Your Link]`
     };
 
-    // PRIORITY 3: CAPACITY, SYSTEMS & HOURS PROTECTION
+    // PRIORITY 3: CAPACITY, SYSTEMS & MICRO-DELEGATION (Engines #2 & #9)
     const hoursSavedTarget = Math.max(3, Math.round(ctx.currentHours * 0.3));
     const p3 = {
       rank: 3,
-      badge: "Priority #3 • Saving Time & Routine",
-      impactScore: "88% Impact",
-      shortLabel: "1-Link Booking & Set Work Days",
-      title: `Save ${hoursSavedTarget}+ Hours a Week With a 1-Link Order Page, Saved Replies & Set Work Days`,
+      badge: "Priority #3 • Time-Protection & Automation",
+      impactScore: "90% Impact",
+      shortLabel: "1-Link Booking, Set Days & Micro-Help",
+      title: `Save ${hoursSavedTarget}+ Hours a Week With a 1-Link Order Page, Set Work Days & Micro-Delegation`,
       category: "Time & Simple Systems",
       timeToImplement: "Days 19 to 30",
       shortHoursSaved: `~${hoursSavedTarget} hrs/week`,
-      shortBenefit: "Less admin & back-and-forth",
+      shortBenefit: "Protected evenings & zero DM quoting",
       estHoursSaved: `Saves ~${hoursSavedTarget} hrs/wk (${hoursSavedTarget * 4} hrs/mo)`,
-      revenueImpact: `Keeps your work under ${maxDesiredHours} hrs/wk while growing to ${fmt(targetRev)}/mo`,
-      whyItMatters: `Making ${fmt(targetRev)}/mo is not worth it if it costs you every evening and weekend with your family. By replacing endless back-and-forth messages with a single 1-page menu and booking link, and grouping your prep or client work into set days of the week, you earn more per hour while keeping your ${maxDesiredHours} hrs/week limit.`,
+      revenueImpact: `Keeps your work strictly under ${maxDesiredHours} hrs/wk while scaling to ${fmt(targetRev)}/mo`,
+      whyItMatters: `Making ${fmt(targetRev)}/mo is not a win if it costs you every evening and weekend with your family. By replacing endless back-and-forth messages with a single 1-page menu and booking link, grouping fulfillment into 2 dedicated prep days, and handing off repetitive tasks to a 5-hour/week helper, you earn more per hour while protecting your home peace.`,
       mathOptionA: {
         title: "Time-Saver A: 1-Link Package Menu & Order Form",
         formula: `Cuts out 15+ back-and-forth messages a week = ~${Math.max(2, Math.round(hoursSavedTarget * 0.5))} hrs/wk saved`,
-        sub: "Serious buyers can see your prices, answer 3 quick questions, and pay their deposit in 2 minutes."
+        sub: "Serious buyers can see your prices, review FAQs, and pay their 50% deposit in 2 minutes without phone tag."
       },
       mathOptionB: {
-        title: "Time-Saver B: Set Prep Days & Saved Message Replies",
-        formula: `Grouping prep/delivery into 2 set days a week = ~${Math.max(2, Math.round(hoursSavedTarget * 0.5))} hrs/wk saved`,
-        sub: "Stops you from jumping between tasks all day so work stays inside your set hours."
+        title: "Time-Saver B: Set Prep Days & Micro-Delegation (5 hrs/wk)",
+        formula: `Grouping prep into 2 set days + delegating packing/admin = ~${Math.max(2, Math.round(hoursSavedTarget * 0.5))} hrs/wk saved`,
+        sub: "Stops task-switching and frees you to focus strictly on revenue-generating client work."
       },
       requirements: [
-        "Set up one simple 'Order / Work With Me' page (using Canva, Stan Store, Square, Stripe, HoneyBook, or Google Forms) showing your 3 packages and questions",
-        "Save your top 5 most common customer replies and checklists in your phone notes so you can copy and paste them in seconds",
-        "Pick 2 set days or time blocks each week for making orders or doing client work so it never spills into family time"
+        "Set up one clean 'Order / Work With Me' page (using Canva, Stan Store, Square, Stripe, or HoneyBook) showing your 3 packages, FAQs, and a 50% deposit link",
+        "Save your top 5 customer message replies in your phone notes so you can respond in two taps",
+        "Designate 2 set work or prep days each week and create a 1-page checklist for a 5-hr/week helper or assistant"
       ],
       tradeoffs: [
-        "What gets easier: Takes a huge load off your mind and makes it easy for a helper to assist you later.",
-        "What to keep in mind: Takes about 90 minutes once this month to set up your 1-page menu and saved replies."
+        "What gets easier: Ends the mental exhaustion of answering quotes late at night and makes your week predictable.",
+        "What to keep in mind: Requires holding your boundaries and directing all inquiries to your booking link."
       ],
-      scriptTitle: "Copy-Paste Auto-Reply & Booking Link Message",
-      scriptText: `Hi [Name]! I would love to help you with this. To save you time going back and forth in messages, you can see our 3 package options, pick your date, and lock in your spot in 2 minutes right here: [Your Link]. My work hours are [Your Days/Hours], and as soon as your form comes through I will confirm everything for you!`
+      scriptTitle: "Copy-Paste Polite Boundary & 1-Link Booking Script",
+      scriptText: `Hi [Name]! I would love to help you with this. To save you time going back and forth in messages, you can view our 3 package options, read answers to common questions, and lock in your date in 2 minutes right here: [Your Link]. My dedicated studio/work hours are [Your Days/Hours], and as soon as your booking comes through I will confirm everything for you!`
     };
 
     return [p1, p2, p3];
@@ -1037,8 +1057,8 @@ window.GrowthEngine = {
       weeks: [
         {
           week: "Week 1 (Days 1 to 7)",
-          title: "Update Your Packages & Prices",
-          focus: p1.title,
+          title: "Package Your Work & Add Upfront Deposits",
+          focus: "Launch Growth Engine #1 (Packaging & Pricing) and Engine #8 (Order Bumps/AOV).",
           tasks: [
             {
               id: "growth-w1-1",
@@ -1046,68 +1066,68 @@ window.GrowthEngine = {
             },
             {
               id: "growth-w1-2",
-              text: "Add a 50% deposit link (or full upfront payment for bundles) so you never start work without getting paid first."
+              text: "Add an upfront 50% deposit link (or 100% prepayment for product batches) so you never start work without confirmed payment."
             },
             {
               id: "growth-w1-3",
-              text: "Create your bigger VIP, group, or monthly option so happy customers have an easy way to spend 2x to 3x more with you."
+              text: "Create a simple checkout add-on or VIP upgrade (e.g., expedited turnaround, maintenance kit, or deluxe gift box) to increase average order value."
             }
           ]
         },
         {
           week: "Week 2 (Days 8 to 14)",
-          title: "Check In With Past Buyers for Quick Sales",
-          focus: "Bring in your first wave of bookings at your new package prices from people who already know you.",
+          title: "Owned VIP Drop & Social Conversion Sprint",
+          focus: "Launch Growth Engine #3 (High-Leverage Social Media) and Engine #4 (Owned Email/SMS List).",
           tasks: [
             {
               id: "growth-w2-1",
-              text: "Write down a list of 15 past customers, people who asked about your prices, or supportive contacts from the last year."
+              text: "Write down a list of 20 past buyers and inquiries into an owned VIP broadcast list (email, SMS, or WhatsApp group)."
             },
             {
               id: "growth-w2-2",
-              text: "Send the Priority #2 Friendly Check-In message offering first dibs or a small bonus on your new package."
+              text: "Send the Priority #2 VIP Broadcast message offering first dibs and a small bonus on your new package menu."
             },
             {
               id: "growth-w2-3",
-              text: "Book your first 2 to 4 orders at your new package price and track how many hours they take."
+              text: "Batch 3 social conversion posts (Client Proof, Common Mistake Education, Direct Call-to-Action) and pin your package link in bio."
             }
           ]
         },
         {
           week: "Week 3 (Days 15 to 21)",
-          title: "Team Up With Local Partners & Set Up Repeat Orders",
-          focus: p2.title,
+          title: "Referral Loops & Local B2B Corporate Partners",
+          focus: "Launch Growth Engine #5 (Systematic Referrals) and Engine #7 (B2B Bulk Orders).",
           tasks: [
             {
               id: "growth-w3-1",
-              text: "List 10 local or complementary business owners who serve the same customers you want (realtors, venues, photographers, salons, or offices)."
+              text: "List 10 local or complementary business owners who serve your ideal buyers (realtors, event venues, salons, photographers, or offices)."
             },
             {
               id: "growth-w3-2",
-              text: "Message 5 potential partners using the Priority #1 script to offer a gift sample or set up a referral partnership."
+              text: "Reach out to 5 potential partners offering a gift sample or proposing a 10% referral perk / client gift partnership."
             },
             {
               id: "growth-w3-3",
-              text: "Invite every current customer to book their next month's order, refill, or monthly plan before you finish their current order."
+              text: "Invite every active client to reserve their next month's order, refill, or touch-up before their current project wraps."
             }
           ]
         },
         {
           week: "Week 4 (Days 22 to 30)",
-          title: "Save Time With a 1-Link Menu & Set Work Days",
-          focus: `Keep your work inside ${maxDesiredHours} hours a week so your higher income feels calm and manageable.`,
+          title: "1-Link Booking Automation & Micro-Team Plan",
+          focus: "Launch Growth Engine #2 (Time-Protection & Booking Systems) and Engine #9 (Micro-Delegation).",
           tasks: [
             {
               id: "growth-w4-1",
-              text: "Send all new inquiries to your 1-page package menu and order link instead of spending hours quoting in messages."
+              text: "Direct all incoming inquiries to your 1-page booking link and FAQ menu to eliminate endless back-and-forth messaging."
             },
             {
               id: "growth-w4-2",
-              text: "Save your top 5 most common customer messages and checklists in your phone notes so you never type them from scratch."
+              text: "Save your top 5 customer message replies and onboarding checklists in your phone notes for instant 2-tap responses."
             },
             {
               id: "growth-w4-3",
-              text: `Check your Month-1 sales and hours worked against your ${fmt(targetRev)}/mo goal, and focus on the package that made you the most profit.`
+              text: `Review Month-1 sales against your ${fmt(targetRev)}/mo goal, and write a 1-page task list to hand off 5 hours of admin or prep to a helper next month.`
             }
           ]
         }

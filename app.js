@@ -68,6 +68,7 @@
       deliveryDrain: "",
       primaryGoal: "",
       growthBudget: null,
+      implementationPreference: "open-to-guidance",
       customNote: "",
       firstName: "",
       email: "",
@@ -4270,7 +4271,7 @@
         </div>
 
         <h3 class="sub-section-heading">Part C: Any specific hurdle or note you want addressed? (Optional):</h3>
-        <div style="margin-bottom: 8px;">
+        <div style="margin-bottom: 24px;">
           <input
             type="text"
             id="growthCustomNoteInput"
@@ -4278,6 +4279,27 @@
             placeholder="e.g., Struggling to find time for social media, high no-show rate on sales calls..."
             value="${(gp.customNote || "").replace(/"/g, "&quot;")}"
           />
+        </div>
+
+        <h3 class="sub-section-heading">Part D: How do you prefer to put this 30-day plan into action?</h3>
+        <div class="options-grid" style="margin-bottom: 12px;">
+          ${[
+            { id: "diy", label: "I Want to DIY It on My Own", sub: "I will follow the 30-day action plan checklist step-by-step and implement solo" },
+            { id: "wants-guidance", label: "I Would Love 1-on-1 Strategic Guidance With Oyin", sub: "I want an expert to review my numbers, pricing, and 90-day roadmap so I avoid costly mistakes" },
+            { id: "open-to-guidance", label: "Open to Seeing What Strategic Support Looks Like", sub: "Show me my 30-day plan first and I will decide if I want 1-on-1 strategic guidance" }
+          ]
+            .map(
+              (r) => `
+            <div class="option-card ${gp.implementationPreference === r.id ? "selected" : ""}" data-growth-readiness="${r.id}">
+              <div class="option-content">
+                <div class="option-title">${r.label}</div>
+                <div class="option-sub">${r.sub}</div>
+              </div>
+              <div class="option-check">✓</div>
+            </div>
+          `
+            )
+            .join("")}
         </div>
       `;
     }
@@ -4629,6 +4651,15 @@
         });
       });
 
+      document.querySelectorAll("[data-growth-readiness]").forEach((el) => {
+        el.addEventListener("click", () => {
+          gp.implementationPreference = el.getAttribute("data-growth-readiness");
+          state.validationError = "";
+          saveUserProgress();
+          render();
+        });
+      });
+
       const noteInput = document.getElementById("growthCustomNoteInput");
       if (noteInput) {
         noteInput.addEventListener("input", (e) => {
@@ -4811,9 +4842,11 @@
           skills: growthSkillsSummary,
           workStyle: gp.offerStructure,
           checkInCadence: gp.checkInCadence,
-          topIdea1: `[Bottleneck] ${analysis.primaryBottleneck?.title || ""}`,
+          topIdea1: `[Roadblock] ${analysis.primaryBottleneck?.title || ""}`,
           topIdea2: analysis.priorities?.[0]?.shortLabel || "",
           topIdea3: analysis.priorities?.[1]?.shortLabel || "",
+          readiness: gp.implementationPreference || "open-to-guidance",
+          primaryRoadblockId: analysis.primaryBottleneck?.id || "",
           completedTasksCount: state.completedTasks.length
         };
         saveLeadToBrowserStorage(leadRecord);
@@ -4830,6 +4863,10 @@
           startup_budget: String(gp.growthBudget || 0),
           skills: growthSkillsSummary,
           check_in_emails: gp.checkInCadence || "weekly",
+          primary_roadblock: analysis.primaryBottleneck?.id || "",
+          roadblock_title: analysis.primaryBottleneck?.title || "",
+          implementation_readiness: gp.implementationPreference || "open-to-guidance",
+          lead_sources: (gp.leadSources || [gp.leadSource]).filter(Boolean).join(", "),
           top_idea_1: leadRecord.topIdea1,
           top_idea_2: leadRecord.topIdea2,
           top_idea_3: leadRecord.topIdea3
@@ -5083,9 +5120,43 @@
         <h3 style="font-size: 1.55rem; font-weight: 900; color: var(--forest); margin-bottom: 10px;">
           ${pb.title}
         </h3>
+        ${
+          pb.missingEngine
+            ? `
+        <div style="margin-bottom: 14px; font-size: 0.84rem; font-weight: 800; color: var(--forest-dark); background: rgba(45, 90, 39, 0.08); padding: 6px 12px; border-radius: 6px; display: inline-block;">
+          ${escapeHtml(pb.missingEngine)}
+        </div>
+        `
+            : ""
+        }
         <p style="font-size: 0.96rem; color: var(--ink); line-height: 1.65;">
           ${pb.diagnosisSummary}
         </p>
+
+        ${
+          pb.stopDoing && pb.startDoing
+            ? `
+        <div class="growth-stop-start-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin: 18px 0 20px;">
+          <div style="background: #FFF5F5; border: 1.5px solid #FED7D7; border-radius: 12px; padding: 16px;">
+            <div style="font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: #C53030; margin-bottom: 6px;">
+              [STOP DOING THIS WEEK]
+            </div>
+            <p style="font-size: 0.9rem; color: #742A2A; margin: 0; line-height: 1.55;">
+              ${escapeHtml(pb.stopDoing)}
+            </p>
+          </div>
+          <div style="background: #F0FFF4; border: 1.5px solid #C6F6D5; border-radius: 12px; padding: 16px;">
+            <div style="font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: #22543D; margin-bottom: 6px;">
+              [START DOING INSTEAD]
+            </div>
+            <p style="font-size: 0.9rem; color: #22543D; margin: 0; line-height: 1.55;">
+              ${escapeHtml(pb.startDoing)}
+            </p>
+          </div>
+        </div>
+        `
+            : ""
+        }
 
         <div class="growth-math-strip">
           <div class="growth-math-stat">
