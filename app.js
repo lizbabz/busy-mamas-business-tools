@@ -3309,7 +3309,7 @@
               <li>
                 <span class="consulting-step-badge">3</span>
                 <div>
-                  <strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyin will share tactical guidance on pricing, packaging, and client acquisition.
+                  <strong>Watch Your Email for Strategic Guidance:</strong> Over the next few days, Oyinda will share tactical guidance on pricing, packaging, and client acquisition.
                 </div>
               </li>
             </ul>
@@ -3331,7 +3331,7 @@
               class="btn-pink"
               style="display: flex; justify-content: center; text-decoration: none; width: 100%; margin-bottom: 12px; font-weight: 800;"
             >
-              Have a Question? Email Oyin
+              Have a Question? Email Oyinda
             </a>
             <button
               type="button"
