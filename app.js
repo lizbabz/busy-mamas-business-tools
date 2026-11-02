@@ -5907,7 +5907,8 @@
             if (sub.assessmentType === "Business Growth" || modeParam === "growth") {
               state.mode = "growth";
               state.view = "assessment";
-              state.growthStep = 7;
+              state.growthStep = 8;
+              state.growthSubStep = 1;
               state.growthProfile.email = sub.email;
               if (sub.firstName) state.growthProfile.firstName = sub.firstName;
               if (sub.hoursPerWeek) state.growthProfile.maxDesiredHours = Number(sub.hoursPerWeek) || state.growthProfile.maxDesiredHours;
@@ -5915,16 +5916,22 @@
               if (window.GrowthEngine) {
                 state.growthAnalysis = window.GrowthEngine.analyzeBusiness(state.growthProfile);
               }
+              saveUserProgress();
             } else {
               state.mode = "fit";
               state.view = "assessment";
-              state.step = 4;
+              state.step = 8;
+              state.subStep = 1;
               state.profile.email = sub.email;
               if (sub.firstName) state.profile.firstName = sub.firstName;
               if (sub.hoursPerWeek) state.profile.hoursPerWeek = Number(sub.hoursPerWeek) || state.profile.hoursPerWeek;
               if (sub.startupBudget) state.profile.budget = Number(sub.startupBudget) || state.profile.budget;
               if (sub.currency) state.profile.currency = sub.currency;
               if (sub.timeline) state.profile.timeline = sub.timeline;
+              if (sub.incomeGoal) {
+                const numGoal = Number(String(sub.incomeGoal).replace(/[^0-9]/g, ""));
+                if (numGoal) state.profile.incomeGoal = numGoal;
+              }
               if (sub.skills) {
                 const skillArr = sub.skills.split(",").map((s) => s.trim()).filter(Boolean);
                 if (skillArr.length) state.profile.skills = skillArr;
@@ -5947,12 +5954,20 @@
                   state.playbooks = state.topMatches.map((idea, idx) =>
                     window.VaultEngine.buildPlaybook(idea, state.profile, idx)
                   );
+                  state.slotPairs = {
+                    0: { primary: foundMatches[0], alternative: foundMatches[3] || foundMatches[0] },
+                    1: { primary: foundMatches[1] || foundMatches[0], alternative: foundMatches[4] || foundMatches[1] || foundMatches[0] },
+                    2: { primary: foundMatches[2] || foundMatches[0], alternative: foundMatches[5] || foundMatches[2] || foundMatches[0] }
+                  };
+                  state.slotHasSwapped = { 0: false, 1: false, 2: false };
+                  state.selectedIdeaIdx = null;
                 } else {
                   computeRecommendations();
                 }
               } else {
                 computeRecommendations();
               }
+              saveUserProgress();
             }
           }
         }
@@ -5962,7 +5977,7 @@
     if (modeParam === "growth" || modeParam === "fit") {
       state.mode = modeParam;
       state.view = "assessment";
-    } else if (urlParams.get("view") === "assessment" || state.step === 4 || state.growthStep === 7) {
+    } else if (urlParams.get("view") === "assessment" || state.step >= 4 || state.growthStep >= 7) {
       state.view = "assessment";
     } else {
       state.view = "home";
