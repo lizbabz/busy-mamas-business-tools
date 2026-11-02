@@ -26,13 +26,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-baking-food"],
       backgrounds: ["bg-culinary", "bg-homemaker"]
     },
-    tag: "Real Mom Story • Culinary & Cottage Bakery",
-    headline: "How Rasheeda Launched Her Banana Bread Business & Sold Out Her First Batch of 22 in Just 1 Week",
+    tag: "Real Mom Story • Cottage Bakery",
+    headline: "How Rasheeda Sold Out 22 Loaves of Banana Bread in 1 Week From Home",
     story:
-      "Rasheeda did not wait for a commercial storefront or a complicated website to launch. She perfected her signature banana bread recipe in her home kitchen, announced a limited first batch to her community and local network, and completely sold out all 22 loaves in her very first week.",
+      "Rasheeda didn't wait for a storefront or website. She announced a limited 22-loaf presale batch from her home kitchen and sold out in 7 days.",
     takeaway:
-      "By using a scarcity-driven presale drop ('Batch #1: 22 Loaves Only'), she collected cash upfront before buying bulk ingredients and turned immediate customer rave reviews into repeat weekly orders toward her {GOAL} target.",
-    metrics: ["Sold Out 22 Loaves in 1 Week", "Home Kitchen Launch", "100% Upfront Presales"]
+      "Collecting cash upfront via limited batch presales lets you fund ingredients without startup risk and builds immediate repeat orders.",
+    metrics: ["Sold Out in 1 Week", "Home Kitchen", "100% Upfront Presales"]
   },
   {
     id: "story-fatima",
@@ -42,13 +42,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-crafting-decor"],
       backgrounds: ["bg-crafts-maker", "bg-design-media", "bg-homemaker"]
     },
-    tag: "Real Mom Story • Artisan Decor & Retail Stockist",
-    headline: "How Fatima Created Jesmonite Decor Pieces & Stocked Her Line in Major Retailer Makers Keep in Under 1 Year",
+    tag: "Real Mom Story • Artisan Decor",
+    headline: "How Fatima Got Her Hand-Poured Decor Line Stocked in Major Retail Stores",
     story:
-      "Fatima started hand-pouring modern architectural trays, coasters, and home decor vessels using Jesmonite from home. Because her pieces had a clean, elevated aesthetic and high perceived value, she pitched local retail buyers and got her product line stocked in the major craft retail store Makers Keep in less than one year.",
+      "Fatima began pouring modern Jesmonite home decor trays at home. Her clean aesthetic caught buyers' attention, getting her into major craft retail in under a year.",
     takeaway:
-      "Pairing direct-to-customer orders with retail store stocking (wholesale or consignment in established stores like Makers Keep) lets your handmade products sell 7 days a week while you are with your kids.",
-    metrics: ["Jesmonite Home Decor", "Stocked in Makers Keep", "Under 1 Year to Retail"]
+      "Wholesale and store consignment allow your handmade goods to sell 7 days a week while you are present with your kids.",
+    metrics: ["Handmade Decor", "Stocked in Retail", "Under 1 Year"]
   },
   {
     id: "story-bridget",
@@ -59,13 +59,13 @@ window.SUCCESS_STORIES = [
       skills: ["finance", "coaching_consulting"],
       backgrounds: ["bg-finance", "bg-corporate", "bg-realestate-legal"]
     },
-    tag: "Real Mom Story • Licensed Financial Services",
-    headline: "How Bridget, a Mom of 3, Made {SYM}800,000 in One Year Selling Financial Products",
+    tag: "Real Mom Story • Financial Products",
+    headline: "How Bridget, a Mom of 3, Built a Multi-6-Figure Practice Selling Financial Products",
     story:
-      "Bridget wanted uncapped earning potential that still allowed her to be present for her three kids. She studied for her state insurance and financial licenses and began educating families and business owners on life insurance, annuities, and wealth protection products.",
+      "Bridget wanted high earning potential that protected her family time. She earned her licenses and began educating families on wealth and protection plans.",
     takeaway:
-      "Because financial products pay substantial upfront and renewal commissions ({SYM}1,200 to {SYM}6,500+ per policy), helping just a few families or business owners each week allowed her to cross {SYM}800,000 in annual income.",
-    metrics: ["Mom of 3", "Licensed Financial Products", "{SYM}800,000 in 1 Year"]
+      "High-commission licensed products ({SYM}1,200 to {SYM}6,500+ per policy) let you hit ambitious income goals serving just a few clients a month.",
+    metrics: ["Mom of 3", "Licensed Advisory", "High-Commission Model"]
   },
   {
     id: "story-tolu",
@@ -77,13 +77,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-event-planning"],
       backgrounds: ["bg-event-planning", "bg-homemaker"]
     },
-    tag: "Real Mom Story • Event Planning & Backdrops",
-    headline: "How Tolu Made {SYM}1,800 in Her First 2 Weeks With Event Backdrops & Scaled to {SYM}5,800/Month",
+    tag: "Real Mom Story • Event Staging",
+    headline: "How Tolu Made {SYM}1,800 in 14 Days With Weekend Event Setups",
     story:
-      "Tolu needed fast cash flow without working Monday through Friday. She staged one sample balloon and backdrop setup in her living room, posted photos in her local parent group, and booked 4 weekend birthday and baby shower setups in 14 days.",
+      "Tolu staged one sample balloon backdrop in her living room, shared photos in a local group, and booked 4 weekend events in her first 2 weeks.",
     takeaway:
-      "Collecting a 50% booking deposit upfront paid for her reusable frames and equipment before she ever stepped foot at her first event, putting her right on pace for {GOAL}.",
-    metrics: ["Saturdays Only", "{SYM}1,800 in First 14 Days", "{SYM}5,800/mo by Month 3"]
+      "Collecting 50% booking deposits upfront pays for your equipment before the event, providing quick cash flow on weekends only.",
+    metrics: ["Weekends Only", "{SYM}1,800 in 14 Days", "{SYM}5,800/mo by Month 3"]
   },
   {
     id: "story-amara",
@@ -94,13 +94,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-mc-dj", "act-event-planning"],
       backgrounds: ["bg-entertainment", "bg-event-planning"]
     },
-    tag: "Real Mom Story • Live MC, DJ & Event Hosting",
-    headline: "How Amara Built a {SYM}6,500/Month Intimate & Corporate Event Hosting & Live MC Business",
+    tag: "Real Mom Story • Event MC & Hosting",
+    headline: "How Amara Turned Her Natural Energy Into a {SYM}6,500/Month Event Hosting Business",
     story:
-      "Amara was always the friend commanding the mic at family celebrations and keeping events on schedule. She packaged her natural stage presence into a high-demand offer: Live Reception/Gala MCing ({SYM}1,250/event) and Corporate Mixer Hosting ({SYM}1,800+).",
+      "Amara packaged her natural stage presence into reception MCing ({SYM}1,250/event) and partnered with local planners to stay booked without ad spend.",
     takeaway:
-      "By partnering with 4 local event planners, venues, and DJs who constantly needed a warm, polished MC/Host, she booked 3 to 5 weekend and corporate events a month without spending a dime on ads.",
-    metrics: ["3 to 5 Events/Month", "Weddings, Galas & Corporate", "{SYM}6,500/mo Revenue"]
+      "Partnering with local planners who constantly need polished hosts creates steady weekend bookings without chasing leads.",
+    metrics: ["3 to 5 Events/Mo", "Weddings & Galas", "{SYM}6,500/mo Revenue"]
   },
   {
     id: "story-zainab-beauty",
@@ -110,13 +110,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-beauty-glam"],
       backgrounds: ["bg-beauty-wellness"]
     },
-    tag: "Real Mom Story • Beauty, Bridal Glam & PMU",
-    headline: "How Zainab Built a {SYM}7,200/Month Bridal Glam & Brow Studio Working 3 Days a Week",
+    tag: "Real Mom Story • Bridal Beauty & PMU",
+    headline: "How Zainab Reached {SYM}7,200/Month in Bridal Glam & Brows in 12 Hours a Week",
     story:
-      "Zainab transitioned from working long salon hours to running her own appointment-only Bridal Makeup (MUA) and Brow/PMU studio. Instead of taking low-priced walk-ins, she created a {SYM}950 Bridal Party Glam Package and a {SYM}450 Lip Blush & Brow service.",
+      "Zainab left long salon shifts to run an appointment-only studio, replacing cheap walk-ins with {SYM}950 bridal party glam packages and PMU sessions.",
     takeaway:
-      "In beauty and aesthetics, bundling high-value packages (bridal parties, PMU services, or corrective skincare series) lets you earn {GOAL} in just 8 to 12 appointment hours per week.",
-    metrics: ["3 Days/Week", "Bridal MUA & PMU", "{SYM}7,200/mo Revenue"]
+      "High-value beauty packages allow you to hit full-time income goals in just 8 to 12 scheduled appointment hours a week.",
+    metrics: ["3 Days/Week", "Bridal & PMU", "{SYM}7,200/mo Revenue"]
   },
   {
     id: "story-simone",
@@ -127,13 +127,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-coaching", "act-healthcare-support"],
       backgrounds: ["bg-corporate", "bg-education", "bg-healthcare", "bg-tech"]
     },
-    tag: "Real Mom Story • Coaching, Consulting & Workshops",
-    headline: "How Simone Turned Her Career & Operations Experience Into {SYM}9,500/Month in 10 Hours a Week",
+    tag: "Real Mom Story • Advisory & Consulting",
+    headline: "How Simone Packaged Her Career Skills Into {SYM}9,500/Month in 10 Hours a Week",
     story:
-      "After leaving her demanding full-time role, Simone packaged her professional experience into a 90-day 1-on-1 Coaching & Advisory program ({SYM}1,800) paired with one monthly Corporate Lunch-and-Learn workshop ({SYM}2,500).",
+      "Simone packaged her operations expertise into a {SYM}1,800 1-on-1 advisory offer and a monthly corporate lunch-and-learn workshop.",
     takeaway:
-      "With high-trust coaching and consulting packages, you only need 4 to 5 active clients at a time to comfortably exceed {GOAL} during school or daycare hours.",
-    metrics: ["10 Hrs/Week", "4 to 5 Active Clients", "{SYM}9,500/mo Consulting"]
+      "With high-trust consulting, you only need 4 to 5 active clients at a time to earn a full-time income during school hours.",
+    metrics: ["10 Hrs/Week", "4 to 5 Clients", "{SYM}9,500/mo Consulting"]
   },
   {
     id: "story-rachel",
@@ -143,13 +143,13 @@ window.SUCCESS_STORIES = [
       skills: ["design_photo", "writing", "tech", "teaching"],
       activities: ["act-digital-design"]
     },
-    tag: "Real Mom Story • Nap-Time Digital Products",
-    headline: "How Rachel Built a {SYM}4,200/Month Digital Printables & Workbook Shop During Nap Times",
+    tag: "Real Mom Story • Digital Products",
+    headline: "How Rachel Built a {SYM}4,200/Month Digital Shop During Nap Pockets",
     story:
-      "With a toddler and newborn at home, Rachel could not commit to live client calls. She used 45-minute nap pockets to design bundled household planners, event templates, and kids' learning workbooks on Etsy and Amazon KDP.",
+      "With two little ones at home, Rachel used 45-minute quiet pockets to design bundled household planners and learning workbooks on Etsy and KDP.",
     takeaway:
-      "Because digital bundles ({SYM}27 to {SYM}39) deliver automatically upon checkout, her shop now generates {SYM}4,200+/mo around the clock with zero shipping or live calls.",
-    metrics: ["Nap-Time Schedule", "Zero Live Calls", "{SYM}4,200/mo Passive Sales"]
+      "Digital templates deliver automatically upon purchase, creating reliable passive sales with zero live calls or shipping.",
+    metrics: ["Nap Pockets", "Zero Live Calls", "{SYM}4,200/mo Passive"]
   },
   {
     id: "story-maya",
@@ -159,13 +159,13 @@ window.SUCCESS_STORIES = [
       activities: ["act-backoffice-writing", "act-systems-brokering"],
       backgrounds: ["bg-finance", "bg-corporate", "bg-writing-marketing", "bg-tech"]
     },
-    tag: "Real Mom Story • Quiet Remote B2B Retainers",
-    headline: "How Maya Built a {SYM}5,500/Month Remote Grant Writing & Bookkeeping Practice With Zero Social Media",
+    tag: "Real Mom Story • Quiet Remote Retainers",
+    headline: "How Maya Built a {SYM}5,500/Month Practice With Zero Social Media",
     story:
-      "Maya wanted steady monthly income from home without ever posting her face on social media. She partnered with local CPAs and nonprofit directors to handle monthly bookkeeping and grant proposals on quiet retainer contracts.",
+      "Maya partnered with local CPAs and non-profits to handle monthly bookkeeping and grant research on quiet retainer contracts.",
     takeaway:
-      "Just 4 to 6 recurring B2B retainer clients ({SYM}750 to {SYM}1,500/mo each) creates predictable {GOAL} income that you can complete entirely on your own schedule.",
-    metrics: ["Zero Social Media", "100% Behind-the-Scenes", "{SYM}5,500/mo Recurring"]
+      "Just 4 to 6 recurring B2B retainer clients create predictable monthly income that you can complete completely behind the scenes.",
+    metrics: ["Zero Social Media", "100% Behind-the-Scenes", "{SYM}5,500/mo Retainers"]
   }
 ];
 
@@ -342,7 +342,7 @@ window.PROFESSIONAL_BACKGROUNDS = [
     title: "Science, STEM & Biotech Innovation",
     sub: "Scientist (PhD/MS), STEM researcher, biotech program manager, research strategist, or laboratory specialist",
     desc: "Scientist (PhD/MS), STEM researcher, biotech program manager, research strategist, or laboratory specialist",
-    mappedSkills: ["writing", "organization", "teaching"],
+    mappedSkills: ["scientific_stem", "teaching", "organization"],
     keywords: ["scientific program", "stem curriculum", "research strategy", "scientific innovation", "grant writer", "lab consulting", "biotech", "fellowship", "stem education", "scientist"]
   },
   {
@@ -712,7 +712,7 @@ window.ENJOYED_ACTIVITIES = [
     title: "Scientific Discovery, STEM & Problem-Solving",
     sub: "Exploring scientific discoveries, analyzing complex problems, brainstorming educational frameworks, and advancing STEM",
     desc: "Exploring scientific discoveries, analyzing complex problems, brainstorming educational frameworks, and advancing STEM",
-    mappedSkills: ["writing", "organization", "teaching"],
+    mappedSkills: ["scientific_stem", "teaching", "organization"],
     models: ["service"],
     keywords: ["scientific program", "stem curriculum", "research strategy", "grant writer", "innovation consulting", "science", "stem"]
   },

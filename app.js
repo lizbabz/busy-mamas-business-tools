@@ -800,9 +800,6 @@
     state.limitNotice = "";
     saveUserProgress();
     render();
-    setTimeout(() => {
-      advanceSubStep();
-    }, 220);
   }
 
   function getCur() {
@@ -3026,8 +3023,9 @@
                   </div>
                   <div class="comparison-idea-name" title="${(idea.name || "").replace(/"/g, "&quot;")}">${cleanShortName || idea.name}</div>
                   <div class="comparison-category">${idea.category}</div>
-                  <div class="comparison-why-preview" style="font-size: 0.82rem; color: var(--ink-muted); margin: 8px 0 10px; line-height: 1.45; background: rgba(0,0,0,0.025); padding: 8px 10px; border-radius: 8px;">
-                    <strong>Why it fits:</strong> ${escapeHtml(matchWhy)}
+                  <div class="comparison-why-preview" style="font-size: 0.84rem; color: #1e3a1b; margin: 10px 0 12px; line-height: 1.45; background: #eef7eb; border-left: 3px solid #2d5a27; padding: 8px 11px; border-radius: 6px;">
+                    <strong style="color: #1f3f1b; text-transform: uppercase; font-size: 0.72rem; letter-spacing: 0.05em; display: block; margin-bottom: 2px;">Why this fits you:</strong>
+                    <span>${escapeHtml(matchWhy)}</span>
                   </div>
                 </div>
 
