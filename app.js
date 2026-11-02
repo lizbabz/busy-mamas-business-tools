@@ -115,7 +115,41 @@
     config: { ...(window.APP_CONFIG || {}) }
   };
 
+  function updateDocumentTitle() {
+    if (typeof document === "undefined") return;
+    const isHome = state.view === "home";
+    const isGrowth = state.mode === "growth";
+
+    if (isHome) {
+      document.title = "Business Tools by Busy Mamas | Business Fit & Growth Assessments";
+      return;
+    }
+
+    if (isGrowth) {
+      if (state.growthStep <= 6) {
+        document.title = `Business Growth Assessment (Section ${state.growthStep} of 6) | Busy Mamas`;
+      } else if (state.growthStep === 7) {
+        document.title = "Your 30-Day Growth Plan Is Ready | Busy Mamas";
+      } else {
+        const namePart = state.growthProfile.firstName ? ` for ${state.growthProfile.firstName}` : "";
+        document.title = `Personalized Growth Report${namePart} | Busy Mamas`;
+      }
+      return;
+    }
+
+    // Business Fit mode
+    if (state.step <= 6) {
+      document.title = `Business Fit Assessment (Section ${state.step} of 6) | Busy Mamas`;
+    } else if (state.step === 7) {
+      document.title = "Your Business Fit Blueprint Is Ready | Busy Mamas";
+    } else {
+      const namePart = state.profile.firstName ? ` for ${state.profile.firstName}` : "";
+      document.title = `Your Top 3 Business Matches${namePart} | Busy Mamas`;
+    }
+  }
+
   function updateModeHeroAndNav() {
+    updateDocumentTitle();
     const isHome = state.view === "home";
     const isGrowth = state.mode === "growth";
 
