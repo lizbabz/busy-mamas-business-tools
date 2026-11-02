@@ -4,6 +4,8 @@ const KIT_API_KEY = process.env.KIT_API_KEY || "KNfaWYKoCU8IZgyhEK_Lag";
 const KIT_API_SECRET = process.env.KIT_API_SECRET || "DjHoErqS8wASAXBYjJNFHhPIbIl8V2uPug4DLzgOvO0";
 const KIT_FIT_FORM_ID = process.env.KIT_FIT_FORM_ID || "10105556";
 const KIT_GROWTH_FORM_ID = process.env.KIT_GROWTH_FORM_ID || "10105554";
+const KIT_FIT_SEQUENCE_ID = process.env.KIT_FIT_SEQUENCE_ID || "2948624";
+const KIT_GROWTH_SEQUENCE_ID = process.env.KIT_GROWTH_SEQUENCE_ID || "2952411";
 
 function postJson(url, payload) {
   return new Promise((resolve, reject) => {
@@ -164,10 +166,28 @@ module.exports = async (req, res) => {
       } catch (_) {}
     }
 
+    // 3. Guarantee enrollment in the active welcome sequence for automated email delivery
+    const sequenceId =
+      assessmentType === "Business Growth"
+        ? (body.config && body.config.kitGrowthSequenceId) || KIT_GROWTH_SEQUENCE_ID
+        : (body.config && body.config.kitFitSequenceId) || KIT_FIT_SEQUENCE_ID;
+
+    if (sequenceId) {
+      try {
+        await postJson(`https://api.convertkit.com/v3/courses/${sequenceId}/subscribe`, {
+          api_key: apiKey,
+          email: email,
+          first_name: firstName,
+          fields: customFields
+        });
+      } catch (_) {}
+    }
+
     return res.status(200).json({
       ok: true,
       synced: true,
       formId: formId,
+      sequenceId: sequenceId || null,
       subscriberId: subscriberId || null
     });
   } catch (err) {

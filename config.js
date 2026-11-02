@@ -21,6 +21,8 @@ window.APP_CONFIG = {
   kitFormId: "10105556",
   kitFitFormId: "10105556",
   kitGrowthFormId: "10105554",
+  kitFitSequenceId: "2948624",
+  kitGrowthSequenceId: "2952411",
   kitTagId: "",
 
   // 3. OPTIONAL PAID 1-ON-1 CONSULTATIONS WITH OYIN (CALENDLY)

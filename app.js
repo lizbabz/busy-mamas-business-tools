@@ -2898,6 +2898,7 @@
         saveLeadToBrowserStorage(leadRecord);
 
         const fitFormId = state.config.kitFitFormId || state.config.kitFormId || "10105556";
+        const fitSequenceId = state.config.kitFitSequenceId || "2948624";
         const kitKey = state.config.kitApiKey || "KNfaWYKoCU8IZgyhEK_Lag";
 
         const customFields = {
@@ -2926,6 +2927,18 @@
           })
         }).catch(() => null);
 
+        // Guarantee #1b: Direct client-side enrollment into the Business Fit Welcome Sequence
+        const directKitSequencePromise = fetch(`https://api.convertkit.com/v3/courses/${fitSequenceId}/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            api_key: kitKey,
+            email: state.profile.email,
+            first_name: state.profile.firstName,
+            fields: customFields
+          })
+        }).catch(() => null);
+
         // Guarantee #2: Server-side API submission for backend persistence & secret authentication
         const backendPromise = fetch("/api/subscribe", {
           method: "POST",
@@ -2940,12 +2953,13 @@
             config: {
               kitApiKey: kitKey,
               kitFormId: fitFormId,
+              kitFitSequenceId: fitSequenceId,
               kitTagId: state.config.kitTagId
             }
           })
         }).catch(() => null);
 
-        await Promise.allSettled([directKitPromise, backendPromise]);
+        await Promise.allSettled([directKitPromise, directKitSequencePromise, backendPromise]);
 
         state.step = 8;
         saveUserProgress();
@@ -4886,6 +4900,7 @@
         saveLeadToBrowserStorage(leadRecord);
 
         const growthFormId = state.config.kitGrowthFormId || state.config.kitFormId || "10105554";
+        const growthSequenceId = state.config.kitGrowthSequenceId || "2952411";
         const kitKey = state.config.kitApiKey || "KNfaWYKoCU8IZgyhEK_Lag";
 
         const customFields = {
@@ -4908,6 +4923,18 @@
 
         // Guarantee #1: Direct client-side submission to Kit (ConvertKit) public form endpoint
         const directKitPromise = fetch(`https://api.convertkit.com/v3/forms/${growthFormId}/subscribe`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            api_key: kitKey,
+            email: gp.email,
+            first_name: gp.firstName,
+            fields: customFields
+          })
+        }).catch(() => null);
+
+        // Guarantee #1b: Direct client-side enrollment into the Business Growth Welcome Sequence
+        const directKitSequencePromise = fetch(`https://api.convertkit.com/v3/courses/${growthSequenceId}/subscribe`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -4941,12 +4968,13 @@
             config: {
               kitApiKey: kitKey,
               kitFormId: growthFormId,
+              kitGrowthSequenceId: growthSequenceId,
               kitTagId: state.config.kitTagId
             }
           })
         }).catch(() => null);
 
-        await Promise.allSettled([directKitPromise, backendPromise]);
+        await Promise.allSettled([directKitPromise, directKitSequencePromise, backendPromise]);
 
         state.growthStep = 8;
         saveUserProgress();
