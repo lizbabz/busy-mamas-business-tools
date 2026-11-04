@@ -2785,26 +2785,34 @@
 
     return `
       <div class="gate-card">
-        <div class="eyebrow-pill">Assessment Complete · Top 3 Matches Ready</div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(45, 90, 39, 0.08); border: 1.5px solid var(--forest); color: var(--forest); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 800; margin-bottom: 14px; letter-spacing: 0.04em;">
+          100% Free Assessment • Instant Access On Screen • No Credit Card Required
+        </div>
+
         <h2 class="step-title" style="font-size: 2rem;">
           Your 3 Personalized Recommendations for <em>${goalPeriodText}</em>
         </h2>
-        <p class="step-desc" style="max-width: 560px; margin: 8px auto 18px;">
-          Matched to your <strong>${state.profile.hoursPerWeek} hrs/week</strong> schedule and <strong>${state.profile.timeline}</strong> timeline, including requirements, tradeoffs, and your step-by-step action plan.
+        <p class="step-desc" style="max-width: 580px; margin: 8px auto 20px;">
+          Matched to your <strong>${state.profile.hoursPerWeek} hrs/week</strong> schedule and <strong>${state.profile.timeline}</strong> timeline, including launch playbooks, requirements, tradeoffs, and your step-by-step action plan.
         </p>
 
-        <div class="gate-teaser-grid">
-          ${[m1, m2, m3]
+        <div class="gate-teaser-grid" style="margin-bottom: 24px;">
+          ${[
+            { rank: "#1 Primary Match", title: "Highest Alignment with Your Skills & Schedule", cat: m1.category || "Service or Advisory", score: `${m1.matchScore || 98}% Fit` },
+            { rank: "#2 Alternative Match", title: "Low Overhead & High Flexibility Option", cat: m2.category || "Creative or Local", score: `${m2.matchScore || 95}% Fit` },
+            { rank: "#3 Alternative Match", title: "Approachable Launch & Fast-Cash Model", cat: m3.category || "Consulting or Retainer", score: `${m3.matchScore || 92}% Fit` }
+          ]
             .map(
-              (item, idx) => `
-            <div class="teaser-pill-card">
-              <div class="teaser-rank">#${idx + 1} Match • ${item.matchScore || 95}% Fit</div>
-              <div class="teaser-blurred-title">
-                <span class="blur-mask">${(item.name || "Matched Business Profile").slice(0, 18)}</span>
+              (item) => `
+            <div class="teaser-pill-card" style="background: #FFFFFF; border: 1.5px solid rgba(45, 90, 39, 0.16); border-radius: 14px; padding: 16px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+              <div style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--forest); margin-bottom: 6px;">
+                ${item.rank} • ${item.score}
               </div>
-              <div style="font-size: 0.78rem; color: var(--ink-muted);">
-                Category: <strong>${item.category || "Flexible Business"}</strong><br/>
-                Ease Rating: <strong>${item.easeOf5k || 5} / 5</strong>
+              <div style="font-size: 0.96rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px; line-height: 1.35;">
+                ${item.title}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--ink-muted);">
+                Focus Area: <strong>${item.cat}</strong>
               </div>
             </div>
           `
@@ -2812,12 +2820,21 @@
             .join("")}
         </div>
 
-        <div style="background: var(--bg-cream); border-radius: var(--radius-md); padding: 22px; margin-bottom: 16px;">
-          <h3 style="font-size: 1.12rem; font-weight: 800; margin-bottom: 6px;">
-            Enter your name and email to view your recommendations & action plan
+        <div style="background: #FFFFFF; border: 2px solid var(--forest); border-radius: var(--radius-md); padding: 26px; margin-bottom: 18px; box-shadow: 0 4px 18px rgba(45, 90, 39, 0.08);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="background: var(--mint-soft); color: var(--forest); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; letter-spacing: 0.05em;">
+              Free Assessment
+            </span>
+            <span style="font-size: 0.82rem; font-weight: 700; color: var(--ink-muted);">
+              No payment or credit card ever required
+            </span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--forest-dark); margin-bottom: 8px; line-height: 1.35;">
+            Where should we send your backup report?
           </h3>
-          <p style="font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 16px;">
-            Unlock your full report right now and receive a copy in your inbox.
+          <p style="font-size: 0.92rem; color: var(--ink); margin-bottom: 18px; line-height: 1.55;">
+            Your full recommendations and 30-day action plan will <strong>open right here on your screen immediately</strong>. We also email you a private backup link so you can revisit your matches anytime.
           </p>
 
           <form id="emailGateForm" class="gate-form">
@@ -2850,12 +2867,12 @@
               </label>
             </div>
 
-            <button type="submit" class="btn-primary" id="btnUnlockResults" style="width: 100%; font-size: 1.04rem;">
-              View My 3 Recommendations & Action Plan
+            <button type="submit" class="btn-primary" id="btnUnlockResults" style="width: 100%; font-size: 1.05rem; padding: 15px 22px; font-weight: 800;">
+              View My Free Results On Screen + Email My Copy
             </button>
           </form>
-          <div class="gate-privacy">
-            By submitting, you agree to receive your personalized report and occasional business updates by email.
+          <div class="gate-privacy" style="text-align: center; font-size: 0.8rem; color: var(--ink-muted); margin-top: 12px;">
+            100% Free. Instant on-screen access. No spam, unsubscribe anytime.
           </div>
         </div>
 
@@ -4796,26 +4813,34 @@
 
     return `
       <div class="gate-card">
-        <div class="eyebrow-pill">Assessment Complete · Your 30-Day Growth Plan Is Ready</div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(45, 90, 39, 0.08); border: 1.5px solid var(--forest); color: var(--forest); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 800; margin-bottom: 14px; letter-spacing: 0.04em;">
+          100% Free Diagnostic • Instant Access On Screen • No Credit Card Required
+        </div>
+
         <h2 class="step-title" style="font-size: 2rem;">
           Your Personalized Growth Plan for <em>${fmtMoney(gp.targetRevenue)}/Month</em>
         </h2>
-        <p class="step-desc" style="max-width: 580px; margin: 8px auto 18px;">
+        <p class="step-desc" style="max-width: 580px; margin: 8px auto 20px;">
           Built for your <strong>${gp.maxDesiredHours} hrs/week</strong> schedule, including what is holding back your sales right now, clear profit math, 3 simple priorities, and a step-by-step 30-day plan.
         </p>
 
-        <div class="gate-teaser-grid">
-          ${priorities
+        <div class="gate-teaser-grid" style="margin-bottom: 24px;">
+          ${[
+            { rank: "Priority #1", title: "Primary Sales & Capacity Bottleneck Analysis", cat: "Operational Relief", timing: "Week 1 Focus" },
+            { rank: "Priority #2", title: "Package Pricing & Revenue Scaling Math", cat: "Margin Expansion", timing: "Weeks 2 to 3" },
+            { rank: "Priority #3", title: "High-Leverage Acquisition & Referrals", cat: "Predictable Lead Flow", timing: "Weeks 3 to 4" }
+          ]
             .map(
-              (p, idx) => `
-            <div class="teaser-pill-card">
-              <div class="teaser-rank">Priority #${idx + 1} • ${p.impactScore}</div>
-              <div class="teaser-blurred-title">
-                <span class="blur-mask">${(p.shortLabel || "Growth Priority").slice(0, 18)}</span>
+              (p) => `
+            <div class="teaser-pill-card" style="background: #FFFFFF; border: 1.5px solid rgba(45, 90, 39, 0.16); border-radius: 14px; padding: 16px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+              <div style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--forest); margin-bottom: 6px;">
+                ${p.rank} • High Impact
               </div>
-              <div style="font-size: 0.78rem; color: var(--ink-muted);">
-                Focus: <strong>${p.category}</strong><br/>
-                Timing: <strong>${p.timeToImplement}</strong>
+              <div style="font-size: 0.96rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px; line-height: 1.35;">
+                ${p.title}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--ink-muted);">
+                Focus: <strong>${p.cat}</strong> • Timing: <strong>${p.timing}</strong>
               </div>
             </div>
           `
@@ -4823,12 +4848,21 @@
             .join("")}
         </div>
 
-        <div style="background: var(--bg-cream); border-radius: var(--radius-md); padding: 22px; margin-bottom: 16px;">
-          <h3 style="font-size: 1.12rem; font-weight: 800; margin-bottom: 6px;">
-            Enter your name and email to view your growth report & 30-day action plan
+        <div style="background: #FFFFFF; border: 2px solid var(--forest); border-radius: var(--radius-md); padding: 26px; margin-bottom: 18px; box-shadow: 0 4px 18px rgba(45, 90, 39, 0.08);">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+            <span style="background: var(--mint-soft); color: var(--forest); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; letter-spacing: 0.05em;">
+              Free Diagnostic
+            </span>
+            <span style="font-size: 0.82rem; font-weight: 700; color: var(--ink-muted);">
+              No payment or credit card ever required
+            </span>
+          </div>
+
+          <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--forest-dark); margin-bottom: 8px; line-height: 1.35;">
+            Where should we send your backup growth report?
           </h3>
-          <p style="font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 16px;">
-            Unlock your full report right now and save your progress.
+          <p style="font-size: 0.92rem; color: var(--ink); margin-bottom: 18px; line-height: 1.55;">
+            Your full growth analysis, capacity math, and 30-day plan will <strong>open right here on your screen immediately</strong>. We also email you a private backup link so you can review your roadmap anytime.
           </p>
 
           <form id="growthEmailGateForm" class="gate-form">
@@ -4861,12 +4895,12 @@
               </label>
             </div>
 
-            <button type="submit" class="btn-primary" id="btnUnlockGrowthResults" style="width: 100%; font-size: 1.04rem;">
-              View My Growth Report & 30-Day Plan
+            <button type="submit" class="btn-primary" id="btnUnlockGrowthResults" style="width: 100%; font-size: 1.05rem; padding: 15px 22px; font-weight: 800;">
+              View My Free Growth Report On Screen + Email My Copy
             </button>
           </form>
-          <div class="gate-privacy">
-            By submitting, you agree to receive your growth report and occasional business updates by email.
+          <div class="gate-privacy" style="text-align: center; font-size: 0.8rem; color: var(--ink-muted); margin-top: 12px;">
+            100% Free. Instant on-screen access. No spam, unsubscribe anytime.
           </div>
         </div>
 
