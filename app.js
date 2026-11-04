@@ -2779,62 +2779,26 @@
     const goalPeriodText = isFlashTimeline()
       ? `${fmtMoney(state.profile.incomeGoal)} in 14 Days`
       : `${fmtMoney(state.profile.incomeGoal)}/Month`;
-    const m1 = state.topMatches[0] || {};
-    const m2 = state.topMatches[1] || {};
-    const m3 = state.topMatches[2] || {};
 
     return `
-      <div class="gate-card">
-        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(45, 90, 39, 0.08); border: 1.5px solid var(--forest); color: var(--forest); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 800; margin-bottom: 14px; letter-spacing: 0.04em;">
-          100% Free Assessment • Instant Access On Screen • No Credit Card Required
+      <div class="gate-card" style="max-width: 580px; margin: 0 auto;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(45, 90, 39, 0.08); border: 1.5px solid var(--forest); color: var(--forest); padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.04em;">
+          100% Free Assessment • Instant On-Screen Results • No Credit Card Required
         </div>
 
-        <h2 class="step-title" style="font-size: 2rem;">
-          Your 3 Personalized Recommendations for <em>${goalPeriodText}</em>
+        <h2 class="step-title" style="font-size: 1.85rem; line-height: 1.25; margin-bottom: 10px;">
+          Your 3 Personalized Business Matches to Generate <em>${goalPeriodText}</em> Are Ready!
         </h2>
-        <p class="step-desc" style="max-width: 580px; margin: 8px auto 20px;">
-          Matched to your <strong>${state.profile.hoursPerWeek} hrs/week</strong> schedule and <strong>${state.profile.timeline}</strong> timeline, including launch playbooks, requirements, tradeoffs, and your step-by-step action plan.
+        <p class="step-desc" style="max-width: 520px; margin: 0 auto 20px; font-size: 0.94rem; line-height: 1.5;">
+          These recommendations are matched to your <strong>${state.profile.hoursPerWeek} hrs/week</strong> schedule and <strong>${state.profile.timeline}</strong> timeline, with step-by-step launch playbooks and real-life mama math.
         </p>
 
-        <div class="gate-teaser-grid" style="margin-bottom: 24px;">
-          ${[
-            { rank: "#1 Primary Match", title: "Highest Alignment with Your Skills & Schedule", cat: m1.category || "Service or Advisory", score: `${m1.matchScore || 98}% Fit` },
-            { rank: "#2 Alternative Match", title: "Low Overhead & High Flexibility Option", cat: m2.category || "Creative or Local", score: `${m2.matchScore || 95}% Fit` },
-            { rank: "#3 Alternative Match", title: "Approachable Launch & Fast-Cash Model", cat: m3.category || "Consulting or Retainer", score: `${m3.matchScore || 92}% Fit` }
-          ]
-            .map(
-              (item) => `
-            <div class="teaser-pill-card" style="background: #FFFFFF; border: 1.5px solid rgba(45, 90, 39, 0.16); border-radius: 14px; padding: 16px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--forest); margin-bottom: 6px;">
-                ${item.rank} • ${item.score}
-              </div>
-              <div style="font-size: 0.96rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px; line-height: 1.35;">
-                ${item.title}
-              </div>
-              <div style="font-size: 0.8rem; color: var(--ink-muted);">
-                Focus Area: <strong>${item.cat}</strong>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-
-        <div style="background: #FFFFFF; border: 2px solid var(--forest); border-radius: var(--radius-md); padding: 26px; margin-bottom: 18px; box-shadow: 0 4px 18px rgba(45, 90, 39, 0.08);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span style="background: var(--mint-soft); color: var(--forest); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; letter-spacing: 0.05em;">
-              Free Assessment
-            </span>
-            <span style="font-size: 0.82rem; font-weight: 700; color: var(--ink-muted);">
-              No payment or credit card ever required
-            </span>
-          </div>
-
-          <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--forest-dark); margin-bottom: 8px; line-height: 1.35;">
+        <div style="background: #FFFFFF; border: 2px solid var(--forest); border-radius: var(--radius-md); padding: 24px 20px; margin-bottom: 18px; box-shadow: 0 4px 18px rgba(45, 90, 39, 0.08);">
+          <h3 style="font-size: 1.2rem; font-weight: 900; color: var(--forest-dark); margin-bottom: 6px; line-height: 1.35;">
             Where should we send your backup report?
           </h3>
-          <p style="font-size: 0.92rem; color: var(--ink); margin-bottom: 18px; line-height: 1.55;">
-            Your full recommendations and 30-day action plan will <strong>open right here on your screen immediately</strong>. We also email you a private backup link so you can revisit your matches anytime.
+          <p style="font-size: 0.9rem; color: var(--ink); margin-bottom: 18px; line-height: 1.5;">
+            Your full recommendations and 30-day action plan will <strong>open right here on your screen immediately</strong>. We will also email you a private backup copy so you can revisit your matches anytime.
           </p>
 
           <form id="emailGateForm" class="gate-form">
@@ -2855,7 +2819,7 @@
               required
             />
 
-            <div class="checkin-optin-box">
+            <div class="checkin-optin-box" style="margin-bottom: 14px;">
               <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 700;">
                 <input
                   type="checkbox"
@@ -2863,11 +2827,11 @@
                   style="width: 16px; height: 16px; accent-color: #10B981;"
                   ${state.profile.checkInCadence !== "report-only" ? "checked" : ""}
                 />
-                <span>Send me progress check-in emails to help me stay on track.</span>
+                <span style="font-size: 0.88rem;">Send me progress check-in emails to help me stay on track.</span>
               </label>
             </div>
 
-            <button type="submit" class="btn-primary" id="btnUnlockResults" style="width: 100%; font-size: 1.05rem; padding: 15px 22px; font-weight: 800;">
+            <button type="submit" class="btn-primary" id="btnUnlockResults" style="width: 100%; font-size: 1.05rem; padding: 15px 20px; font-weight: 800;">
               View My Free Results On Screen + Email My Copy
             </button>
           </form>
@@ -4812,57 +4776,24 @@
     const gp = state.growthProfile;
 
     return `
-      <div class="gate-card">
-        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(45, 90, 39, 0.08); border: 1.5px solid var(--forest); color: var(--forest); padding: 6px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: 800; margin-bottom: 14px; letter-spacing: 0.04em;">
-          100% Free Diagnostic • Instant Access On Screen • No Credit Card Required
+      <div class="gate-card" style="max-width: 580px; margin: 0 auto;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(45, 90, 39, 0.08); border: 1.5px solid var(--forest); color: var(--forest); padding: 5px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 800; margin-bottom: 12px; letter-spacing: 0.04em;">
+          100% Free Diagnostic • Instant On-Screen Results • No Credit Card Required
         </div>
 
-        <h2 class="step-title" style="font-size: 2rem;">
-          Your Personalized Growth Plan for <em>${fmtMoney(gp.targetRevenue)}/Month</em>
+        <h2 class="step-title" style="font-size: 1.85rem; line-height: 1.25; margin-bottom: 10px;">
+          Your Personalized 30-Day Growth Plan for <em>${fmtMoney(gp.targetRevenue)}/Month</em> Is Ready!
         </h2>
-        <p class="step-desc" style="max-width: 580px; margin: 8px auto 20px;">
-          Built for your <strong>${gp.maxDesiredHours} hrs/week</strong> schedule, including what is holding back your sales right now, clear profit math, 3 simple priorities, and a step-by-step 30-day plan.
+        <p class="step-desc" style="max-width: 520px; margin: 0 auto 20px; font-size: 0.94rem; line-height: 1.5;">
+          Matched to your <strong>${gp.maxDesiredHours} hrs/week</strong> schedule, with your primary bottleneck analysis, clear profit math, and 3 high-impact priorities.
         </p>
 
-        <div class="gate-teaser-grid" style="margin-bottom: 24px;">
-          ${[
-            { rank: "Priority #1", title: "Primary Sales & Capacity Bottleneck Analysis", cat: "Operational Relief", timing: "Week 1 Focus" },
-            { rank: "Priority #2", title: "Package Pricing & Revenue Scaling Math", cat: "Margin Expansion", timing: "Weeks 2 to 3" },
-            { rank: "Priority #3", title: "High-Leverage Acquisition & Referrals", cat: "Predictable Lead Flow", timing: "Weeks 3 to 4" }
-          ]
-            .map(
-              (p) => `
-            <div class="teaser-pill-card" style="background: #FFFFFF; border: 1.5px solid rgba(45, 90, 39, 0.16); border-radius: 14px; padding: 16px; text-align: left; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
-              <div style="font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--forest); margin-bottom: 6px;">
-                ${p.rank} • High Impact
-              </div>
-              <div style="font-size: 0.96rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px; line-height: 1.35;">
-                ${p.title}
-              </div>
-              <div style="font-size: 0.8rem; color: var(--ink-muted);">
-                Focus: <strong>${p.cat}</strong> • Timing: <strong>${p.timing}</strong>
-              </div>
-            </div>
-          `
-            )
-            .join("")}
-        </div>
-
-        <div style="background: #FFFFFF; border: 2px solid var(--forest); border-radius: var(--radius-md); padding: 26px; margin-bottom: 18px; box-shadow: 0 4px 18px rgba(45, 90, 39, 0.08);">
-          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-            <span style="background: var(--mint-soft); color: var(--forest); font-size: 0.75rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 12px; letter-spacing: 0.05em;">
-              Free Diagnostic
-            </span>
-            <span style="font-size: 0.82rem; font-weight: 700; color: var(--ink-muted);">
-              No payment or credit card ever required
-            </span>
-          </div>
-
-          <h3 style="font-size: 1.25rem; font-weight: 900; color: var(--forest-dark); margin-bottom: 8px; line-height: 1.35;">
+        <div style="background: #FFFFFF; border: 2px solid var(--forest); border-radius: var(--radius-md); padding: 24px 20px; margin-bottom: 18px; box-shadow: 0 4px 18px rgba(45, 90, 39, 0.08);">
+          <h3 style="font-size: 1.2rem; font-weight: 900; color: var(--forest-dark); margin-bottom: 6px; line-height: 1.35;">
             Where should we send your backup growth report?
           </h3>
-          <p style="font-size: 0.92rem; color: var(--ink); margin-bottom: 18px; line-height: 1.55;">
-            Your full growth analysis, capacity math, and 30-day plan will <strong>open right here on your screen immediately</strong>. We also email you a private backup link so you can review your roadmap anytime.
+          <p style="font-size: 0.9rem; color: var(--ink); margin-bottom: 18px; line-height: 1.5;">
+            Your full growth analysis, capacity math, and 30-day plan will <strong>open right here on your screen immediately</strong>. We will also email you a private backup copy so you can review your roadmap anytime.
           </p>
 
           <form id="growthEmailGateForm" class="gate-form">
@@ -4883,7 +4814,7 @@
               required
             />
 
-            <div class="checkin-optin-box">
+            <div class="checkin-optin-box" style="margin-bottom: 14px;">
               <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; font-weight: 700;">
                 <input
                   type="checkbox"
@@ -4891,11 +4822,11 @@
                   style="width: 16px; height: 16px; accent-color: #10B981;"
                   ${gp.checkInCadence !== "report-only" ? "checked" : ""}
                 />
-                <span>Send me helpful check-in emails to keep me on track with my 30-day plan.</span>
+                <span style="font-size: 0.88rem;">Send me helpful check-in emails to keep me on track with my 30-day plan.</span>
               </label>
             </div>
 
-            <button type="submit" class="btn-primary" id="btnUnlockGrowthResults" style="width: 100%; font-size: 1.05rem; padding: 15px 22px; font-weight: 800;">
+            <button type="submit" class="btn-primary" id="btnUnlockGrowthResults" style="width: 100%; font-size: 1.05rem; padding: 15px 20px; font-weight: 800;">
               View My Free Growth Report On Screen + Email My Copy
             </button>
           </form>
