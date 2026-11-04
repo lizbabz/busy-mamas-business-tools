@@ -1744,69 +1744,40 @@
                 Multi-Select: Choose All That Apply
               </span>
               <span class="selection-counter-pill ${selectedBgs.length > 0 ? "max-reached" : ""}">
-                ${selectedBgs.length === 0 ? "0 selected (choose all that apply)" : `${selectedBgs.length} selected`}
+                ${selectedBgs.length === 0 ? "Select all that apply" : `${selectedBgs.length} selected`}
               </span>
             </div>
             <h2 class="step-title">Select Your <em>Background & Past Experience</em></h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Have you worked in multiple careers, studied different fields, or spent time as a homemaker? <strong>You can select more than one background below.</strong>
+              Have you worked in multiple careers, studied different fields, or spent time as a homemaker? <strong>You can select more than one background from the dropdown below.</strong>
             </p>
           </div>
         </div>
 
         <div style="background: rgba(45, 90, 39, 0.05); border: 1.5px solid rgba(45, 90, 39, 0.22); border-left: 5px solid var(--forest); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;">
           <div style="font-size: 0.88rem; color: var(--forest-dark); font-weight: 700; line-height: 1.45;">
-            <strong>Tip: You can choose multiple backgrounds!</strong> Tap the quick buttons below or use the dropdown to add as many past roles as apply to you (for example: Healthcare + Homemaker, or Corporate + Creative).
+            <strong>Tip: You can choose multiple backgrounds!</strong> After selecting an item from the dropdown, simply open the dropdown again to select additional roles (for example: Healthcare + Homemaker, or Corporate + Creative).
           </div>
         </div>
 
         <div class="multi-select-dropdown-box">
-          <div style="margin-bottom: 16px;">
-            <label style="display: block; font-size: 0.9rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-              Tap buttons to select or deselect (choose all that apply):
-            </label>
-            <div class="quick-chips-wrap" style="display: flex; flex-wrap: wrap; gap: 8px;">
-              ${allBgs
-                .map((b) => {
-                  const isSel = selectedBgs.includes(b.id);
-                  return `
-                    <button
-                      type="button"
-                      class="quick-chip-btn ${isSel ? "active" : ""}"
-                      data-quick-bg="${b.id}"
-                      style="padding: 8px 14px; font-size: 0.86rem; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.15s ease; ${
-                        isSel
-                          ? "background: var(--forest); color: #fff; border: 1.5px solid var(--forest); box-shadow: 0 2px 6px rgba(45,90,39,0.22);"
-                          : "background: #FAF8F5; color: var(--ink); border: 1.5px solid var(--border);"
-                      }"
-                    >
-                      ${isSel ? "✓ " : "+ "}${b.label || b.title}
-                    </button>
-                  `;
-                })
-                .join("")}
-            </div>
-          </div>
-
-          <div style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(0,0,0,0.1);">
-            <label for="fitBgSelect" style="display: block; font-size: 0.88rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
-              Or choose from the dropdown list:
-            </label>
-            <select id="fitBgSelect" class="form-input" style="cursor: pointer; font-size: 0.94rem; padding: 12px 14px;">
-              <option value="">${selectedBgs.length === 0 ? "+ Choose a background to add..." : "+ Tap to add another background..."}</option>
-              ${allBgs
-                .map((b) => {
-                  const isSel = selectedBgs.includes(b.id);
-                  return `<option value="${b.id}">${isSel ? "✓ " : ""}${b.label || b.title}</option>`;
-                })
-                .join("")}
-            </select>
-          </div>
+          <label for="fitBgSelect" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Choose a background to add (open again to add more):
+          </label>
+          <select id="fitBgSelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 13px 14px;">
+            <option value="">${selectedBgs.length === 0 ? "+ Choose a background to add..." : "+ Tap to add another background..."}</option>
+            ${allBgs
+              .map((b) => {
+                const isSel = selectedBgs.includes(b.id);
+                return `<option value="${b.id}">${isSel ? "✓ " : ""}${b.label || b.title}</option>`;
+              })
+              .join("")}
+          </select>
 
           <div class="multi-select-tags-wrap" id="fitBgTagsWrap">
             ${
               selectedBgs.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No backgrounds selected yet. Tap the buttons above or select from the dropdown.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No backgrounds selected yet. Select from the dropdown above.</span>`
                 : selectedBgs
                     .map((id) => {
                       const item = allBgs.find((b) => b.id === id);
@@ -1826,7 +1797,7 @@
             selectedBgs.length > 0
               ? `
             <div style="font-size: 0.84rem; color: var(--forest); font-weight: 700; margin-top: 6px;">
-              ✓ ${selectedBgs.length} background${selectedBgs.length > 1 ? "s" : ""} selected. Have another past role or chapter? Tap another button above to add more.
+              ✓ ${selectedBgs.length} background${selectedBgs.length > 1 ? "s" : ""} selected. Have another past career, role, or chapter? Tap the dropdown above to add another.
             </div>
           `
               : ""
@@ -2065,69 +2036,40 @@
                 Multi-Select: Choose All That Apply
               </span>
               <span class="selection-counter-pill ${selectedLife.length > 0 ? "max-reached" : ""}">
-                ${selectedLife.length === 0 ? "0 selected (choose all that apply)" : `${selectedLife.length} selected`}
+                ${selectedLife.length === 0 ? "Select all that apply" : `${selectedLife.length} selected`}
               </span>
             </div>
             <h2 class="step-title">Which Life or Motherhood Chapters Have You <em>Personally Walked Through</em>?</h2>
             <p class="step-desc" style="margin-bottom: 0;">
-              Your lived journey is often your strongest authority and marketing magnet. <strong>Select as many chapters as apply to you.</strong>
+              Your lived journey is often your strongest authority and marketing magnet. <strong>Select as many chapters from the dropdown as apply to you.</strong>
             </p>
           </div>
         </div>
 
         <div style="background: rgba(45, 90, 39, 0.05); border: 1.5px solid rgba(45, 90, 39, 0.22); border-left: 5px solid var(--forest); border-radius: 12px; padding: 12px 16px; margin-bottom: 16px;">
           <div style="font-size: 0.88rem; color: var(--forest-dark); font-weight: 700; line-height: 1.45;">
-            <strong>Tip: You can choose multiple chapters!</strong> Tap the quick buttons below or use the dropdown to select all the real-life seasons you have navigated.
+            <strong>Tip: You can choose multiple chapters!</strong> After selecting an item from the dropdown, open it again to select additional life chapters.
           </div>
         </div>
 
         <div class="multi-select-dropdown-box">
-          <div style="margin-bottom: 16px;">
-            <label style="display: block; font-size: 0.9rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
-              Tap buttons to select or deselect (choose all that apply):
-            </label>
-            <div class="quick-chips-wrap" style="display: flex; flex-wrap: wrap; gap: 8px;">
-              ${allLife
-                .map((lex) => {
-                  const isSel = selectedLife.includes(lex.id);
-                  return `
-                    <button
-                      type="button"
-                      class="quick-chip-btn ${isSel ? "active" : ""}"
-                      data-quick-life="${lex.id}"
-                      style="padding: 8px 14px; font-size: 0.86rem; border-radius: 20px; font-weight: 700; cursor: pointer; transition: all 0.15s ease; ${
-                        isSel
-                          ? "background: var(--forest); color: #fff; border: 1.5px solid var(--forest); box-shadow: 0 2px 6px rgba(45,90,39,0.22);"
-                          : "background: #FAF8F5; color: var(--ink); border: 1.5px solid var(--border);"
-                      }"
-                    >
-                      ${isSel ? "✓ " : "+ "}${lex.label || lex.title}
-                    </button>
-                  `;
-                })
-                .join("")}
-            </div>
-          </div>
-
-          <div style="margin-top: 14px; padding-top: 14px; border-top: 1px dashed rgba(0,0,0,0.1);">
-            <label for="fitLifeSelect" style="display: block; font-size: 0.88rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 6px;">
-              Or choose from the dropdown list:
-            </label>
-            <select id="fitLifeSelect" class="form-input" style="cursor: pointer; font-size: 0.94rem; padding: 12px 14px;">
-              <option value="">${selectedLife.length === 0 ? "+ Choose a lived chapter to add..." : "+ Tap to add another lived chapter..."}</option>
-              ${allLife
-                .map((lex) => {
-                  const isSel = selectedLife.includes(lex.id);
-                  return `<option value="${lex.id}">${isSel ? "✓ " : ""}${lex.label || lex.title}</option>`;
-                })
-                .join("")}
-            </select>
-          </div>
+          <label for="fitLifeSelect" style="display: block; font-size: 0.92rem; font-weight: 800; color: var(--forest-dark); margin-bottom: 8px;">
+            Choose a lived chapter to add (open again to add more):
+          </label>
+          <select id="fitLifeSelect" class="form-input" style="cursor: pointer; font-size: 0.96rem; padding: 13px 14px;">
+            <option value="">${selectedLife.length === 0 ? "+ Choose a lived chapter to add..." : "+ Tap to add another lived chapter..."}</option>
+            ${allLife
+              .map((lex) => {
+                const isSel = selectedLife.includes(lex.id);
+                return `<option value="${lex.id}">${isSel ? "✓ " : ""}${lex.label || lex.title}</option>`;
+              })
+              .join("")}
+          </select>
 
           <div class="multi-select-tags-wrap" id="fitLifeTagsWrap">
             ${
               selectedLife.length === 0
-                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lived experiences selected yet. Tap the buttons above or select from the dropdown.</span>`
+                ? `<span style="font-size: 0.85rem; color: var(--ink-muted); font-style: italic;">No lived experiences selected yet. Select from the dropdown above.</span>`
                 : selectedLife
                     .map((id) => {
                       const item = allLife.find((lex) => lex.id === id);
@@ -2147,7 +2089,7 @@
             selectedLife.length > 0
               ? `
             <div style="font-size: 0.84rem; color: var(--forest); font-weight: 700; margin-top: 6px;">
-              ✓ ${selectedLife.length} chapter${selectedLife.length > 1 ? "s" : ""} selected. Have another lived season? Tap another button above to add more.
+              ✓ ${selectedLife.length} chapter${selectedLife.length > 1 ? "s" : ""} selected. Have another lived season? Tap the dropdown above to add another.
             </div>
           `
               : ""
