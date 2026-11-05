@@ -506,12 +506,14 @@ h1 em, h2 em, .step-title em {
 
 .home-tool-card.fit-card {
   background: #FFFFFF;
-  border: 2px solid #EAD8D8;
-  border-top: 6px solid var(--hot-pink);
+  border: 1.5px solid #E8D8D8;
+  border-top: 5px solid #F0A2A6;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .home-tool-card.fit-card:hover {
   border-color: var(--coral-dark);
+  box-shadow: 0 8px 24px rgba(224, 90, 71, 0.12);
 }
 
 .home-tool-card.fit-card .home-feature-icon {
@@ -530,8 +532,156 @@ h1 em, h2 em, .step-title em {
   border-top: 6px solid var(--forest);
 }
 
-.home-tool-card.growth-card:hover {
+.home-tool-card.growth-card.featured-tool-card {
+  background: #F4F8F3;
+  border: 2.5px solid var(--forest);
+  border-top: 6px solid var(--forest);
+  box-shadow: 0 16px 36px rgba(45, 90, 39, 0.16), 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.home-tool-card.growth-card:hover,
+.home-tool-card.growth-card.featured-tool-card:hover {
   border-color: var(--forest);
+  box-shadow: 0 20px 44px rgba(45, 90, 39, 0.22);
+}
+
+.growth-hero-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  background: var(--forest);
+  color: #FFFFFF;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(45, 90, 39, 0.22);
+}
+
+.home-fit-leverage-callout {
+  margin-top: 14px;
+  padding: 13px 15px;
+  background: #F4F8F3;
+  border: 1.5px dashed #A8D5A2;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  text-align: left;
+}
+
+.home-fit-leverage-callout .leverage-callout-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  color: var(--ink-dark);
+}
+
+.home-fit-leverage-callout .leverage-callout-text strong {
+  color: var(--forest-dark);
+  font-size: 0.84rem;
+}
+
+.home-fit-leverage-callout .btn-leverage-link {
+  align-self: flex-start;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--forest);
+  font-size: 0.83rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: inherit;
+  transition: color 0.18s ease;
+}
+
+.home-fit-leverage-callout .btn-leverage-link:hover {
+  color: var(--forest-dark);
+}
+
+/* SCREEN 1 FIT LEVERAGE SKIP BANNER */
+.fit-screen1-leverage-banner {
+  background: #F4F8F3;
+  border: 1.5px solid #BCD7B8;
+  border-left: 5px solid var(--forest);
+  border-radius: 16px;
+  padding: 14px 18px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 14px rgba(45, 90, 39, 0.08);
+}
+
+.fit-screen1-leverage-banner .leverage-banner-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.fit-screen1-leverage-banner .leverage-banner-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink-dark);
+  flex: 1;
+  min-width: 240px;
+}
+
+.fit-screen1-leverage-banner .leverage-banner-text strong {
+  color: var(--forest-dark);
+  display: block;
+  margin-bottom: 2px;
+}
+
+.fit-screen1-leverage-banner .btn-leverage-inline-cta {
+  background: var(--forest);
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-pill);
+  padding: 10px 18px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(45, 90, 39, 0.18);
+}
+
+.fit-screen1-leverage-banner .btn-leverage-inline-cta:hover {
+  background: var(--forest-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(45, 90, 39, 0.25);
+}
+
+/* FIT RESULTS LEVERAGE BANNER */
+.growth-bridge-nudge-card.fit-results-leverage-card {
+  background: #F4F8F3;
+  border: 2px solid #BCD7B8;
+  border-left: 6px solid var(--forest);
+  border-radius: 20px;
+  padding: 22px 26px;
+  box-shadow: 0 6px 18px rgba(45, 90, 39, 0.08);
+}
+
+.leverage-card-kicker {
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--forest);
+  margin-bottom: 6px;
 }
 
 .home-tool-card.growth-card .home-feature-icon {

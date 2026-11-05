@@ -255,7 +255,7 @@
     const hasGrowthProgress = state.growthStep > 1 && state.growthStep <= 6;
     const isGrowthComplete = state.growthStep >= 8 && Boolean(state.growthAnalysis);
 
-    const activeMobileTab = state.homeMobileTab || "fit";
+    const activeMobileTab = state.homeMobileTab || "growth";
 
     return `
       <div class="home-screen-shell">
@@ -271,83 +271,34 @@
               <em>Realities of Motherhood</em>
             </h1>
             <p class="home-hero-subtitle">
-              Whether you are trying to find the perfect business idea or trying to grow your existing business, our practical assessment tools give you honest numbers, realistic time limits, and a step-by-step roadmap built around family hours.
+              Built for ambitious mothers. Diagnose what is capping your revenue, buy back your family time with smart systems, or find a business model that fits your current season of life.
             </p>
           </div>
         </section>
 
         <!-- MOBILE SEGMENTED SWITCHER BAR -->
         <div class="home-mobile-toggle" role="tablist" aria-label="Assessment Tool Selector">
+          <button type="button" class="home-toggle-btn tab-growth ${activeMobileTab === 'growth' ? 'active' : ''}" data-home-tab="growth">
+            <span class="home-toggle-tag">Stage 2 (Recommended)</span>
+            <span class="home-toggle-label">Already in Business</span>
+          </button>
           <button type="button" class="home-toggle-btn tab-fit ${activeMobileTab !== 'growth' ? 'active' : ''}" data-home-tab="fit">
             <span class="home-toggle-tag">Stage 1</span>
-            <span class="home-toggle-label">Starting or Pivoting</span>
-          </button>
-          <button type="button" class="home-toggle-btn tab-growth ${activeMobileTab === 'growth' ? 'active' : ''}" data-home-tab="growth">
-            <span class="home-toggle-tag">Stage 2</span>
-            <span class="home-toggle-label">Already in Business</span>
+            <span class="home-toggle-label">Pre-Launch / New Idea</span>
           </button>
         </div>
 
         <div class="home-tools-grid ${activeMobileTab === 'growth' ? 'mobile-view-growth' : 'mobile-view-fit'}">
-          <!-- TOOL 1: BUSINESS FIT -->
-          <div class="home-tool-card fit-card" id="homeCardFit">
+          <!-- TOOL 1 (HERO/FEATURED): BUSINESS GROWTH -->
+          <div class="home-tool-card growth-card featured-tool-card" id="homeCardGrowth">
+            <div class="growth-hero-pill-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" style="margin-right: 5px; vertical-align: -1px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              MOST POPULAR / RECOMMENDED
+            </div>
+
             <div class="home-tool-top">
               <div class="home-tool-badges">
-                <span class="home-tag-pill tag-pink">Stage 1: Starting or Pivoting</span>
-                <span class="home-time-pill">~4 min</span>
-              </div>
-              <h2 class="home-tool-title">Business Fit Assessment</h2>
-              <p class="home-tool-hook">
-                Find the right business model for your skills, schedule, and monthly income target.
-              </p>
-            </div>
-
-            <div class="home-tool-features">
-              <div class="home-feature-item">
-                <span class="home-feature-icon">✓</span>
-                <span><strong>3 Curated Matches:</strong> Filtered from over 200 validated mom-friendly business models</span>
-              </div>
-              <div class="home-feature-item">
-                <span class="home-feature-icon">✓</span>
-                <span><strong>Clear Revenue Math:</strong> Exact pricing tiers & client capacity for your hours</span>
-              </div>
-              <div class="home-feature-item">
-                <span class="home-feature-icon">✓</span>
-                <span><strong>7-Day Validation Sprint:</strong> Simple action test you can run from your phone</span>
-              </div>
-            </div>
-
-            <div class="home-tool-action">
-              ${
-                isFitComplete
-                  ? `<button type="button" class="btn-pink home-cta-btn" data-action="resume-fit">
-                      View Your Top 3 Matches &amp; Plan →
-                    </button>
-                    <button type="button" class="home-restart-link" data-action="start-fresh-fit">
-                      or retake assessment from scratch
-                    </button>`
-                  : hasFitProgress
-                  ? `<button type="button" class="btn-pink home-cta-btn" data-action="resume-fit">
-                      Resume Assessment (Section ${state.step} of 6) →
-                    </button>
-                    <button type="button" class="home-restart-link" data-action="start-fresh-fit">
-                      or start over fresh
-                    </button>`
-                  : `<button type="button" class="btn-pink home-cta-btn" data-action="start-fit">
-                      Start Business Fit Assessment →
-                    </button>`
-              }
-              <div class="home-card-switch-prompt">
-                Already running a business? <a href="#" data-switch-tab="growth">Switch to Business Growth Assessment &rarr;</a>
-              </div>
-            </div>
-          </div>
-
-          <!-- TOOL 2: BUSINESS GROWTH -->
-          <div class="home-tool-card growth-card" id="homeCardGrowth">
-            <div class="home-tool-top">
-              <div class="home-tool-badges">
-                <span class="home-tag-pill tag-forest">Stage 2: Already in Business</span>
+                <span class="home-tag-pill tag-forest">Stage 2: Already in Business (Recommended)</span>
                 <span class="home-time-pill">~3 min</span>
               </div>
               <h2 class="home-tool-title">Business Growth Assessment</h2>
@@ -393,6 +344,66 @@
               }
               <div class="home-card-switch-prompt">
                 Need to find a business idea first? <a href="#" data-switch-tab="fit">Switch to Business Fit Assessment &rarr;</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOOL 2: BUSINESS FIT -->
+          <div class="home-tool-card fit-card" id="homeCardFit">
+            <div class="home-tool-top">
+              <div class="home-tool-badges">
+                <span class="home-tag-pill tag-pink">Stage 1: Pre-Launch / New Idea</span>
+                <span class="home-time-pill">~4 min</span>
+              </div>
+              <h2 class="home-tool-title">Business Fit Assessment</h2>
+              <p class="home-tool-hook">
+                Find the right business model for your skills, schedule, and monthly income target.
+              </p>
+            </div>
+
+            <div class="home-tool-features">
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>3 Curated Matches:</strong> Filtered from over 200 validated mom-friendly business models</span>
+              </div>
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>Clear Revenue Math:</strong> Exact pricing tiers & client capacity for your hours</span>
+              </div>
+              <div class="home-feature-item">
+                <span class="home-feature-icon">✓</span>
+                <span><strong>7-Day Validation Sprint:</strong> Simple action test you can run from your phone</span>
+              </div>
+            </div>
+
+            <div class="home-tool-action">
+              ${
+                isFitComplete
+                  ? `<button type="button" class="btn-pink home-cta-btn" data-action="resume-fit">
+                      View Your Top 3 Matches &amp; Plan →
+                    </button>
+                    <button type="button" class="home-restart-link" data-action="start-fresh-fit">
+                      or retake assessment from scratch
+                    </button>`
+                  : hasFitProgress
+                  ? `<button type="button" class="btn-pink home-cta-btn" data-action="resume-fit">
+                      Resume Assessment (Section ${state.step} of 6) →
+                    </button>
+                    <button type="button" class="home-restart-link" data-action="start-fresh-fit">
+                      or start over fresh
+                    </button>`
+                  : `<button type="button" class="btn-pink home-cta-btn" data-action="start-fit">
+                      Start Business Fit Assessment →
+                    </button>`
+              }
+              <div class="home-fit-leverage-callout">
+                <div class="leverage-callout-text">
+                  <strong>Already have a business making sales or serving clients?</strong>
+                  <span>You don't need a new business idea: you need leverage and systems.</span>
+                </div>
+                <button type="button" class="btn-leverage-link" data-action="start-growth" data-switch-tab="growth">
+                  Take the Business Growth Assessment &rarr;
+                </button>
               </div>
             </div>
           </div>
@@ -1515,6 +1526,18 @@
       const annual = g * 12;
       const isFlash = isFlashTimeline();
       stepContent = `
+        <div class="fit-screen1-leverage-banner">
+          <div class="leverage-banner-content">
+            <p class="leverage-banner-text">
+              <strong>Already have a business making sales or serving clients?</strong>
+              You don't need a new business idea: you need leverage and systems.
+            </p>
+            <button type="button" class="btn-leverage-inline-cta" data-switch-mode="growth">
+              Take the Business Growth Assessment &rarr;
+            </button>
+          </div>
+        </div>
+
         <div class="step-header-row">
           <span class="step-num-editorial">01</span>
           <div>
@@ -2294,6 +2317,14 @@
   function bindQuizEvents() {
     const s = state.step;
     const sub = state.subStep || 1;
+
+    // Direct mode switch banners
+    document.querySelectorAll("[data-switch-mode]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetMode = btn.getAttribute("data-switch-mode");
+        if (targetMode) switchToolMode(targetMode);
+      });
+    });
 
     // Currency Switcher
     document.querySelectorAll("[data-currency]").forEach((btn) => {
@@ -3288,22 +3319,22 @@
 
       ${matchSectionHtml}
 
-      <!-- BRIDGE TO BUSINESS GROWTH ASSESSMENT -->
-      <div class="growth-bridge-nudge-card" style="margin: 28px 0;">
+      <!-- STRATEGIC LEVERAGE BRIDGE TO BUSINESS GROWTH ASSESSMENT -->
+      <div class="growth-bridge-nudge-card fit-results-leverage-card" style="margin: 28px 0;">
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; width: 100%;">
           <div style="flex: 1; min-width: 260px;">
-            <div style="font-size: 0.76rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; color: var(--coral-dark); margin-bottom: 4px;">
-              Already Running a Business?
+            <div class="leverage-card-kicker">
+              ALREADY IN BUSINESS?
             </div>
-            <h4 style="font-size: 1.1rem; margin-bottom: 6px;">
-              Grow your current business without working more hours
+            <h4 style="font-size: 1.18rem; margin-bottom: 6px; color: var(--forest); font-family: 'Fraunces', Georgia, serif;">
+              Already have a business making sales or serving clients?
             </h4>
-            <p style="margin-bottom: 0;">
-              If you already have paying clients or products and want to increase profit, raise your prices, or save 5+ hours a week on fulfillment, check your numbers with our Business Growth Assessment.
+            <p style="margin-bottom: 0; color: var(--ink-muted); font-size: 0.94rem; line-height: 1.5;">
+              You don't need a new business idea: you need leverage and systems. Diagnose what is capping your revenue and buy back your family time with smart systems.
             </p>
           </div>
-          <button type="button" class="btn-secondary" data-switch-mode="growth" style="white-space: nowrap;">
-            Switch to Business Growth Assessment
+          <button type="button" class="btn-primary" data-switch-mode="growth" style="white-space: nowrap; padding: 13px 22px; font-weight: 800; border-radius: var(--radius-pill);">
+            Take the Business Growth Assessment &rarr;
           </button>
         </div>
       </div>
