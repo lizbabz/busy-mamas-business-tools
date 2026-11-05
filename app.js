@@ -279,12 +279,12 @@
         <!-- MOBILE SEGMENTED SWITCHER BAR -->
         <div class="home-mobile-toggle" role="tablist" aria-label="Assessment Tool Selector">
           <button type="button" class="home-toggle-btn tab-growth ${activeMobileTab === 'growth' ? 'active' : ''}" data-home-tab="growth">
-            <span class="home-toggle-tag">Stage 2 (Recommended)</span>
+            <span class="home-toggle-tag">Recommended</span>
             <span class="home-toggle-label">Already in Business</span>
           </button>
           <button type="button" class="home-toggle-btn tab-fit ${activeMobileTab !== 'growth' ? 'active' : ''}" data-home-tab="fit">
-            <span class="home-toggle-tag">Stage 1</span>
-            <span class="home-toggle-label">Pre-Launch / New Idea</span>
+            <span class="home-toggle-tag">Pre-Launch</span>
+            <span class="home-toggle-label">Find a Business Idea</span>
           </button>
         </div>
 
@@ -298,7 +298,7 @@
 
             <div class="home-tool-top">
               <div class="home-tool-badges">
-                <span class="home-tag-pill tag-forest">Stage 2: Already in Business (Recommended)</span>
+                <span class="home-tag-pill tag-forest">Already in Business (Recommended)</span>
                 <span class="home-time-pill">~3 min</span>
               </div>
               <h2 class="home-tool-title">Business Growth Assessment</h2>
@@ -352,7 +352,7 @@
           <div class="home-tool-card fit-card" id="homeCardFit">
             <div class="home-tool-top">
               <div class="home-tool-badges">
-                <span class="home-tag-pill tag-pink">Stage 1: Pre-Launch / New Idea</span>
+                <span class="home-tag-pill tag-pink">Pre-Launch / New Idea</span>
                 <span class="home-time-pill">~4 min</span>
               </div>
               <h2 class="home-tool-title">Business Fit Assessment</h2>
