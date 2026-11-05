@@ -303,7 +303,7 @@
               </div>
               <h2 class="home-tool-title">Business Growth Assessment</h2>
               <p class="home-tool-hook">
-                Diagnose what is capping your sales and unlock revenue inside your current weekly hours.
+                Find out what is keeping your business stagnant, fix what is slowing you down, and make more money without working longer hours.
               </p>
             </div>
 
